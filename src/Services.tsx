@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
 import { Clock, ArrowRight, Sparkles, Scissors, Hand, Flower2, Brush, Feather } from 'lucide-react';
-=======
-import { Clock, ArrowRight, ScanFace, Scissors, Hand, HandHeart, Brush, Sparkles } from 'lucide-react';
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
 
 export const Services: React.FC = () => {
   const { t } = useLanguage();
@@ -14,10 +10,6 @@ export const Services: React.FC = () => {
   const categories = [
     { id: 'All', label: t.services.categories.all },
     { id: 'Facial', label: t.services.categories.facial },
-<<<<<<< HEAD
-=======
-    { id: 'Cabelo', label: t.services.categories.hair },
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
     { id: 'Unhas', label: t.services.categories.nails },
     { id: 'Massagem', label: t.services.categories.massage },
     { id: 'Maquilhagem', label: t.services.categories.makeup },
@@ -28,21 +20,11 @@ export const Services: React.FC = () => {
 
   const getIconForCategory = (category: string) => {
     switch (category) {
-<<<<<<< HEAD
       case 'Facial': return <Sparkles className="w-7 h-7 text-pink-500 mb-4" />;
-      case 'Cabelo': return <Scissors className="w-7 h-7 text-pink-500 mb-4" />;
       case 'Unhas': return <Hand className="w-7 h-7 text-pink-500 mb-4" />;
       case 'Massagem': return <Flower2 className="w-7 h-7 text-pink-500 mb-4" />;
       case 'Maquilhagem': return <Brush className="w-7 h-7 text-pink-500 mb-4" />;
       case 'Depilação': return <Feather className="w-7 h-7 text-pink-500 mb-4" />;
-=======
-      case 'Facial': return <ScanFace className="w-7 h-7 text-pink-500 mb-4" />;
-      case 'Cabelo': return <Scissors className="w-7 h-7 text-pink-500 mb-4" />;
-      case 'Unhas': return <Hand className="w-7 h-7 text-pink-500 mb-4" />;
-      case 'Massagem': return <HandHeart className="w-7 h-7 text-pink-500 mb-4" />;
-      case 'Maquilhagem': return <Brush className="w-7 h-7 text-pink-500 mb-4" />;
-      case 'Depilação': return <Sparkles className="w-7 h-7 text-pink-500 mb-4" />;
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
       default: return null;
     }
   };
@@ -55,12 +37,8 @@ export const Services: React.FC = () => {
     <div className="pt-24 w-full bg-neutral-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-16">
-<<<<<<< HEAD
           <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 mb-4 tracking-wide">{t.services.title}</h1>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-lg">{t.services.intro}</p>
-=======
-          <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 mb-6 tracking-wide">{t.services.title}</h1>
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
           <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full mb-12" />
           
           {/* Filters */}

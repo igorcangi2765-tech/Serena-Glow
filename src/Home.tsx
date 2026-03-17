@@ -2,11 +2,7 @@ import React from 'react';
 import { useLanguage } from './LanguageContext';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-<<<<<<< HEAD
 import { Star, Users, Sparkles, Award, ArrowRight, CheckCircle2, ChevronDown, Scissors, Hand, Flower2, Brush, Feather } from 'lucide-react';
-=======
-import { Star, Users, Sparkles, Award, ArrowRight, CheckCircle2, ChevronDown, Scissors, Hand, HandHeart, Brush, ScanFace } from 'lucide-react';
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
 
 export const Home: React.FC = () => {
   const { t } = useLanguage();
@@ -19,20 +15,11 @@ export const Home: React.FC = () => {
   ];
 
   const services = [
-<<<<<<< HEAD
     { title: t.services.facial.title, desc: t.services.facial.desc, icon: <Sparkles className="w-7 h-7 text-pink-500" /> },
     { title: t.services.nails.title, desc: t.services.nails.desc, icon: <Hand className="w-7 h-7 text-pink-500" /> },
     { title: t.services.massage.title, desc: t.services.massage.desc, icon: <Flower2 className="w-7 h-7 text-pink-500" /> },
     { title: t.services.makeup.title, desc: t.services.makeup.desc, icon: <Brush className="w-7 h-7 text-pink-500" /> },
     { title: t.services.waxing.title, desc: t.services.waxing.desc, icon: <Feather className="w-7 h-7 text-pink-500" /> },
-=======
-    { title: t.services.facial.title, desc: t.services.facial.desc, icon: <ScanFace className="w-7 h-7 text-pink-500" /> },
-    { title: t.services.hair.title, desc: t.services.hair.desc, icon: <Scissors className="w-7 h-7 text-pink-500" /> },
-    { title: t.services.nails.title, desc: t.services.nails.desc, icon: <Hand className="w-7 h-7 text-pink-500" /> },
-    { title: t.services.massage.title, desc: t.services.massage.desc, icon: <HandHeart className="w-7 h-7 text-pink-500" /> },
-    { title: t.services.makeup.title, desc: t.services.makeup.desc, icon: <Brush className="w-7 h-7 text-pink-500" /> },
-    { title: t.services.waxing.title, desc: t.services.waxing.desc, icon: <Sparkles className="w-7 h-7 text-pink-500" /> },
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
   ];
 
   const team = t.team.members.map((member, index) => ({
@@ -48,19 +35,11 @@ export const Home: React.FC = () => {
     "https://picsum.photos/seed/salon/600/400",
   ];
 
-<<<<<<< HEAD
   const testimonials = t.testimonials.list.map((testimonial, index) => ({
     ...testimonial,
     rating: 5,
     img: `https://picsum.photos/seed/client${index + 1}/100/100`
   }));
-=======
-  const testimonials = [
-    { name: "Joana M.", text: "A melhor experiência de spa que já tive. O ambiente é incrivelmente relaxante.", rating: 5, img: "https://picsum.photos/seed/client1/100/100" },
-    { name: "Catarina P.", text: "Profissionais de excelência. O meu cabelo nunca esteve tão bonito!", rating: 5, img: "https://picsum.photos/seed/client2/100/100" },
-    { name: "Beatriz L.", text: "Recomendo vivamente a massagem de relaxamento. Saí de lá renovada.", rating: 5, img: "https://picsum.photos/seed/client3/100/100" },
-  ];
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
 
   const packages = t.pricing.packages;
 
@@ -142,10 +121,7 @@ export const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t.servicesPreview.title}</h2>
-<<<<<<< HEAD
             <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-sm md:text-base">{t.services.intro}</p>
-=======
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
             <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full" />
           </div>
           
@@ -188,15 +164,7 @@ export const Home: React.FC = () => {
                 </div>
                 <h3 className="text-xl font-serif font-medium text-gray-800 mb-1">{member.name}</h3>
                 <p className="text-pink-600 font-medium text-sm uppercase tracking-wider mb-2">{member.role}</p>
-<<<<<<< HEAD
                 <p className="text-gray-600 text-sm font-sans leading-relaxed">{member.desc}</p>
-=======
-                <div className="flex justify-center text-pink-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
               </div>
             ))}
           </div>
@@ -209,10 +177,7 @@ export const Home: React.FC = () => {
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div>
               <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t.galleryPreview.title}</h2>
-<<<<<<< HEAD
               <p className="text-gray-600 mb-6 text-sm md:text-base">{t.gallery.intro}</p>
-=======
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
               <div className="w-24 h-1 bg-pink-400 rounded-full" />
             </div>
             <Link to="/gallery" className="inline-flex items-center text-gray-700 font-medium text-sm uppercase tracking-wider hover:text-pink-600 transition-colors">
@@ -244,24 +209,15 @@ export const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">Resultados Visíveis</h2>
-<<<<<<< HEAD
             <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-sm md:text-base">{t.galleryPage.resultsDesc}</p>
-=======
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
             <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full" />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-<<<<<<< HEAD
               { title: "Tratamento Facial", desc: "Antes e depois de cuidados de pele.", img: "https://picsum.photos/seed/beforeafter1/400/500" },
               { title: "Manicure com Gel", desc: "Unhas resistentes e bonitas.", img: "https://picsum.photos/seed/beforeafter2/400/500" },
               { title: "Pedicure Completo", desc: "Pés hidratados e relaxados.", img: "https://picsum.photos/seed/beforeafter3/400/500" },
-=======
-              { title: "Tratamento Facial Anti-Aging", img: "https://picsum.photos/seed/beforeafter1/400/500" },
-              { title: "Coloração e Styling", img: "https://picsum.photos/seed/beforeafter2/400/500" },
-              { title: "Design de Sobrancelhas", img: "https://picsum.photos/seed/beforeafter3/400/500" },
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
             ].map((item, idx) => (
               <div key={idx} className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden border border-pink-50">
                 <div className="relative h-64">
@@ -276,12 +232,8 @@ export const Home: React.FC = () => {
                   </div>
                 </div>
                 <div className="p-6 text-center">
-<<<<<<< HEAD
                   <h3 className="text-lg font-serif font-medium text-gray-800 mb-2">{item.title}</h3>
                   <p className="text-gray-600 text-sm font-sans">{item.desc}</p>
-=======
-                  <h3 className="text-lg font-serif font-medium text-gray-800">{item.title}</h3>
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
                 </div>
               </div>
             ))}
@@ -308,15 +260,8 @@ export const Home: React.FC = () => {
                     referrerPolicy="no-referrer"
                   />
                 </div>
-<<<<<<< HEAD
                 <div className="flex text-pink-400 mb-4 mt-8">
                   {/* Rating removed as per request */}
-=======
-                <div className="flex text-pink-400 mb-4 mt-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
                 </div>
                 <p className="text-gray-700 italic mb-6 font-sans leading-relaxed">"{testimonial.text}"</p>
                 <p className="font-serif font-medium text-gray-900">{testimonial.name}</p>
@@ -334,11 +279,7 @@ export const Home: React.FC = () => {
             <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full" />
           </div>
           
-<<<<<<< HEAD
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-=======
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-center">
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
             {packages.map((pkg, idx) => (
               <div 
                 key={idx} 
@@ -353,7 +294,6 @@ export const Home: React.FC = () => {
                     Mais Popular
                   </div>
                 )}
-<<<<<<< HEAD
                 <div>
                   <h3 className="text-2xl font-serif font-medium text-gray-800 mb-2 text-center">{pkg.name}</h3>
                   <div className="text-center mb-8">
@@ -368,20 +308,6 @@ export const Home: React.FC = () => {
                     ))}
                   </ul>
                 </div>
-=======
-                <h3 className="text-2xl font-serif font-medium text-gray-800 mb-2 text-center">{pkg.name}</h3>
-                <div className="text-center mb-8">
-                  <span className="text-4xl font-bold text-gray-900 font-serif">{pkg.price}</span>
-                </div>
-                <ul className="space-y-4 mb-8">
-                  {pkg.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3 text-gray-600 font-sans">
-                      <CheckCircle2 className="w-5 h-5 text-pink-500 shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
                 <Link 
                   to="/booking" 
                   className={`block w-full text-center px-6 py-3 rounded-full font-medium tracking-wide transition shadow-md hover:shadow-lg ${

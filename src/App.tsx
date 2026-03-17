@@ -19,7 +19,7 @@ export default function App() {
     <LanguageProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Layout><Home /></HomeLayout>} />
+          <Route path="/" element={<Layout><Home /></Layout>} />
           <Route path="/about" element={<Layout><About /></Layout>} />
           <Route path="/services" element={<Layout><Services /></Layout>} />
           <Route path="/gallery" element={<Layout><Gallery /></Layout>} />

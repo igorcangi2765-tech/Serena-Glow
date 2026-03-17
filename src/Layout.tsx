@@ -162,14 +162,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     </Link>
                   </li>
                 ))}
-<<<<<<< HEAD
-=======
-                <li>
-                  <Link to="/admin" className="text-pink-100 hover:text-white transition-colors">
-                    {t.nav.admin}
-                  </Link>
-                </li>
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
               </ul>
             </div>
 
