@@ -18,9 +18,8 @@ export default function App() {
   return (
     <LanguageProvider>
       <Router>
-<<<<<<< HEAD
         <Routes>
-          <Route path="/" element={<Layout><Home /></Layout>} />
+          <Route path="/" element={<Layout><Home /></HomeLayout>} />
           <Route path="/about" element={<Layout><About /></Layout>} />
           <Route path="/services" element={<Layout><Services /></Layout>} />
           <Route path="/gallery" element={<Layout><Gallery /></Layout>} />
@@ -28,19 +27,6 @@ export default function App() {
           <Route path="/booking" element={<Layout><Booking /></Layout>} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
-=======
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/booking" element={<Booking />} />
-            <Route path="/admin" element={<Admin />} />
-          </Routes>
-        </Layout>
->>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
       </Router>
     </LanguageProvider>
   );
