@@ -8,16 +8,26 @@ export const Gallery: React.FC = () => {
   const categories = t.galleryPage.categories;
   const images = t.galleryPage.images;
 
+<<<<<<< HEAD
   const filteredImages = (activeCategoryIndex === 0 
     ? images 
     : images.filter(img => img.category === categories[activeCategoryIndex])).slice(0, 6);
+=======
+  const filteredImages = activeCategoryIndex === 0 
+    ? images 
+    : images.filter(img => img.category === categories[activeCategoryIndex]);
+>>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
 
   return (
     <div className="pt-24 w-full bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-16">
+<<<<<<< HEAD
           <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 mb-4 tracking-wide">{t.gallery.title}</h1>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-lg">{t.gallery.intro}</p>
+=======
+          <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 mb-6 tracking-wide">{t.gallery.title}</h1>
+>>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
           <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full mb-12" />
           
           {/* Filters */}
@@ -38,6 +48,7 @@ export const Gallery: React.FC = () => {
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* Uniform Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredImages.map(img => (
@@ -46,6 +57,16 @@ export const Gallery: React.FC = () => {
                 src={img.url} 
                 alt={`Gallery ${img.category}`} 
                 className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-700"
+=======
+        {/* Masonry Grid */}
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+          {filteredImages.map(img => (
+            <div key={img.id} className="break-inside-avoid relative group rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-300">
+              <img 
+                src={img.url} 
+                alt={`Gallery ${img.category}`} 
+                className="w-full object-cover group-hover:scale-105 transition-transform duration-700"
+>>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-pink-900/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">

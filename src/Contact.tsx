@@ -21,8 +21,12 @@ export const Contact: React.FC = () => {
     <div className="pt-24 w-full bg-neutral-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center mb-16">
+<<<<<<< HEAD
           <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 mb-4 tracking-wide">{t.contact.title}</h1>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-lg">{t.contact.intro}</p>
+=======
+          <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 mb-6 tracking-wide">{t.contact.title}</h1>
+>>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
           <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full mb-12" />
         </div>
 
@@ -47,7 +51,11 @@ export const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-800 uppercase tracking-wider mb-1 font-sans">{t.contact.phone}</h3>
+<<<<<<< HEAD
                     <p className="text-gray-600 font-sans tracking-wide">{t.contact.phoneValue}</p>
+=======
+                    <p className="text-gray-600 font-sans">+258 84 123 4567</p>
+>>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -56,7 +64,11 @@ export const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-800 uppercase tracking-wider mb-1 font-sans">{t.contact.email}</h3>
+<<<<<<< HEAD
                     <p className="text-gray-600 font-sans">{t.contact.emailValue}</p>
+=======
+                    <p className="text-gray-600 font-sans">hello@serenaglow.com</p>
+>>>>>>> 4ae222133b02d32fdc17f51ecdaf46e99782fb2e
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
