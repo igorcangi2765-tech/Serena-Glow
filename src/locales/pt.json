@@ -1,0 +1,233 @@
+{
+  "nav": {
+    "home": "Início",
+    "about": "Sobre",
+    "services": "Serviços",
+    "gallery": "Galeria",
+    "contact": "Contacto",
+    "bookNow": "Marcar Agora",
+    "admin": "Admin"
+  },
+  "hero": {
+    "headline": "Realce a Sua\nBeleza Natural",
+    "subheadline": "Na Serena Glow Beauty Studio cuidamos da sua beleza com serviços profissionais de estética e bem-estar. O nosso objetivo é ajudar cada cliente a sentir-se confiante, relaxada e radiante.",
+    "primaryBtn": "Marcar Agora",
+    "secondaryBtn": "Ver Serviços"
+  },
+  "stats": {
+    "clients": "Clientes felizes",
+    "treatments": "Serviços disponíveis",
+    "specialists": "Profissionais qualificadas",
+    "rating": "Avaliação das clientes"
+  },
+  "servicesPreview": {
+    "title": "Tratamentos e Serviços",
+    "desc": "Oferecemos uma variedade de serviços de beleza pensados para cuidar da sua pele e bem-estar. Utilizamos produtos de qualidade e técnicas profissionais para garantir os melhores resultados.",
+    "learnMore": "Saiba Mais"
+  },
+  "team": {
+    "title": "A Nossa Equipa",
+    "members": [
+      { "name": "Sofia Silva", "role": "Especialista de Beleza", "desc": "Ajuda a realçar a sua beleza natural com cuidados simples e modernos." },
+      { "name": "Elena Costa", "role": "Especialista em Pele", "desc": "Cuida da pele com limpezas faciais e tratamentos para deixar o rosto saudável." },
+      { "name": "Maria Santos", "role": "Terapeuta de Massagem", "desc": "Ajuda a relaxar o corpo e aliviar o cansaço com massagens." },
+      { "name": "Ana Oliveira", "role": "Maquilhadora", "desc": "Faz maquilhagem para festas, eventos e ocasiões especiais." }
+    ]
+  },
+  "galleryPreview": {
+    "title": "Momentos de Beleza",
+    "viewAll": "Ver Galeria Completa"
+  },
+  "testimonials": {
+    "title": "O Que Dizem as Nossas Clientes",
+    "subtitle": "Veja o que as nossas clientes dizem sobre a sua experiência na Serena Glow.",
+    "list": [
+      { "name": "Ana João", "text": "Fui muito bem atendida. As meninas são simpáticas e o ambiente é muito tranquilo." },
+      { "name": "Maria Celina", "text": "Gostei muito do resultado da manicure e da limpeza facial. Vou voltar mais vezes." },
+      { "name": "Beatriz Luís", "text": "A massagem foi mesmo relaxante. Saí de lá leve e satisfeita. Recomendo." }
+    ]
+  },
+  "pricing": {
+    "title": "Pacotes de Beleza",
+    "desc": "Escolha o pacote ideal para cuidar da sua beleza e desfrutar de uma experiência completa.",
+    "book": "Reservar Agora",
+    "packages": [
+      { "name": "Essencial", "price": "1.200 MZN", "features": ["Manicure", "Design de Sobrancelhas", "Limpeza Facial Básica"], "popular": false },
+      { "name": "Beleza Completa", "price": "2.500 MZN", "features": ["Manicure e Pedicure", "Limpeza Facial Profunda", "Massagem Relaxante (30 min)", "Design de Sobrancelhas", "Maquilhagem para Eventos ou Festas"], "popular": true },
+      { "name": "Beleza Premium", "price": "4.500 MZN", "features": ["Tratamento Facial Profissional", "Massagem Relaxante (60 min)", "Manicure e Pedicure", "Maquilhagem para Eventos, Festas ou Noivas", "Pedicure Completo"], "popular": false }
+    ]
+  },
+  "faq": {
+    "title": "Perguntas Frequentes",
+    "list": [
+      { "q": "Que serviços vocês oferecem?", "a": "Na Serena Glow Beauty Studio oferecemos vários serviços de beleza, incluindo tratamentos faciais, cuidados de unhas, massagem relaxante, maquilhagem para eventos e depilação. Todos os serviços são feitos por profissionais qualificados." },
+      { "q": "Como posso fazer uma marcação?", "a": "Pode fazer a sua marcação diretamente no nosso website através do botão “Marcar Agora”, por telefone ou visitando o nosso estúdio. Recomendamos marcar com antecedência para garantir disponibilidade." },
+      { "q": "Os tratamentos são seguros?", "a": "Sim. Utilizamos produtos de qualidade e seguimos procedimentos profissionais para garantir a segurança e o bem-estar das nossas clientes. Antes de alguns tratamentos fazemos uma pequena avaliação para escolher o cuidado mais adequado para a sua pele." },
+      { "q": "Quanto tempo dura um tratamento facial?", "a": "A duração depende do tipo de tratamento, mas normalmente um tratamento facial dura entre 45 minutos e 1 hora e 30 minutos." }
+    ]
+  },
+  "cta": {
+    "headline": "Marque a Sua Experiência de|Beleza Hoje",
+    "book": "Marcar Agora",
+    "contact": "Contactar-nos"
+  },
+  "footer": {
+    "description": "Realce a sua beleza com cuidado e profissionalismo. Na Serena Glow,\ncuidamos de si todos os dias.",
+    "descriptionDesktop": "Realce a sua beleza com cuidado\ne profissionalismo.\n\nNa Serena Glow, cuidamos de si\ntodos os dias.",
+    "descriptionMobile": "Realce a sua beleza com cuidado e\nprofissionalismo. Na Serena Glow,\ncuidamos de si todos os dias.",
+    "quickLinks": "Links Rápidos",
+    "services": "Serviços",
+    "serviceLinks": ["Tratamentos Faciais", "Manicure e Pedicure", "Massagens", "Maquilhagem", "Depilação", "Sobrancelhas"],
+    "contactInfo": "Informação de Contacto",
+    "address": "Lichinga, Niassa – Moçambique",
+    "phone": "+258 XX XXX XXXX",
+    "email": "info@serenaglow.co.mz",
+    "copyright": "© {year} Serena Glow. Todos os direitos reservados.",
+    "privacy": "Política de Privacidade",
+    "terms": "Termos e Condições"
+  },
+  "about": {
+    "title": "Sobre a Serena Glow|Beauty Studio",
+    "mission": "A Serena Glow Beauty Studio nasceu com o objetivo de oferecer serviços de beleza e bem-estar com qualidade e profissionalismo.\nO nosso estúdio foi criado para ser um espaço onde as clientes podem relaxar, cuidar da sua beleza e sentir-se confiantes.\n\nTrabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem e massagem, sempre com atenção ao conforto e satisfação das nossas clientes.",
+    "cta": "Marque a Sua Experiência de|Beleza Hoje",
+    "values": {
+      "title": "Os Nossos Valores",
+      "list": [
+        { "title": "Missão", "desc": "Oferecer serviços de beleza com qualidade, ajudando cada cliente a sentir-se bem e confiante." },
+        { "title": "Visão", "desc": "Ser um salão de beleza de referência em Lichinga, conhecido pelo bom atendimento e confiança." },
+        { "title": "Valores", "desc": "Trabalhamos com respeito, dedicação e cuidado, sempre focados na satisfação das nossas clientes." }
+      ]
+    }
+  },
+  "services": {
+    "title": "Os Nossos Serviços",
+    "book": "MARCAR AGORA",
+    "all": "TODOS",
+    "categories": {
+      "all": "TODOS",
+      "facial": "Facial",
+      "nails": "Unhas",
+      "massage": "Massagem",
+      "makeup": "Maquilhagem",
+      "waxing": "Depilação",
+      "eyebrows": "Sobrancelhas"
+    },
+    "intro": "Cuidamos da sua beleza com serviços simples, acessíveis e profissionais, pensados para o seu dia a dia em Lichinga.",
+    "facial": { "title": "Tratamentos Faciais", "desc": "Cuidado da pele para limpar, hidratar e melhorar o rosto." },
+    "nails": { "title": "Manicure e Pedicure", "desc": "Cuidados para deixar as unhas limpas e bonitas." },
+    "massage": { "title": "Massagem Relaxante", "desc": "Ajuda a relaxar o corpo e aliviar o cansaço." },
+    "makeup": { "title": "Maquilhagem", "desc": "Maquilhagem para festas e ocasiões especiais." },
+    "waxing": { "title": "Depilação", "desc": "Remoção de pêlos para uma pele limpa e suave." },
+    "eyebrows": { "title": "Cuidados de Sobrancelhas", "desc": "Design e cuidado das sobrancelhas para um olhar mais bonito." },
+    "list": [
+      { "id": 1, "category": "Facial", "name": "Limpeza de Pele Profunda", "desc": "Limpeza completa para remover impurezas e deixar a pele limpa e saudável.", "price": "3.000 MZN", "duration": "90 MIN" },
+      { "id": 2, "category": "Facial", "name": "Tratamento Facial", "desc": "Cuidados do rosto para hidratar, melhorar a pele e dar um aspeto mais bonito.", "price": "3.500 MZN", "duration": "60 MIN" },
+      { "id": 3, "category": "Unhas", "name": "Manicure", "desc": "Cuidado das unhas para manter as mãos limpas e bem tratadas.", "price": "500 MZN", "duration": "30 MIN" },
+      { "id": 4, "category": "Unhas", "name": "Manicure com Gel", "desc": "Unhas mais duradouras e resistentes, com acabamento bonito.", "price": "800 MZN", "duration": "45 MIN" },
+      { "id": 5, "category": "Unhas", "name": "Pedicure", "desc": "Cuidado básico dos pés para higiene e conforto.", "price": "700 MZN", "duration": "45 MIN" },
+      { "id": 6, "category": "Unhas", "name": "Pedicure Completo", "desc": "Tratamento completo com limpeza, hidratação e relaxamento dos pés.", "price": "1.200 MZN", "duration": "60 MIN" },
+      { "id": 7, "category": "Massagem", "name": "Massagem Relaxante", "desc": "Ajuda a aliviar o cansaço, reduzir o stress e relaxar o corpo.", "price": "2.000 MZN", "duration": "60 MIN" },
+      { "id": 8, "category": "Maquilhagem", "name": "Maquilhagem Profissional", "desc": "Maquilhagem para festas, eventos e ocasiões especiais.", "price": "2.500 MZN", "duration": "60 MIN" },
+      { "id": 9, "category": "Depilação", "name": "Depilação", "desc": "Remoção de pêlos para uma pele limpa e suave.", "price": "700 MZN", "duration": "45 MIN" },
+      { "id": 10, "category": "Sobrancelhas", "name": "Sobrancelhas", "desc": "Design e cuidado das sobrancelhas para melhorar o olhar.", "price": "600 MZN", "duration": "30 MIN" }
+    ]
+  },
+  "gallery": {
+    "title": "Momentos de Beleza",
+    "intro": "Veja alguns dos nossos trabalhos e resultados feitos no nosso estúdio em Lichinga.",
+    "desc": "Explore alguns dos momentos e resultados alcançados no nosso estúdio.",
+    "all": "Todos"
+  },
+  "galleryPage": {
+    "resultsTitle": "Resultados Visíveis",
+    "resultsDesc": "Veja alguns exemplos de resultados obtidos através dos nossos tratamentos.",
+    "categories": ["Todos", "Facial", "Unhas", "Massagem", "Maquilhagem", "Depilação", "Sobrancelhas"],
+    "images": [
+      { "id": 1, "category": "Facial", "url": "https://picsum.photos/seed/facial1/600/800" },
+      { "id": 2, "category": "Unhas", "url": "https://picsum.photos/seed/nails1/600/800" },
+      { "id": 3, "category": "Massagem", "url": "https://picsum.photos/seed/massage1/600/800" },
+      { "id": 4, "category": "Maquilhagem", "url": "https://picsum.photos/seed/makeup1/600/800" },
+      { "id": 5, "category": "Depilação", "url": "https://picsum.photos/seed/wax1/600/800" },
+      { "id": 6, "category": "Sobrancelhas", "url": "https://picsum.photos/seed/brows1/600/800" }
+    ]
+  },
+  "contact": {
+    "title": "Contacte-nos",
+    "intro": "Fale connosco para marcar o seu serviço ou esclarecer qualquer dúvida.",
+    "infoTitle": "Informação de Contacto",
+    "formTitle": "Envie-nos uma Mensagem",
+    "address": "Morada",
+    "addressValue": "Lichinga, Niassa – Moçambique",
+    "phone": "Telefone",
+    "phoneValue": "+258 XX XXX XXXX",
+    "email": "Email",
+    "emailValue": "info@serenaglow.co.mz",
+    "hours": "Horário",
+    "hoursValue": "Segunda a Sábado\n08:00 – 18:00",
+    "form": {
+      "name": "Nome completo",
+      "phone": "Número de telefone",
+      "email": "Email (opcional)",
+      "message": "Escreva a sua mensagem",
+      "send": "Enviar Pedido"
+    },
+    "success": "Sua mensagem foi enviada com sucesso! Entraremos em contacto em breve.",
+    "mapPlaceholder": "Localização do estúdio em Lichinga"
+  },
+  "booking": {
+    "title": "Marcar Sessão",
+    "name": "Nome Completo",
+    "phone": "Número de Telefone",
+    "email": "Email",
+    "service": "Serviço Desejado",
+    "date": "Data Preferencial",
+    "time": "Hora Preferencial",
+    "notes": "Notas Adicionais",
+    "confirm": "Confirmar Marcação",
+    "selectService": "Selecione um serviço",
+    "success": "Reserva enviada com sucesso! Entraremos em contacto para confirmar.",
+    "services": ["Limpeza de Pele Profunda", "Tratamento Facial", "Manicure", "Manicure com Gel", "Pedicure", "Pedicure Completo", "Massagem Relaxante", "Maquilhagem Profissional", "Depilação", "Sobrancelhas"]
+  },
+  "admin": {
+    "login": "Login Admin",
+    "dashboard": "Painel de Controlo",
+    "bookings": "Marcações de Hoje",
+    "clients": "Total de Clientes",
+    "services": "Total de Serviços",
+    "revenue": "Receita Mensal",
+    "search": "Pesquisar...",
+    "edit": "Editar",
+    "delete": "Apagar",
+    "status": "Estado"
+  },
+  "privacyPolicy": {
+    "title": "Política de Privacidade",
+    "intro": "Na Serena Glow, respeitamos a sua privacidade e garantimos a proteção dos seus dados pessoais.",
+    "sections": [
+      { "title": "1. Informações que recolhemos", "content": "Podemos recolher informações como:\n• Nome\n• Número de telefone\n• Email (opcional)\n• Mensagens enviadas através do formulário\n\nEssas informações são usadas apenas para responder aos seus pedidos e marcar serviços." },
+      { "title": "2. Uso das informações", "content": "As suas informações são utilizadas para:\n• Marcação de serviços\n• Contacto com a cliente\n• Melhorar o nosso atendimento\n\nNão partilhamos os seus dados com terceiros." },
+      { "title": "3. Proteção dos dados", "content": "Garantimos que os seus dados são mantidos em segurança e usados apenas para fins do nosso serviço." },
+      { "title": "4. Cookies", "content": "O nosso site pode usar cookies básicos para melhorar a experiência de navegação." },
+      { "title": "5. Contacto", "content": "Se tiver dúvidas sobre esta política, pode contactar-nos:\n\nLichinga, Niassa – Moçambique\n+258 XX XXX XXXX\ninfo@serenaglow.co.mz" }
+    ],
+    "nav": {
+      "back": "Voltar ao Início",
+      "next": "Ir para Termos e Condições"
+    }
+  },
+  "termsOfService": {
+    "title": "Termos e Condições",
+    "intro": "Ao utilizar os serviços da Serena Glow, concorda com os seguintes termos:",
+    "sections": [
+      { "title": "1. Marcação de serviços", "content": "As marcações podem ser feitas pelo site, telefone ou presencialmente.\nPedimos que chegue no horário combinado." },
+      { "title": "2. Cancelamentos", "content": "Cancelamentos devem ser feitos com antecedência.\nAtrasos podem resultar em remarcação." },
+      { "title": "3. Pagamentos", "content": "Os serviços são pagos no local.\nOs preços são apresentados em Meticais (MZN)." },
+      { "title": "4. Responsabilidade", "content": "Trabalhamos com produtos seguros e profissionais.\nRecomendamos informar qualquer alergia ou sensibilidade." },
+      { "title": "5. Alterações", "content": "A Serena Glow pode atualizar estes termos sempre que necessário." }
+    ],
+    "nav": {
+      "back": "Política de Privacidade",
+      "next": "Voltar ao Início"
+    }
+  }
+}

@@ -1,28 +1,27 @@
 import React, { useState } from 'react';
-import { useLanguage } from './LanguageContext';
+import { useLanguage } from '@/LanguageContext';
 
 export const Gallery: React.FC = () => {
   const { t } = useLanguage();
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
 
-  const categories = t.galleryPage.categories;
-  const images = t.galleryPage.images;
+  const categories = Array.isArray(t('galleryPage.categories')) ? t('galleryPage.categories') : [];
+  const images = Array.isArray(t('galleryPage.images')) ? t('galleryPage.images') : [];
 
   const filteredImages = (activeCategoryIndex === 0 
     ? images 
-    : images.filter(img => img.category === categories[activeCategoryIndex])).slice(0, 6);
+    : images.filter((img: any) => img.category === categories[activeCategoryIndex])).slice(0, 6);
 
   return (
     <div className="pt-24 w-full bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 mb-4 tracking-wide">{t.gallery.title}</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-lg">{t.gallery.intro}</p>
-          <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full mb-12" />
+          <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 mb-4 tracking-wide">{t('gallery.title')}</h1>
+          <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-lg">{t('gallery.intro')}</p>
           
           {/* Filters */}
           <div className="flex flex-wrap justify-center gap-4">
-            {categories.map((cat, idx) => (
+            {categories.map((cat: string, idx: number) => (
               <button
                 key={idx}
                 onClick={() => setActiveCategoryIndex(idx)}
@@ -32,7 +31,7 @@ export const Gallery: React.FC = () => {
                     : 'bg-pink-50 text-gray-600 hover:bg-pink-100 border border-pink-100'
                 }`}
               >
-                {idx === 0 ? t.gallery.all : cat}
+                {idx === 0 ? t('gallery.all') : cat}
               </button>
             ))}
           </div>
@@ -40,7 +39,7 @@ export const Gallery: React.FC = () => {
 
         {/* Uniform Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredImages.map(img => (
+          {filteredImages.map((img: any) => (
             <div key={img.id} className="relative group rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-shadow duration-300">
               <img 
                 src={img.url} 

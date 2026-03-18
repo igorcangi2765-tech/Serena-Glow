@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useLanguage } from './LanguageContext';
-import { supabase } from './lib/supabase';
+import { useLanguage } from '@/LanguageContext';
+import { supabase } from '@/lib/supabase';
 import { Sidebar } from './components/admin/Sidebar';
 import { Dashboard } from './components/admin/modules/Dashboard';
 import { SalesPOS } from './components/admin/modules/SalesPOS';

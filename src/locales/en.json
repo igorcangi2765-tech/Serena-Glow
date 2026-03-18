@@ -1,0 +1,231 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "bookNow": "Book Now",
+    "admin": "Admin"
+  },
+  "hero": {
+    "headline": "Enhance Your Natural Beauty",
+    "subheadline": "At Serena Glow Beauty Studio we offer professional beauty and wellness treatments so you feel confident, relaxed, and radiant.",
+    "primaryBtn": "Book Now",
+    "secondaryBtn": "View Services"
+  },
+  "stats": {
+    "clients": "Happy clients",
+    "treatments": "Services available",
+    "specialists": "Qualified professionals",
+    "rating": "Client rating"
+  },
+  "servicesPreview": {
+    "title": "Treatments & Services",
+    "desc": "We offer a variety of beauty services designed to take care of your skin and well-being. We use quality products and professional techniques to ensure the best results.",
+    "learnMore": "Learn More"
+  },
+  "team": {
+    "title": "Our Team",
+    "members": [
+      { "name": "Sofia Silva", "role": "Beauty Specialist", "desc": "Helps enhance your natural beauty with simple and modern care." },
+      { "name": "Elena Costa", "role": "Skin Care Specialist", "desc": "Cares for the skin with facial cleansings and treatments to leave the face healthy." },
+      { "name": "Maria Santos", "role": "Massage Therapist", "desc": "Helps relax the body and relieve tiredness with massages." },
+      { "name": "Ana Oliveira", "role": "Makeup Artist", "desc": "Provides makeup for parties, events, and special occasions." }
+    ]
+  },
+  "galleryPreview": {
+    "title": "Beauty Moments",
+    "viewAll": "View Full Gallery"
+  },
+  "testimonials": {
+    "title": "What Our Clients Say",
+    "subtitle": "See what our clients say about their experience at Serena Glow.",
+    "list": [
+      { "name": "Ana João", "text": "I was very well attended. The girls are friendly and the atmosphere is very quiet." },
+      { "name": "Maria Celina", "text": "I really liked the result of the manicure and facial cleansing. I will come back more times." },
+      { "name": "Beatriz Luís", "text": "The massage was really relaxing. I left there feeling light and satisfied. I recommend." }
+    ]
+  },
+  "pricing": {
+    "title": "Beauty Packages",
+    "desc": "Choose the ideal package to take care of your beauty and enjoy a complete experience.",
+    "book": "Book Now",
+    "packages": [
+      { "name": "Essential", "price": "1,200 MZN", "features": ["Manicure", "Eyebrow Design", "Basic Facial Cleansing"], "popular": false },
+      { "name": "Complete Beauty", "price": "2,500 MZN", "features": ["Manicure and Pedicure", "Deep Facial Cleansing", "Relaxing Massage (30 min)", "Eyebrow Design", "Event or Party Makeup"], "popular": true },
+      { "name": "Premium Beauty", "price": "4,500 MZN", "features": ["Professional Facial Treatment", "Relaxing Massage (60 min)", "Manicure and Pedicure", "Makeup for Events, Parties or Brides", "Full Pedicure"], "popular": false }
+    ]
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "list": [
+      { "q": "What services do you offer?", "a": "At Serena Glow Beauty Studio we offer several beauty services, including facial treatments, nail care, relaxing massage, makeup for events, and waxing. All services are performed by qualified professionals." },
+      { "q": "How can I make an appointment?", "a": "You can make your appointment directly on our website through the 'Book Now' button, by phone, or by visiting our studio. We recommend booking in advance to ensure availability." },
+      { "q": "Are the treatments safe?", "a": "Yes. We use quality products and follow professional procedures to ensure the safety and well-being of our clients. Before some treatments, we conduct a small evaluation to choose the most suitable care for your skin." },
+      { "q": "How long does a facial treatment last?", "a": "The duration depends on the type of treatment, but normally a facial treatment lasts between 45 minutes and 1 hour and 30 minutes." }
+    ]
+  },
+  "cta": {
+    "headline": "Book Your|Beauty Experience Today",
+    "book": "Book Now",
+    "contact": "Contact Us"
+  },
+  "footer": {
+    "description": "Enhance your beauty with care and professionalism.\nAt Serena Glow, we care for you every day.",
+    "quickLinks": "Quick Links",
+    "services": "Services",
+    "serviceLinks": ["Facial Treatments", "Manicure and Pedicure", "Massages", "Makeup", "Waxing", "Eyebrow Care"],
+    "contactInfo": "Contact Info",
+    "address": "Lichinga, Niassa – Mozambique",
+    "phone": "+258 XX XXX XXXX",
+    "email": "info@serenaglow.co.mz",
+    "copyright": "© {year} Serena Glow. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms and Conditions"
+  },
+  "about": {
+    "title": "About Serena Glow|Beauty Studio",
+    "mission": "Serena Glow Beauty Studio was born with the goal of offering beauty and wellness services with quality and professionalism.\nOur studio was created to be a space where clients can relax, take care of their beauty, and feel confident.\n\nWe work with dedication to offer skin, nail, makeup, and massage services, always focused on our clients' comfort and satisfaction.",
+    "cta": "Book Your|Beauty Experience Today",
+    "values": {
+      "title": "Our Values",
+      "list": [
+        { "title": "Mission", "desc": "Offer quality beauty services, helping each client feel good and confident." },
+        { "title": "Vision", "desc": "To be a leading beauty salon in Lichinga, known for great service and trust." },
+        { "title": "Values", "desc": "We work with respect, dedication, and care, always focused on our clients' satisfaction." }
+      ]
+    }
+  },
+  "services": {
+    "title": "Our Services",
+    "book": "BOOK NOW",
+    "all": "ALL",
+    "categories": {
+      "all": "ALL",
+      "facial": "Facial",
+      "nails": "Nails",
+      "massage": "Massage",
+      "makeup": "Makeup",
+      "waxing": "Waxing",
+      "eyebrows": "Eyebrows"
+    },
+    "intro": "We take care of your beauty with simple, affordable, and professional services, designed for your daily life in Lichinga.",
+    "facial": { "title": "Facial Treatments", "desc": "Skin care to clean, hydrate, and improve the face." },
+    "nails": { "title": "Manicure and Pedicure", "desc": "Care to keep nails clean and beautiful." },
+    "massage": { "title": "Relaxing Massage", "desc": "Helps relax the body and relieve tiredness." },
+    "makeup": { "title": "Makeup", "desc": "Makeup for parties and special occasions." },
+    "waxing": { "title": "Waxing", "desc": "Hair removal for clean and smooth skin." },
+    "eyebrows": { "title": "Eyebrow Care", "desc": "Design and care for eyebrows for a more beautiful look." },
+    "list": [
+      { "id": 1, "category": "Facial", "name": "Deep Skin Cleansing", "desc": "Complete cleansing to remove impurities and leave the skin clean and healthy.", "price": "3,000 MZN", "duration": "90 MIN" },
+      { "id": 2, "category": "Facial", "name": "Facial Treatment", "desc": "Facial care to hydrate, improve skin and give a better look.", "price": "3,500 MZN", "duration": "60 MIN" },
+      { "id": 3, "category": "Nails", "name": "Manicure", "desc": "Nail care to keep hands clean and well-treated.", "price": "500 MZN", "duration": "30 MIN" },
+      { "id": 4, "category": "Nails", "name": "Gel Manicure", "desc": "Longer-lasting and resistant nails with a beautiful finish.", "price": "800 MZN", "duration": "45 MIN" },
+      { "id": 5, "category": "Nails", "name": "Pedicure", "desc": "Basic foot care for hygiene and comfort.", "price": "700 MZN", "duration": "45 MIN" },
+      { "id": 6, "category": "Nails", "name": "Full Pedicure", "desc": "Complete treatment with cleansing, hydration, and foot relaxation.", "price": "1,200 MZN", "duration": "60 MIN" },
+      { "id": 7, "category": "Massage", "name": "Relaxing Massage", "desc": "Helps relieve tiredness, reduce stress, and relax the body.", "price": "2,000 MZN", "duration": "60 MIN" },
+      { "id": 8, "category": "Makeup", "name": "Professional Makeup", "desc": "Makeup for parties, events, and special occasions.", "price": "2,500 MZN", "duration": "60 MIN" },
+      { "id": 9, "category": "Waxing", "name": "Waxing", "desc": "Hair removal for clean and smooth skin.", "price": "700 MZN", "duration": "45 MIN" },
+      { "id": 10, "category": "Eyebrows", "name": "Eyebrow Care", "desc": "Design and care for eyebrows to improve the look.", "price": "600 MZN", "duration": "30 MIN" }
+    ]
+  },
+  "gallery": {
+    "title": "Beauty Moments",
+    "intro": "See some of our work and results achieved at our studio in Lichinga.",
+    "desc": "Explore some of the moments and results achieved at our studio.",
+    "all": "All"
+  },
+  "galleryPage": {
+    "resultsTitle": "Visible Results",
+    "resultsDesc": "See some examples of results achieved through our treatments.",
+    "categories": ["All", "Facial", "Nails", "Massage", "Makeup", "Waxing", "Eyebrows"],
+    "images": [
+      { "id": 1, "category": "Facial", "url": "https://picsum.photos/seed/facial1/600/800" },
+      { "id": 2, "category": "Nails", "url": "https://picsum.photos/seed/nails1/600/800" },
+      { "id": 3, "category": "Massage", "url": "https://picsum.photos/seed/massage1/600/800" },
+      { "id": 4, "category": "Makeup", "url": "https://picsum.photos/seed/makeup1/600/800" },
+      { "id": 5, "category": "Waxing", "url": "https://picsum.photos/seed/wax1/600/800" },
+      { "id": 6, "category": "Eyebrows", "url": "https://picsum.photos/seed/brows1/600/800" }
+    ]
+  },
+  "contact": {
+    "title": "Contact Us",
+    "intro": "Talk to us to book your service or clear any doubts.",
+    "infoTitle": "Contact Information",
+    "formTitle": "Send us a Message",
+    "address": "Address",
+    "addressValue": "Lichinga, Niassa – Mozambique",
+    "phone": "Phone",
+    "phoneValue": "+258 XX XXX XXXX",
+    "email": "Email",
+    "emailValue": "info@serenaglow.co.mz",
+    "hours": "Opening Hours",
+    "hoursValue": "Monday to Saturday\n08:00 – 18:00",
+    "form": {
+      "name": "Full name",
+      "phone": "Phone number",
+      "email": "Email (optional)",
+      "message": "Type your message",
+      "send": "Send Request"
+    },
+    "success": "Your message was sent successfully! We will contact you soon.",
+    "mapPlaceholder": "Studio location in Lichinga"
+  },
+  "booking": {
+    "title": "Book a Session",
+    "name": "Full Name",
+    "phone": "Phone Number",
+    "email": "Email",
+    "service": "Desired Service",
+    "date": "Preferred Date",
+    "time": "Preferred Time",
+    "notes": "Additional Notes",
+    "confirm": "Confirm Booking",
+    "selectService": "Select a service",
+    "success": "Booking request sent successfully! We will contact you to confirm.",
+    "services": ["Deep Skin Cleansing", "Facial Treatment", "Manicure", "Gel Manicure", "Pedicure", "Full Pedicure", "Relaxing Massage", "Professional Makeup", "Waxing", "Eyebrow Care"]
+  },
+  "admin": {
+    "login": "Admin Login",
+    "dashboard": "Control Panel",
+    "bookings": "Today's Bookings",
+    "clients": "Total Clients",
+    "services": "Total Services",
+    "revenue": "Monthly Revenue",
+    "search": "Search...",
+    "edit": "Edit",
+    "delete": "Delete",
+    "status": "Status"
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "intro": "At Serena Glow, we respect your privacy and guarantee the protection of your personal data.",
+    "sections": [
+      { "title": "1. Information we collect", "content": "We may collect information such as:\n• Name\n• Phone number\n• Email (optional)\n• Messages sent through the form\n\nThis information is used only to respond to your requests and book services." },
+      { "title": "2. Use of information", "content": "Your information is used for:\n• Service booking\n• Contacting the client\n• Improving our service\n\nWe do not share your data with third parties." },
+      { "title": "3. Data protection", "content": "We guarantee that your data is kept secure and used only for our service purposes." },
+      { "title": "4. Cookies", "content": "Our site may use basic cookies to improve the browsing experience." },
+      { "title": "5. Contact", "content": "If you have doubts about this policy, you can contact us:\n\nLichinga, Niassa – Mozambique\n+258 XX XXX XXXX\ninfo@serenaglow.co.mz" }
+    ],
+    "nav": {
+      "back": "Back to Home",
+      "next": "Go to Terms of Service"
+    }
+  },
+  "termsOfService": {
+    "title": "Terms and Conditions",
+    "intro": "By using Serena Glow's services, you agree to the following terms:",
+    "sections": [
+      { "title": "1. Service booking", "content": "Appointments can be made through the website, phone, or in person.\nWe ask that you arrive at the scheduled time." },
+      { "title": "2. Cancellations", "content": "Cancellations must be made in advance.\nDelays may result in rescheduling." },
+      { "title": "3. Payments", "content": "Services are paid on-site.\nPrices are presented in Meticais (MZN)." },
+      { "title": "4. Responsibility", "content": "We work with safe and professional products.\nWe recommend informing any allergy or sensitivity." },
+      { "title": "5. Changes", "content": "Serena Glow may update these terms whenever necessary." }
+    ],
+    "nav": {
+      "back": "Privacy Policy",
+      "next": "Back to Home"
+    }
+  }
+}
