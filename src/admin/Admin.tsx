@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/LanguageContext';
 import { supabase } from '@/lib/supabase';
-import { Sidebar } from './components/admin/Sidebar';
-import { Dashboard } from './components/admin/modules/Dashboard';
-import { SalesPOS } from './components/admin/modules/SalesPOS';
-import { Agenda } from './components/admin/modules/Agenda';
-import { Billing } from './components/admin/modules/Billing';
-import { Messaging } from './components/admin/modules/Messaging';
+import { Sidebar } from '@/components/admin/Sidebar';
+import { Dashboard } from '@/components/admin/modules/Dashboard';
+import { SalesPOS } from '@/components/admin/modules/SalesPOS';
+import { Agenda } from '@/components/admin/modules/Agenda';
+import { Billing } from '@/components/admin/modules/Billing';
+import { Messaging } from '@/components/admin/modules/Messaging';
 import { toast, Toaster } from 'react-hot-toast';
 
 export const Admin: React.FC = () => {

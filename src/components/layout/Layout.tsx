@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/LanguageContext';
-import { Menu, X, Sparkles, Instagram, Facebook, MapPin, Phone, Mail } from 'lucide-react';
+import { useTheme } from '@/ThemeContext';
+import { Menu, X, Sparkles, Instagram, Facebook, MapPin, Phone, Mail, Sun, Moon } from 'lucide-react';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { language, setLanguage, t } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -17,7 +19,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu and scroll to top on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
     window.scrollTo(0, 0);
@@ -31,12 +32,18 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     { name: t('nav.contact'), path: '/contact' },
   ];
 
+  const isDark = theme === 'dark';
+
   return (
-    <div className="min-h-screen flex flex-col font-sans text-gray-800 bg-neutral-50">
+    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-300 ${isDark ? 'bg-[#121212] text-[#EAEAEA]' : 'bg-neutral-50 text-gray-800'}`}>
       {/* Navbar */}
       <nav
         className={`fixed w-full z-50 transition-all duration-300 ${
-          isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm py-4' : 'bg-transparent py-6'
+          isScrolled
+            ? isDark
+              ? 'bg-[#1E1E1E]/95 backdrop-blur-sm shadow-sm py-4'
+              : 'bg-white/95 backdrop-blur-sm shadow-sm py-4'
+            : 'bg-transparent py-6'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,7 +51,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group">
               <Sparkles className="w-6 h-6 text-pink-500 group-hover:rotate-12 transition-transform" />
-              <span className="font-serif text-2xl font-semibold tracking-wide text-gray-900">
+              <span className={`font-serif text-2xl font-semibold tracking-wide ${isDark ? 'text-[#EAEAEA]' : 'text-gray-900'}`}>
                 Serena Glow
               </span>
             </Link>
@@ -56,7 +63,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   key={link.path}
                   to={link.path}
                   className={`text-sm tracking-wide font-medium transition-colors ${
-                    location.pathname === link.path ? 'text-pink-600' : 'text-gray-600 hover:text-pink-500'
+                    location.pathname === link.path
+                      ? 'text-pink-500'
+                      : isDark
+                      ? 'text-[#A0A0A0] hover:text-pink-400'
+                      : 'text-gray-600 hover:text-pink-500'
                   }`}
                 >
                   {link.name}
@@ -64,14 +75,32 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               ))}
             </div>
 
-            {/* Right Side: Lang + CTA */}
-            <div className="hidden md:flex items-center space-x-6">
+            {/* Right Side: Theme + Lang + CTA */}
+            <div className="hidden md:flex items-center space-x-3">
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleTheme}
+                className={`rounded-full p-2 transition-all duration-300 hover:scale-110 ${
+                  isDark
+                    ? 'bg-[#2E2E2E] text-yellow-400 hover:bg-[#3E3E3E]'
+                    : 'bg-pink-50 text-gray-700 hover:bg-pink-100'
+                }`}
+                aria-label="Toggle dark mode"
+              >
+                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+
+              {/* Language Toggle */}
               <button
                 onClick={() => setLanguage(language === 'pt' ? 'en' : 'pt')}
-                className="flex items-center gap-2 bg-white/60 backdrop-blur-md border border-pink-100/50 rounded-full px-3 py-1.5 shadow-sm hover:bg-pink-50 hover:shadow-md transition-all duration-300 group"
+                className={`flex items-center gap-2 border rounded-full px-3 py-1.5 shadow-sm hover:shadow-md transition-all duration-300 group ${
+                  isDark
+                    ? 'bg-[#2E2E2E] border-[#3E3E3E] hover:bg-[#3E3E3E]'
+                    : 'bg-white/60 backdrop-blur-md border-pink-100/50 hover:bg-pink-50'
+                }`}
               >
-                <img 
-                  src={language === 'pt' ? '/icons/mz.png' : '/icons/en.png'} 
+                <img
+                  src={language === 'pt' ? '/icons/mz.png' : '/icons/en.png'}
                   alt={language === 'pt' ? 'Português' : 'English'}
                   className="w-5 h-5 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform duration-300"
                 />
@@ -79,6 +108,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   {language === 'pt' ? 'PT' : 'EN'}
                 </span>
               </button>
+
               <Link
                 to="/booking"
                 className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 shadow-md hover:shadow-lg transition font-medium tracking-wide text-sm"
@@ -87,14 +117,27 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center gap-4">
+            {/* Mobile: Theme + Lang + Hamburger */}
+            <div className="md:hidden flex items-center gap-3">
+              <button
+                onClick={toggleTheme}
+                className={`rounded-full p-2 transition-all duration-300 ${
+                  isDark
+                    ? 'bg-[#2E2E2E] text-yellow-400'
+                    : 'bg-pink-50 text-gray-700'
+                }`}
+                aria-label="Toggle dark mode"
+              >
+                {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
               <button
                 onClick={() => setLanguage(language === 'pt' ? 'en' : 'pt')}
-                className="flex items-center gap-2 bg-white border border-pink-100 rounded-full px-3 py-1.5 shadow-sm active:bg-pink-50 transition-colors"
+                className={`flex items-center gap-2 border rounded-full px-3 py-1.5 shadow-sm transition-colors ${
+                  isDark ? 'bg-[#2E2E2E] border-[#3E3E3E]' : 'bg-white border-pink-100 active:bg-pink-50'
+                }`}
               >
-                <img 
-                  src={language === 'pt' ? '/icons/mz.png' : '/icons/en.png'} 
+                <img
+                  src={language === 'pt' ? '/icons/mz.png' : '/icons/en.png'}
                   alt={language === 'pt' ? 'Português' : 'English'}
                   className="w-5 h-5 rounded-full object-cover"
                 />
@@ -104,7 +147,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               </button>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-gray-800 hover:text-pink-500 transition-colors"
+                className={isDark ? 'text-[#EAEAEA] hover:text-pink-400 transition-colors' : 'text-gray-800 hover:text-pink-500 transition-colors'}
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -114,7 +157,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
         {/* Mobile Menu */}
         <div
-          className={`md:hidden absolute top-full left-0 w-full bg-white shadow-md transition-all duration-300 ease-in-out overflow-y-auto z-50 ${
+          className={`md:hidden absolute top-full left-0 w-full shadow-md transition-all duration-300 ease-in-out overflow-y-auto z-50 ${
+            isDark ? 'bg-[#1E1E1E]' : 'bg-white'
+          } ${
             isMobileMenuOpen ? 'max-h-[calc(100vh-80px)] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
           }`}
         >
@@ -126,8 +171,10 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   key={link.path}
                   to={link.path}
                   className={`py-3 px-4 mb-1 rounded-lg transition-all duration-200 active:scale-95 ${
-                    isActive 
-                      ? 'text-pink-500 font-medium bg-pink-50' 
+                    isActive
+                      ? 'text-pink-500 font-medium bg-pink-50/80'
+                      : isDark
+                      ? 'text-[#A0A0A0] hover:text-pink-400 hover:bg-[#2E2E2E]'
                       : 'text-gray-800 hover:text-pink-500 hover:bg-gray-50/50'
                   }`}
                 >
@@ -135,7 +182,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 </Link>
               );
             })}
-            <div className="border-t border-gray-100 my-3" />
+            <div className={`border-t my-3 ${isDark ? 'border-[#2E2E2E]' : 'border-gray-100'}`} />
             <Link
               to="/booking"
               className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 shadow-md hover:shadow-lg transition font-medium tracking-wide text-sm text-center"
@@ -152,7 +199,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       </main>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-br from-pink-900 to-rose-900 text-white pt-20 pb-10">
+      <footer className={`pt-20 pb-10 ${isDark ? 'bg-gradient-to-br from-[#1a0a10] to-[#0d0508]' : 'bg-gradient-to-br from-pink-900 to-rose-900'} text-white`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1">

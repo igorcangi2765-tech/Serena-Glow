@@ -1,18 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-@theme {
+/* ----- Dark Mode: use .dark class on <html> ----- */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Design Tokens ── */
+:root {
   --font-sans: Arial, Helvetica, sans-serif;
   --font-serif: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --color-bg: #FAFAFA;
+  --color-surface: #FFFFFF;
+  --color-text: #2E2E2E;
+  --color-text-muted: #6B6B6B;
+  --color-soft-pink: #F8D7E3;
+  --color-nude-beige: #F5E9E2;
+  --color-deep-rose: #C2185B;
+  --color-accent-gold: #D4AF37;
+  --color-border: #F0D6E0;
+}
+
+.dark {
+  --color-bg: #121212;
+  --color-surface: #1E1E1E;
+  --color-text: #EAEAEA;
+  --color-text-muted: #A0A0A0;
+  --color-soft-pink: #2A1520;
+  --color-nude-beige: #1E1A18;
+  --color-deep-rose: #E91E8C;
+  --color-accent-gold: #D4AF37;
+  --color-border: #2E2E2E;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: #FAFAFA;
-  color: #374151;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
   letter-spacing: 0.025em;
+}
+
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
 }
