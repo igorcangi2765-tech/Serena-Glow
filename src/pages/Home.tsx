@@ -1,28 +1,29 @@
 import React from 'react';
-import { useLanguage } from './LanguageContext';
+import { useLanguage } from '../LanguageContext';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Star, Users, Sparkles, Award, ArrowRight, CheckCircle2, ChevronDown, Scissors, Hand, Flower2, Brush, Feather } from 'lucide-react';
+import { Star, Users, Sparkles, Award, ArrowRight, CheckCircle2, ChevronDown, Scissors, Hand, HeartHandshake, Brush, Feather, Eye, UserCheck, Footprints, Smile, Palette, Coffee, Flower2, Droplet } from 'lucide-react';
 
 export const Home: React.FC = () => {
   const { t } = useLanguage();
 
   const stats = [
-    { icon: <Users className="w-6 h-6" />, value: "20+", label: t.stats.clients },
-    { icon: <Sparkles className="w-6 h-6" />, value: "15+", label: t.stats.treatments },
-    { icon: <Award className="w-6 h-6" />, value: "10+", label: t.stats.specialists },
-    { icon: <Star className="w-6 h-6" />, value: "4.9", label: t.stats.rating },
+    { icon: <Users className="w-6 h-6" />, value: "20+", label: t('stats.clients') },
+    { icon: <Sparkles className="w-6 h-6" />, value: "15+", label: t('stats.treatments') },
+    { icon: <UserCheck className="w-6 h-6" />, value: "3+", label: t('stats.specialists') },
+    { icon: <Star className="w-6 h-6" />, value: "4.9", label: t('stats.rating') },
   ];
 
   const services = [
-    { title: t.services.facial.title, desc: t.services.facial.desc, icon: <Sparkles className="w-7 h-7 text-pink-500" /> },
-    { title: t.services.nails.title, desc: t.services.nails.desc, icon: <Hand className="w-7 h-7 text-pink-500" /> },
-    { title: t.services.massage.title, desc: t.services.massage.desc, icon: <Flower2 className="w-7 h-7 text-pink-500" /> },
-    { title: t.services.makeup.title, desc: t.services.makeup.desc, icon: <Brush className="w-7 h-7 text-pink-500" /> },
-    { title: t.services.waxing.title, desc: t.services.waxing.desc, icon: <Feather className="w-7 h-7 text-pink-500" /> },
+    { title: t('services.facial.title'), desc: t('services.facial.desc'), icon: <Smile className="w-5 h-5 text-pink-500" /> },
+    { title: t('services.nails.title'), desc: t('services.nails.desc'), icon: <Hand className="w-5 h-5 text-pink-500" /> },
+    { title: t('services.massage.title'), desc: t('services.massage.desc'), icon: <Flower2 className="w-5 h-5 text-pink-500" /> },
+    { title: t('services.makeup.title'), desc: t('services.makeup.desc'), icon: <Palette className="w-5 h-5 text-pink-500" /> },
+    { title: t('services.waxing.title'), desc: t('services.waxing.desc'), icon: <Droplet className="w-5 h-5 text-pink-500" /> },
+    { title: t('services.eyebrows.title'), desc: t('services.eyebrows.desc'), icon: <Eye className="w-5 h-5 text-pink-500" /> },
   ];
 
-  const team = t.team.members.map((member, index) => ({
+  const team = t('team.members').map((member: any, index: number) => ({
     ...member,
     img: `https://picsum.photos/seed/stylist${index + 1}/400/500`
   }));
@@ -35,15 +36,15 @@ export const Home: React.FC = () => {
     "https://picsum.photos/seed/salon/600/400",
   ];
 
-  const testimonials = t.testimonials.list.map((testimonial, index) => ({
+  const testimonials = t('testimonials.list').map((testimonial: any, index: number) => ({
     ...testimonial,
     rating: 5,
     img: `https://picsum.photos/seed/client${index + 1}/100/100`
   }));
 
-  const packages = t.pricing.packages;
+  const packages = t('pricing.packages');
 
-  const faqs = t.faq.list;
+  const faqs = t('faq.list');
 
   return (
     <div className="w-full">
@@ -65,9 +66,9 @@ export const Home: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-5xl md:text-6xl font-serif font-semibold text-white mb-6 leading-tight tracking-wide"
+            className="text-5xl md:text-6xl font-serif font-semibold text-white mb-6 leading-tight tracking-wide whitespace-pre-line"
           >
-            Realce a Sua <br className="hidden md:block" /> Beleza Natural
+            {t('hero.headline')}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
@@ -75,7 +76,7 @@ export const Home: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
             className="text-base md:text-lg text-white/90 mb-8 font-sans leading-relaxed text-center max-w-2xl mx-auto"
           >
-            {t.hero.subheadline}
+            {t('hero.subheadline')}
           </motion.p>
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -87,29 +88,29 @@ export const Home: React.FC = () => {
               to="/booking" 
               className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-4 shadow-md hover:shadow-lg transition font-medium tracking-wide w-full sm:w-auto text-center"
             >
-              {t.hero.primaryBtn}
+              {t('hero.primaryBtn')}
             </Link>
             <Link 
               to="/services" 
               className="rounded-full border border-pink-400 text-white hover:bg-pink-50/20 px-8 py-4 transition font-medium tracking-wide w-full sm:w-auto text-center backdrop-blur-sm"
             >
-              {t.hero.secondaryBtn}
+              {t('hero.secondaryBtn')}
             </Link>
           </motion.div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-            {stats.map((stat, idx) => (
-              <div key={idx} className="flex flex-col items-center text-center group">
-                <div className="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 mb-4 group-hover:scale-110 transition-transform duration-300">
+            {stats.map((stat: any, idx: number) => (
+              <div key={idx} className="flex flex-col items-center text-center group hover:scale-105 transition-transform duration-300">
+                <div className="w-16 h-16 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 mb-6 group-hover:bg-pink-200 transition-colors duration-300">
                   {stat.icon}
                 </div>
                 <h3 className="text-3xl md:text-4xl font-serif font-semibold text-gray-800 mb-2">{stat.value}</h3>
-                <p className="text-sm text-gray-600 uppercase tracking-wider font-sans">{stat.label}</p>
+                <p className="text-gray-900 font-medium tracking-wide font-sans">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -117,16 +118,15 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Services Preview */}
-      <section className="py-24 bg-pink-50">
+      <section className="py-12 md:py-24 bg-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t.servicesPreview.title}</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-sm md:text-base">{t.services.intro}</p>
-            <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full" />
+            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t('servicesPreview.title')}</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-sm md:text-base">{t('services.intro')}</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, idx) => (
+            {services.map((service: any, idx: number) => (
               <div key={idx} className="bg-white p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300 group cursor-pointer border border-pink-100">
                 <div className="flex justify-start mb-6">
                   {service.icon}
@@ -134,7 +134,7 @@ export const Home: React.FC = () => {
                 <h3 className="text-xl font-serif font-medium text-gray-800 mb-3">{service.title}</h3>
                 <p className="text-gray-600 mb-6 line-clamp-2 font-sans leading-relaxed">{service.desc}</p>
                 <Link to="/services" className="inline-flex items-center text-pink-600 font-medium text-sm uppercase tracking-wider group-hover:text-pink-500 transition-colors">
-                  {t.servicesPreview.learnMore} <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
+                  {t('servicesPreview.learnMore')} <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform" />
                 </Link>
               </div>
             ))}
@@ -143,17 +143,16 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-24 bg-white">
+      <section className="py-12 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t.team.title}</h2>
-            <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full" />
+            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t('team.title')}</h2>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, idx) => (
+            {team.map((member: any, idx: number) => (
               <div key={idx} className="group text-center">
-                <div className="relative overflow-hidden rounded-2xl mb-6 aspect-[4/5] shadow-md border border-pink-100">
+                <div className="relative overflow-hidden rounded-2xl mb-6 aspect-square sm:aspect-[4/5] shadow-md border border-pink-100">
                   <img 
                     src={member.img} 
                     alt={member.name} 
@@ -172,21 +171,20 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Gallery Preview */}
-      <section className="py-24 bg-pink-50">
+      <section className="py-12 md:py-24 bg-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div>
-              <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t.galleryPreview.title}</h2>
-              <p className="text-gray-600 mb-6 text-sm md:text-base">{t.gallery.intro}</p>
-              <div className="w-24 h-1 bg-pink-400 rounded-full" />
+              <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t('galleryPreview.title')}</h2>
+              <p className="text-gray-600 mb-6 text-sm md:text-base">{t('gallery.intro')}</p>
             </div>
             <Link to="/gallery" className="inline-flex items-center text-gray-700 font-medium text-sm uppercase tracking-wider hover:text-pink-600 transition-colors">
-              {t.galleryPreview.viewAll} <ArrowRight className="w-4 h-4 ml-2" />
+              {t('galleryPreview.viewAll')} <ArrowRight className="w-4 h-4 ml-2" />
             </Link>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {gallery.slice(0, 6).map((img, idx) => (
+            {gallery.slice(0, 6).map((img: string, idx: number) => (
               <div 
                 key={idx} 
                 className="relative overflow-hidden group shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300"
@@ -205,20 +203,19 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Before / After Results */}
-      <section className="py-24 bg-white">
+      <section className="py-12 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">Resultados Visíveis</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-sm md:text-base">{t.galleryPage.resultsDesc}</p>
-            <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full" />
+            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t('galleryPage.resultsTitle')}</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-sm md:text-base">{t('galleryPage.resultsDesc')}</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { title: "Tratamento Facial", desc: "Antes e depois de cuidados de pele.", img: "https://picsum.photos/seed/beforeafter1/400/500" },
-              { title: "Manicure com Gel", desc: "Unhas resistentes e bonitas.", img: "https://picsum.photos/seed/beforeafter2/400/500" },
-              { title: "Pedicure Completo", desc: "Pés hidratados e relaxados.", img: "https://picsum.photos/seed/beforeafter3/400/500" },
-            ].map((item, idx) => (
+              { title: t('services.facial.title'), desc: t('services.facial.desc'), img: "https://picsum.photos/seed/beforeafter1/400/500" },
+              { title: t('services.nails.title'), desc: t('services.nails.desc'), img: "https://picsum.photos/seed/beforeafter2/400/500" },
+              { title: t('services.nails.title'), desc: t('services.nails.desc'), img: "https://picsum.photos/seed/beforeafter3/400/500" },
+            ].map((item: any, idx: number) => (
               <div key={idx} className="bg-white rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden border border-pink-50">
                 <div className="relative h-64">
                   <img 
@@ -242,29 +239,35 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 bg-white">
+      <section className="py-12 md:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t.testimonials.title}</h2>
-            <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full" />
+            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t('testimonials.title')}</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-base md:text-lg">{t('testimonials.subtitle')}</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, idx) => (
-              <div key={idx} className="bg-pink-50 p-8 rounded-2xl shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300 relative border border-pink-100">
-                <div className="absolute -top-6 left-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {testimonials.map((testimonial: any, idx: number) => (
+              <div key={idx} className="bg-white p-8 rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-pink-50 flex flex-col h-full group">
+                <div className="flex items-center gap-4 mb-6">
                   <img 
                     src={testimonial.img} 
                     alt={testimonial.name} 
-                    className="w-12 h-12 rounded-full border-4 border-white object-cover shadow-md"
+                    className="w-12 h-12 rounded-full border-2 border-pink-500 object-cover shadow-sm transition-transform duration-300 group-hover:scale-110"
                     referrerPolicy="no-referrer"
                   />
+                  <div className="flex text-pink-500 gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-current" />
+                    ))}
+                  </div>
                 </div>
-                <div className="flex text-pink-400 mb-4 mt-8">
-                  {/* Rating removed as per request */}
+                
+                <p className="text-gray-600 mb-6 font-sans leading-relaxed flex-grow">"{testimonial.text}"</p>
+                <div className="w-full h-px bg-pink-500/30 mt-4 mb-3"></div>
+                <div>
+                  <p className="font-serif font-medium text-gray-900 tracking-wide text-lg">{testimonial.name}</p>
                 </div>
-                <p className="text-gray-700 italic mb-6 font-sans leading-relaxed">"{testimonial.text}"</p>
-                <p className="font-serif font-medium text-gray-900">{testimonial.name}</p>
               </div>
             ))}
           </div>
@@ -272,15 +275,14 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Pricing Packages */}
-      <section className="py-24 bg-pink-50">
+      <section className="py-12 md:py-24 bg-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t.pricing.title}</h2>
-            <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full" />
+            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t('pricing.title')}</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {packages.map((pkg, idx) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {packages.map((pkg: any, idx: number) => (
               <div 
                 key={idx} 
                 className={`bg-white rounded-2xl p-8 relative transition duration-300 hover:-translate-y-1 flex flex-col justify-between h-full ${
@@ -300,7 +302,7 @@ export const Home: React.FC = () => {
                     <span className="text-4xl font-bold text-gray-900 font-serif">{pkg.price}</span>
                   </div>
                   <ul className="space-y-4 mb-8">
-                    {pkg.features.map((feature, i) => (
+                    {pkg.features.map((feature: string, i: number) => (
                       <li key={i} className="flex items-start gap-3 text-gray-600 font-sans">
                         <CheckCircle2 className="w-5 h-5 text-pink-500 shrink-0" />
                         <span>{feature}</span>
@@ -316,7 +318,7 @@ export const Home: React.FC = () => {
                       : 'border border-pink-400 text-pink-600 hover:bg-pink-50'
                   }`}
                 >
-                  {t.pricing.book}
+                  {t('pricing.book')}
                 </Link>
               </div>
             ))}
@@ -325,15 +327,14 @@ export const Home: React.FC = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 bg-white">
+      <section className="py-12 md:py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t.faq.title}</h2>
-            <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full" />
+            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t('faq.title')}</h2>
           </div>
           
           <div className="space-y-4">
-            {faqs.map((faq, idx) => (
+            {faqs.map((faq: any, idx: number) => (
               <details key={idx} className="group bg-pink-50 rounded-2xl overflow-hidden border border-pink-100">
                 <summary className="flex justify-between items-center font-medium cursor-pointer list-none p-6 text-gray-800 font-sans">
                   <span>{faq.q}</span>
@@ -351,24 +352,31 @@ export const Home: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="py-12 md:py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-pink-100 to-pink-50 z-0" />
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-8 leading-tight tracking-wide">
-            {t.cta.headline}
+            {t('cta.headline') && t('cta.headline').includes('|') ? (
+              <>
+                {t('cta.headline').split('|')[0]}
+                <span className="block mt-2">{t('cta.headline').split('|')[1]}</span>
+              </>
+            ) : (
+              t('cta.headline')
+            )}
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link 
               to="/booking" 
               className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-4 shadow-md hover:shadow-lg transition font-medium tracking-wide w-full sm:w-auto text-center"
             >
-              {t.cta.book}
+              {t('cta.book')}
             </Link>
             <Link 
               to="/contact" 
               className="rounded-full border border-pink-400 text-pink-600 hover:bg-pink-50 px-8 py-4 transition font-medium tracking-wide w-full sm:w-auto text-center bg-white"
             >
-              {t.cta.contact}
+              {t('cta.contact')}
             </Link>
           </div>
         </div>
@@ -376,3 +384,4 @@ export const Home: React.FC = () => {
     </div>
   );
 };
+

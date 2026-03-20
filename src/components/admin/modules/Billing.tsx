@@ -14,7 +14,7 @@ interface Document {
   created_at: string;
   sales?: {
     total: number;
-    profiles?: { full_name: string };
+    clients?: { name: string };
   };
 }
 
@@ -31,7 +31,7 @@ export const Billing: React.FC = () => {
       setLoading(true);
       const { data, error } = await supabase
         .from('documents')
-        .select('*, sales(total, profiles(full_name))')
+        .select('*, sales(total, clients(name))')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -68,7 +68,7 @@ export const Billing: React.FC = () => {
     
     pdf.setFontSize(10);
     pdf.text(`Data: ${format(new Date(doc.created_at), 'dd/MM/yyyy HH:mm')}`, 20, 65);
-    pdf.text(`Cliente: ${doc.sales?.profiles?.full_name || 'Venda de Balcão'}`, 20, 70);
+    pdf.text(`Cliente: ${doc.sales?.clients?.name || 'Venda de Balcão'}`, 20, 70);
     
     // Table (Mock items for now, in a real app these come from sale_items)
     autoTable(pdf, {
@@ -146,7 +146,7 @@ export const Billing: React.FC = () => {
                         {doc.type === 'invoice' ? 'Fatura' : 'Recibo'}
                       </span>
                     </td>
-                    <td className="p-6 text-gray-600">{doc.sales?.profiles?.full_name || 'Balcão'}</td>
+                    <td className="p-6 text-gray-600">{doc.sales?.clients?.name || 'Balcão'}</td>
                     <td className="p-6 text-gray-400 text-sm">{format(new Date(doc.created_at), 'dd/MM/yyyy')}</td>
                     <td className="p-6 font-bold text-gray-800">{doc.sales?.total?.toLocaleString()} MZN</td>
                     <td className="p-6 text-right space-x-2">

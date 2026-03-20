@@ -32,7 +32,7 @@ export const Dashboard: React.FC = () => {
     // Fetch recent sales for activity
     const { data: recentSales } = await supabase
       .from('sales')
-      .select('*, profiles(full_name)')
+      .select('*, clients(name)')
       .order('created_at', { ascending: false })
       .limit(5);
     

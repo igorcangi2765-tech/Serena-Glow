@@ -17,17 +17,18 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on route change
+  // Close mobile menu and scroll to top on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
-  }, [location]);
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   const navLinks = [
-    { name: t.nav.home, path: '/' },
-    { name: t.nav.about, path: '/about' },
-    { name: t.nav.services, path: '/services' },
-    { name: t.nav.gallery, path: '/gallery' },
-    { name: t.nav.contact, path: '/contact' },
+    { name: t('nav.home'), path: '/' },
+    { name: t('nav.about'), path: '/about' },
+    { name: t('nav.services'), path: '/services' },
+    { name: t('nav.gallery'), path: '/gallery' },
+    { name: t('nav.contact'), path: '/contact' },
   ];
 
   return (
@@ -67,15 +68,22 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <div className="hidden md:flex items-center space-x-6">
               <button
                 onClick={() => setLanguage(language === 'pt' ? 'en' : 'pt')}
-                className="text-sm font-medium tracking-wide text-gray-600 hover:text-pink-500 transition-colors"
+                className="flex items-center gap-2 bg-white/60 backdrop-blur-md border border-pink-100/50 rounded-full px-3 py-1.5 shadow-sm hover:bg-pink-50 hover:shadow-md transition-all duration-300 group"
               >
-                {language === 'pt' ? 'EN' : 'PT'}
+                <img 
+                  src={language === 'pt' ? '/icons/mz.png' : '/icons/en.png'} 
+                  alt={language === 'pt' ? 'Português' : 'English'}
+                  className="w-5 h-5 rounded-full object-cover shadow-sm group-hover:scale-110 transition-transform duration-300"
+                />
+                <span className="text-xs font-bold tracking-widest text-pink-500 uppercase">
+                  {language === 'pt' ? 'PT' : 'EN'}
+                </span>
               </button>
               <Link
                 to="/booking"
                 className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 shadow-md hover:shadow-lg transition font-medium tracking-wide text-sm"
               >
-                {t.nav.bookNow}
+                {t('nav.bookNow')}
               </Link>
             </div>
 
@@ -83,9 +91,16 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <div className="md:hidden flex items-center gap-4">
               <button
                 onClick={() => setLanguage(language === 'pt' ? 'en' : 'pt')}
-                className="text-sm font-medium tracking-wide text-gray-600"
+                className="flex items-center gap-2 bg-white/80 border border-pink-100 rounded-full px-3 py-1.5 shadow-sm active:bg-pink-50 transition-colors"
               >
-                {language === 'pt' ? 'EN' : 'PT'}
+                <img 
+                  src={language === 'pt' ? '/icons/mz.png' : '/icons/en.png'} 
+                  alt={language === 'pt' ? 'Português' : 'English'}
+                  className="w-5 h-5 rounded-full object-cover"
+                />
+                <span className="text-xs font-bold tracking-widest text-pink-500 uppercase">
+                  {language === 'pt' ? 'PT' : 'EN'}
+                </span>
               </button>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -99,25 +114,37 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
         {/* Mobile Menu */}
         <div
-          className={`md:hidden absolute top-full left-0 w-full bg-white shadow-lg transition-all duration-300 ease-in-out overflow-hidden ${
-            isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          className={`md:hidden absolute top-full left-0 w-full bg-white/80 backdrop-blur-md shadow-lg transition-all duration-300 ease-in-out overflow-y-auto z-50 ${
+            isMobileMenuOpen ? 'max-h-[calc(100vh-80px)] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
           }`}
         >
-          <div className="px-4 py-6 flex flex-col space-y-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className="text-lg font-serif text-gray-800 hover:text-pink-500 transition-colors"
-              >
-                {link.name}
-              </Link>
-            ))}
+          <div className="px-4 py-6 flex flex-col">
+            <div className="flex flex-col space-y-1">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`py-3 px-4 rounded-lg transition-all duration-200 active:scale-95 ${
+                      isActive 
+                        ? 'text-pink-500 font-medium bg-pink-50' 
+                        : 'text-gray-700 hover:text-pink-500 hover:bg-gray-50/50'
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+            </div>
+            
+            <div className="my-3 border-t border-gray-100" />
+            
             <Link
               to="/booking"
-              className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 shadow-md hover:shadow-lg transition font-medium tracking-wide text-sm text-center mt-4"
+              className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 shadow-md hover:shadow-lg transition-all duration-300 active:scale-95 font-medium tracking-wide text-sm text-center"
             >
-              {t.nav.bookNow}
+              {t('nav.bookNow')}
             </Link>
           </div>
         </div>
@@ -139,8 +166,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   Serena Glow
                 </span>
               </Link>
-              <p className="text-pink-100 max-w-sm leading-relaxed mb-8 font-sans">
-                {t.footer.description}
+              <p className="text-pink-100 max-w-sm leading-relaxed mb-8 font-sans whitespace-pre-line">
+                {t('footer.description')}
               </p>
               <div className="flex space-x-4">
                 <a href="#" className="w-10 h-10 rounded-full border border-pink-300/30 flex items-center justify-center hover:bg-pink-500 hover:border-pink-500 transition-colors">
@@ -153,11 +180,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </div>
 
             <div>
-              <h4 className="font-serif text-lg mb-6 text-pink-200">{t.footer.quickLinks}</h4>
+              <h4 className="font-serif text-lg mb-6 text-pink-200">{t('footer.quickLinks')}</h4>
               <ul className="space-y-4 font-sans">
                 {navLinks.map((link) => (
                   <li key={link.path}>
-                    <Link to={link.path} className="text-pink-100 hover:text-white transition-colors">
+                    <Link to={link.path} className="text-pink-100 hover:text-pink-300 transition-colors">
                       {link.name}
                     </Link>
                   </li>
@@ -166,28 +193,28 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </div>
 
             <div>
-              <h4 className="font-serif text-lg mb-6 text-pink-200">{t.footer.services}</h4>
+              <h4 className="font-serif text-lg mb-6 text-pink-200">{t('footer.services')}</h4>
               <ul className="space-y-4 font-sans">
-                {t.footer.serviceLinks.map((service, idx) => (
-                  <li key={idx}><Link to="/services" className="text-pink-100 hover:text-white transition-colors">{service}</Link></li>
+                {t('footer.serviceLinks').map((service: string, idx: number) => (
+                  <li key={idx}><Link to="/services" className="text-pink-100 hover:text-pink-300 transition-colors">{service}</Link></li>
                 ))}
               </ul>
             </div>
 
             <div>
-              <h4 className="font-serif text-lg mb-6 text-pink-200">{t.footer.contactInfo}</h4>
+              <h4 className="font-serif text-lg mb-6 text-pink-200">{t('footer.contactInfo')}</h4>
               <ul className="space-y-4 text-pink-100 font-sans">
-                <li className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-pink-300 shrink-0 mt-0.5" />
-                  <span>{t.footer.address}</span>
+                <li className="flex items-start gap-3 group cursor-default">
+                  <MapPin className="w-5 h-5 text-pink-300 shrink-0 mt-0.5 transition-all duration-300 group-hover:scale-125 group-hover:text-pink-400" />
+                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-pink-300">{t('footer.address')}</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-pink-300 shrink-0" />
-                  <span>{t.footer.phone}</span>
+                <li className="flex items-center gap-3 group cursor-default">
+                  <Phone className="w-5 h-5 text-pink-300 shrink-0 transition-all duration-300 group-hover:scale-125 group-hover:text-pink-400" />
+                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-pink-300">{t('footer.phone')}</span>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-pink-300 shrink-0" />
-                  <span>{t.footer.email}</span>
+                <li className="flex items-center gap-3 group cursor-default">
+                  <Mail className="w-5 h-5 text-pink-300 shrink-0 transition-all duration-300 group-hover:scale-125 group-hover:text-pink-400" />
+                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-pink-300">{t('footer.email')}</span>
                 </li>
               </ul>
             </div>
@@ -195,11 +222,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
           <div className="border-t border-pink-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 font-sans">
             <p className="text-sm text-pink-200">
-              {t.footer.copyright.replace('{year}', new Date().getFullYear().toString())}
+              {t('footer.copyright').replace('{year}', new Date().getFullYear().toString())}
             </p>
-            <div className="flex space-x-6 text-sm text-pink-200">
-              <a href="#" className="hover:text-white transition-colors">{t.footer.privacy}</a>
-              <a href="#" className="hover:text-white transition-colors">{t.footer.terms}</a>
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 text-sm text-pink-200">
+              <Link to="/privacy" className="hover:text-white transition-all duration-300">{t('footer.privacy')}</Link>
+              <Link to="/terms" className="hover:text-white transition-all duration-300">{t('footer.terms')}</Link>
             </div>
           </div>
         </div>

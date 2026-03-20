@@ -25,7 +25,7 @@ export const Admin: React.FC = () => {
       setIsLoggedIn(true);
       toast.success('Bem-vinda de volta, Serena!');
     } else {
-      toast.error(t.admin.invalidPassword);
+      toast.error(t('admin.invalidPassword'));
     }
     setLoading(false);
   };
@@ -54,7 +54,7 @@ export const Admin: React.FC = () => {
             <form onSubmit={handleLogin} className="space-y-6">
               <div>
                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-3 ml-1">
-                  {t.admin.passwordLabel}
+                  {t('admin.passwordLabel')}
                 </label>
                 <input
                   type="password"
@@ -70,7 +70,7 @@ export const Admin: React.FC = () => {
                 disabled={loading}
                 className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-5 rounded-2xl font-bold tracking-widest hover:shadow-xl hover:shadow-pink-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2 uppercase text-sm"
               >
-                {loading ? 'Entrando...' : t.admin.enter}
+                {loading ? 'Entrando...' : t('admin.enter')}
               </button>
             </form>
           </div>

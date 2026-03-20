@@ -6,12 +6,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './LanguageContext';
 import { Layout } from './Layout';
-import { Home } from './Home';
-import { About } from './About';
-import { Services } from './Services';
-import { Gallery } from './Gallery';
-import { Contact } from './Contact';
-import { Booking } from './Booking';
+import { Home } from './pages/Home';
+import { About } from './pages/About';
+import { Services } from './pages/Services';
+import { Gallery } from './pages/Gallery';
+import { Contact } from './pages/Contact';
+import { Booking } from './pages/Booking';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { TermsOfService } from './pages/TermsOfService';
 import { Admin } from './Admin';
 
 export default function App() {
@@ -25,6 +27,8 @@ export default function App() {
           <Route path="/gallery" element={<Layout><Gallery /></Layout>} />
           <Route path="/contact" element={<Layout><Contact /></Layout>} />
           <Route path="/booking" element={<Layout><Booking /></Layout>} />
+          <Route path="/privacy-policy" element={<Layout><PrivacyPolicy /></Layout>} />
+          <Route path="/terms-of-service" element={<Layout><TermsOfService /></Layout>} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </Router>

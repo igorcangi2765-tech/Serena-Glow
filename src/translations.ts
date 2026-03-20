@@ -41,6 +41,7 @@ export const translations = {
     },
     testimonials: {
       title: "O Que Dizem as Nossas Clientes",
+      subtitle: "Veja o que as nossas clientes dizem sobre a sua experiência na Serena Glow.",
       list: [
         { name: "Ana João", text: "Gostei muito do atendimento. As profissionais são muito atenciosas e o ambiente é agradável." },
         { name: "Maria Celina", text: "Fiz manicure e limpeza facial e fiquei muito satisfeita com o resultado." },
@@ -110,6 +111,7 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
         massage: "Massagem",
         makeup: "Maquilhagem",
         waxing: "Depilação",
+        eyebrows: "Sobrancelhas",
       },
       intro: "Cuidamos da sua beleza com serviços simples e profissionais, pensados para o seu dia a dia.",
       facial: { title: "Tratamentos Faciais", desc: "Cuidado da pele para limpar, hidratar e melhorar o rosto." },
@@ -117,6 +119,7 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
       massage: { title: "Massagem Relaxante", desc: "Ajuda a relaxar o corpo e aliviar o cansaço." },
       makeup: { title: "Maquilhagem", desc: "Maquilhagem para festas e ocasiões especiais." },
       waxing: { title: "Depilação", desc: "Remoção de pêlos para uma pele limpa e suave." },
+      eyebrows: { title: "Design de Sobrancelhas", desc: "Realce o seu olhar com um design de sobrancelhas personalizado." },
       list: [
         { id: 1, category: 'Facial', name: 'Limpeza de Pele Profunda', desc: 'Limpeza do rosto para tirar impurezas e revitalizar a pele.', price: '3.000 MZN', duration: '90 min', img: 'https://picsum.photos/seed/serv1/600/400' },
         { id: 2, category: 'Facial', name: 'Tratamento Facial', desc: 'Cuidado do rosto para deixar a pele mais saudável e bonita.', price: '3.500 MZN', duration: '60 min', img: 'https://picsum.photos/seed/serv2/600/400' },
@@ -193,6 +196,26 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
       edit: "Editar",
       delete: "Apagar",
       status: "Estado",
+    },
+    privacyPolicy: {
+      title: "Política de Privacidade",
+      intro: "A sua privacidade é importante para nós. Esta política explica como recolhemos, usamos e protegemos os seus dados.",
+      sections: [
+        { title: "Recolha de Dados", content: "Recolhemos apenas os dados necessários para agendar os seus serviços, como nome e telefone." },
+        { title: "Uso de Informação", content: "As suas informações são usadas exclusivamente para a gestão de marcações e comunicação direta." },
+        { title: "Proteção", content: "Implementamos medidas de segurança para manter as suas informações pessoais seguras." }
+      ],
+      nav: { back: "Voltar ao Início", next: "Termos de Serviço" }
+    },
+    termsOfService: {
+      title: "Termos de Serviço",
+      intro: "Ao utilizar os nossos serviços, você concorda com os seguintes termos.",
+      sections: [
+        { title: "Marcações", content: "As marcações devem ser feitas com antecedência. Cancelamentos devem ser comunicados com 24h de aviso." },
+        { title: "Pagamentos", content: "Os pagamentos são efetuados no estúdio após a realização do serviço." },
+        { title: "Responsabilidade", content: "Comprometemo-nos a oferecer serviços com a máxima qualidade e segurança." }
+      ],
+      nav: { back: "Política de Privacidade", next: "Voltar ao Início" }
     }
   },
   en: {
@@ -236,6 +259,7 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
     },
     testimonials: {
       title: "What Our Clients Say",
+      subtitle: "See what our clients say about their experience at Serena Glow.",
       list: [
         { name: "Ana João", text: "The service was very good. The girls are very attentive and the salon environment is clean and pleasant. I really liked the service." },
         { name: "Maria Celina", text: "I did a manicure and pedicure and I was very satisfied with the result. The work is very effective and the service is excellent." },
@@ -302,12 +326,14 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
         massage: "Massage",
         makeup: "Makeup",
         waxing: "Waxing",
+        eyebrows: "Eyebrows",
       },
       facial: { title: "Facial Treatments", desc: "Skin treatments that help clean, moisturize, and improve facial appearance." },
       nails: { title: "Manicure and Pedicure", desc: "Hand and foot care to keep nails beautiful and well-treated." },
       massage: { title: "Relaxing Massage", desc: "Massage that helps relax the body, relieve tiredness, and reduce stress." },
       makeup: { title: "Professional Makeup", desc: "Makeup for parties, events, weddings, and other special occasions." },
       waxing: { title: "Waxing", desc: "Hair removal to leave skin clean, smooth, and well-cared for." },
+      eyebrows: { title: "Eyebrow Design", desc: "Enhance your look with a personalized eyebrow design." },
       list: [
         { id: 1, category: 'Facial', name: 'Deep Skin Cleansing', desc: 'Complete treatment to clean and revitalize facial skin.', price: '3.000 MZN', duration: '90 min', img: 'https://picsum.photos/seed/serv1/600/400' },
         { id: 2, category: 'Facial', name: 'Facial Treatment', desc: 'Face care to leave skin healthier and more beautiful.', price: '3.500 MZN', duration: '60 min', img: 'https://picsum.photos/seed/serv2/600/400' },
@@ -362,6 +388,26 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
       edit: "Edit",
       delete: "Delete",
       status: "Status",
+    },
+    privacyPolicy: {
+      title: "Privacy Policy",
+      intro: "Your privacy is important to us. This policy explains how we collect, use, and protect your data.",
+      sections: [
+        { title: "Data Collection", content: "We collect only the data necessary to schedule your services, such as name and phone number." },
+        { title: "Use of Information", content: "Your information is used exclusively for appointment management and direct communication." },
+        { title: "Protection", content: "We implement security measures to keep your personal information safe." }
+      ],
+      nav: { back: "Back to Home", next: "Terms of Service" }
+    },
+    termsOfService: {
+      title: "Terms of Service",
+      intro: "By using our services, you agree to the following terms.",
+      sections: [
+        { title: "Appointments", content: "Appointments must be made in advance. Cancellations must be communicated with 24h notice." },
+        { title: "Payments", content: "Payments are made at the studio after the service is performed." },
+        { title: "Responsibility", content: "We commit to offering services with maximum quality and safety." }
+      ],
+      nav: { back: "Privacy Policy", next: "Back to Home" }
     }
   }
 };
