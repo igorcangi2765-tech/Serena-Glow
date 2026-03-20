@@ -14,7 +14,7 @@ import { Contact } from './pages/Contact';
 import { Booking } from './pages/Booking';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { TermsOfService } from './pages/TermsOfService';
-import { Admin } from './Admin';
+import { Admin } from './admin/Admin';
 
 export default function App() {
   return (
@@ -29,7 +29,10 @@ export default function App() {
           <Route path="/booking" element={<Layout><Booking /></Layout>} />
           <Route path="/privacy-policy" element={<Layout><PrivacyPolicy /></Layout>} />
           <Route path="/terms-of-service" element={<Layout><TermsOfService /></Layout>} />
+          <Route path="/privacy" element={<Layout><PrivacyPolicy /></Layout>} />
+          <Route path="/terms" element={<Layout><TermsOfService /></Layout>} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/*" element={<Admin />} />
         </Routes>
       </Router>
     </LanguageProvider>

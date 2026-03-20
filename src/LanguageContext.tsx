@@ -12,19 +12,27 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('pt');
+  const [language, setLanguageState] = useState<Language>(() => {
+    const saved = localStorage.getItem('language');
+    return (saved === 'pt' || saved === 'en') ? saved : 'pt';
+  });
 
-  const t = (path: string) => {
-    const keys = path.split('.');
-    let result: any = translations[language];
-    for (const key of keys) {
-      if (result && result[key]) {
-        result = result[key];
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('language', lang);
+  };
+
+  const t = (key: string) => {
+    const keys = key.split('.');
+    let value: any = translations[language];
+    for (const k of keys) {
+      if (value && value[k] !== undefined) {
+        value = value[k];
       } else {
-        return path; // Fallback to path if key missing
+        return key; // Return key as fallback
       }
     }
-    return result;
+    return value;
   };
 
   return (
