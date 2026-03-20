@@ -1,4 +1,4 @@
-﻿export const translations = {
+export const translations = {
   pt: {
     nav: {
       home: "Início",
@@ -274,7 +274,7 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
     },
     hero: {
       headline: "Enhance Your\nNatural Beauty",
-      subheadline: "At Serena Glow Beauty Studio we offer professional beauty and wellness treatments so you feel confident, relaxed, and radiant.",
+      subheadline: "At Serena Glow Beauty Studio we care for your beauty with professional aesthetic and wellness services. Our goal is to help each client feel confident, relaxed, and radiant.",
       primaryBtn: "Book Now",
       secondaryBtn: "View Services",
     },
@@ -286,15 +286,16 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
     },
     servicesPreview: {
       title: "Treatments & Services",
+      desc: "We offer a variety of beauty services designed to care for your skin and well-being. We use quality products and professional techniques to ensure the best results.",
       learnMore: "Learn More",
     },
     team: {
       title: "Our Team",
       members: [
         { name: "Sofia Silva", role: "Beauty Specialist", desc: "Helps enhance your natural beauty with simple and modern care." },
-        { name: "Elena Costa", role: "Skin Care Specialist", desc: "Responsible for facial treatments and professional skin care." },
-        { name: "Maria Santos", role: "Massage Therapist", desc: "Specialist in relaxing and therapeutic massages." },
-        { name: "Ana Oliveira", role: "Professional Makeup Artist", desc: "Specialist in makeup for events, parties, and brides." },
+        { name: "Elena Costa", role: "Skin Care Specialist", desc: "Cares for the skin with facial cleansings and treatments to leave the face healthy." },
+        { name: "Maria Santos", role: "Massage Therapist", desc: "Helps relax the body and relieve fatigue with massages." },
+        { name: "Ana Oliveira", role: "Makeup Artist", desc: "Does makeup for parties, events and special occasions." },
       ]
     },
     galleryPreview: {
@@ -312,11 +313,12 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
     },
     pricing: {
       title: "Beauty Packages",
-      book: "Book",
+      desc: "Choose the ideal package to care for your beauty and enjoy a complete experience.",
+      book: "Book Now",
       packages: [
-        { name: "Essential", price: "1.200 MZN", features: ["Manicure", "Eyebrow Design", "Basic Facial Cleansing"], popular: false },
-        { name: "Complete Beauty", price: "2.500 MZN", features: ["Manicure and Pedicure", "Deep Facial Cleansing", "Relaxing Massage (30 min)", "Eyebrow Design", "Event or Party Makeup"], popular: true },
-        { name: "Premium Beauty", price: "4.500 MZN", features: ["Professional Facial Treatment", "Relaxing Massage (60 min)", "Manicure and Pedicure", "Makeup for Events, Parties or Brides", "Full Pedicure"], popular: false },
+        { name: "Essential", price: "1,200 MZN", features: ["Manicure", "Eyebrow Design", "Basic Facial Cleansing"], popular: false },
+        { name: "Complete Beauty", price: "2,500 MZN", features: ["Manicure and Pedicure", "Deep Facial Cleansing", "Relaxing Massage (30 min)", "Eyebrow Design", "Event or Party Makeup"], popular: true },
+        { name: "Premium Beauty", price: "4,500 MZN", features: ["Professional Facial Treatment", "Relaxing Massage (60 min)", "Manicure and Pedicure", "Makeup for Events, Parties or Brides", "Full Pedicure"], popular: false },
       ]
     },
     faq: {
@@ -334,30 +336,33 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
       contact: "Contact Us",
     },
     footer: {
-      description: "Your haven of beauty and wellness. Relax, renew, and glow with Serena Glow.",
-      descriptionDesktop: "Your haven of beauty and wellness.\nRelax, renew, and glow with Serena Glow.",
-      descriptionMobile: "Your haven of beauty and wellness.\nRelax, renew, and glow with Serena Glow.",
+      description: "Enhance your beauty with care and professionalism. At Serena Glow,\nwe care for you every day.",
+      descriptionDesktop: "Enhance your beauty with care\nand professionalism.\n\nAt Serena Glow, we care for you\nevery day.",
+      descriptionMobile: "Enhance your beauty with care and\nprofessionalism. At Serena Glow,\nwe care for you every day.",
       quickLinks: "Quick Links",
       services: "Services",
-      serviceLinks: ["Facial Treatments", "Manicure and Pedicure", "Massages"],
+      serviceLinks: ["Facial Treatments", "Manicure and Pedicure", "Massages", "Makeup", "Waxing", "Eyebrows"],
       contactInfo: "Contact Info",
       address: "Lichinga, Niassa – Mozambique",
       phone: "+258 XX XXX XXXX",
       email: "info@serenaglow.co.mz",
       copyright: "© {year} Serena Glow. All rights reserved.",
       privacy: "Privacy Policy",
-      terms: "Terms of Service",
+      terms: "Terms and Conditions",
     },
     about: {
       title: "About Serena Glow Beauty Studio",
-      mission: "Serena Glow Beauty Studio was born with the goal of offering beauty and wellness services with quality and professionalism. Our studio was created to be a space where clients can relax, take care of their beauty, and feel confident. We work with dedication to offer skin, nail, makeup, and massage services.",
-      cta: "Book Your Beauty Experience Today",
+      mission: `Serena Glow Beauty Studio was born with the goal of offering beauty and wellness services with quality and professionalism.
+Our studio was created to be a space where clients can relax, take care of their beauty, and feel confident.
+
+We work with dedication to offer skin, nail, makeup, and massage services, always with attention to the comfort and satisfaction of our clients.`,
+      cta: "Book Your Beauty|Experience Today",
       values: {
         title: "Our Values",
         list: [
-          { title: "Mission", desc: "Provide professional beauty services that enhance natural beauty and increase our clients' confidence." },
-          { title: "Vision", desc: "To be a reference beauty studio in Mozambique, recognized for quality, innovation, and excellence in service." },
-          { title: "Values", desc: "Commitment to quality, respect for clients, professionalism, and passion for beauty care." },
+          { title: "Mission", desc: "Offer beauty services with quality, helping each client to feel good and confident." },
+          { title: "Vision", desc: "To be a leading beauty salon in Lichinga, known for good service and trust." },
+          { title: "Values", desc: "We work with respect, dedication and care, always focused on our clients' satisfaction." },
         ]
       },
     },
@@ -367,52 +372,75 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
       all: "ALL",
       categories: {
         all: "ALL",
-        facial: "FACIAL",
-        nails: "NAILS",
-        massage: "MASSAGE",
-        makeup: "MAKEUP",
-        waxing: "WAXING",
-        eyebrows: "EYEBROWS",
+        facial: "Facial",
+        nails: "Nails",
+        massage: "Massage",
+        makeup: "Makeup",
+        waxing: "Waxing",
+        eyebrows: "Eyebrows",
       },
-      facial: { title: "Facial Treatments", desc: "Skin treatments that help clean, moisturize, and improve facial appearance." },
-      nails: { title: "Manicure and Pedicure", desc: "Hand and foot care to keep nails beautiful and well-treated." },
-      massage: { title: "Relaxing Massage", desc: "Massage that helps relax the body, relieve tiredness, and reduce stress." },
-      makeup: { title: "Professional Makeup", desc: "Makeup for parties, events, weddings, and other special occasions." },
-      waxing: { title: "Waxing", desc: "Hair removal to leave skin clean, smooth, and well-cared for." },
-      eyebrows: { title: "Eyebrow Care", desc: "Eyebrow design and care for a more beautiful look." },
+      intro: "We take care of your beauty with simple, affordable and professional services, designed for your daily life in Lichinga.",
+      facial: { title: "Facial Treatments", desc: "Skin care to clean, hydrate and improve the face." },
+      nails: { title: "Manicure and Pedicure", desc: "Care to leave nails clean and beautiful." },
+      massage: { title: "Relaxing Massage", desc: "Helps to relax the body and relieve fatigue." },
+      makeup: { title: "Makeup", desc: "Makeup for parties and special occasions." },
+      waxing: { title: "Waxing", desc: "Hair removal for clean and smooth skin." },
+      eyebrows: { title: "Eyebrow Care", desc: "Design and care of eyebrows for a more beautiful look." },
       list: [
-        { id: 1, category: 'Facial', name: 'Deep Skin Cleansing', desc: 'Complete cleansing to remove impurities and leave skin clean and healthy.', price: '3.000 MZN', duration: '90 MIN', img: 'https://picsum.photos/seed/serv1/600/400' },
-        { id: 2, category: 'Facial', name: 'Facial Treatment', desc: 'Facial care to hydrate, improve skin and give it a better look.', price: '3.500 MZN', duration: '60 MIN', img: 'https://picsum.photos/seed/serv2/600/400' },
+        { id: 1, category: 'Facial', name: 'Deep Skin Cleansing', desc: 'Complete cleansing to remove impurities and leave skin clean and healthy.', price: '3,000 MZN', duration: '90 MIN', img: 'https://picsum.photos/seed/serv1/600/400' },
+        { id: 2, category: 'Facial', name: 'Facial Treatment', desc: 'Face care to hydrate, improve skin and give it a better look.', price: '3,500 MZN', duration: '60 MIN', img: 'https://picsum.photos/seed/serv2/600/400' },
         { id: 3, category: 'Nails', name: 'Manicure', desc: 'Nail care to keep hands clean and well-treated.', price: '500 MZN', duration: '30 MIN', img: 'https://picsum.photos/seed/serv3/600/400' },
-        { id: 4, category: 'Nails', name: 'Gel Manicure', desc: 'Durable and resistant nails with a beautiful finish.', price: '800 MZN', duration: '45 MIN', img: 'https://picsum.photos/seed/serv6/600/400' },
+        { id: 4, category: 'Nails', name: 'Gel Manicure', desc: 'Longer lasting and more resistant nails with a beautiful finish.', price: '800 MZN', duration: '45 MIN', img: 'https://picsum.photos/seed/serv6/600/400' },
         { id: 5, category: 'Nails', name: 'Pedicure', desc: 'Basic foot care for hygiene and comfort.', price: '700 MZN', duration: '45 MIN', img: 'https://picsum.photos/seed/serv7/600/400' },
-        { id: 6, category: 'Nails', name: 'Full Pedicure', desc: 'Complete treatment with cleansing, hydration and foot relaxation.', price: '1.200 MZN', duration: '60 MIN', img: 'https://picsum.photos/seed/serv4/600/400' },
-        { id: 7, category: 'Massage', name: 'Relaxing Massage', desc: 'Helps relieve fatigue, reduce stress and relax the body.', price: '2.000 MZN', duration: '60 MIN', img: 'https://picsum.photos/seed/serv5/600/400' },
-        { id: 8, category: 'Makeup', name: 'Professional Makeup', desc: 'Makeup for parties, events and special occasions.', price: '2.500 MZN', duration: '60 MIN', img: 'https://picsum.photos/seed/serv8/600/400' },
+        { id: 6, category: 'Nails', name: 'Full Pedicure', desc: 'Complete treatment with cleansing, hydration and relaxation of the feet.', price: '1,200 MZN', duration: '60 MIN', img: 'https://picsum.photos/seed/serv4/600/400' },
+        { id: 7, category: 'Massage', name: 'Relaxing Massage', desc: 'Helps relieve fatigue, reduce stress and relax the body.', price: '2,000 MZN', duration: '60 MIN', img: 'https://picsum.photos/seed/serv5/600/400' },
+        { id: 8, category: 'Makeup', name: 'Professional Makeup', desc: 'Makeup for parties, events and special occasions.', price: '2,500 MZN', duration: '60 MIN', img: 'https://picsum.photos/seed/serv8/600/400' },
         { id: 9, category: 'Waxing', name: 'Waxing', desc: 'Hair removal for clean and smooth skin.', price: '700 MZN', duration: '45 MIN', img: 'https://picsum.photos/seed/serv9/600/400' },
-        { id: 10, category: 'Eyebrows', name: 'Eyebrow Care', desc: 'Eyebrow design and care to improve the look.', price: '600 MZN', duration: '30 MIN', img: 'https://picsum.photos/seed/serv10/600/400' },
+        { id: 10, category: 'Eyebrows', name: 'Eyebrows', desc: 'Eyebrow design and care to improve the look.', price: '600 MZN', duration: '30 MIN', img: 'https://picsum.photos/seed/serv10/600/400' },
       ],
     },
     gallery: {
-      title: "Our Gallery",
+      title: "Beauty Moments",
+      intro: "See some of our work and results achieved in our studio in Lichinga.",
+      desc: "Explore some of the moments and results achieved in our studio.",
       all: "All",
+    },
+    galleryPage: {
+      resultsTitle: "Visible Results",
+      resultsDesc: "See some examples of results obtained through our treatments.",
+      categories: ["All", "Facial", "Nails", "Massage", "Makeup", "Waxing", "Eyebrows"],
+      images: [
+        { id: 1, url: "https://picsum.photos/seed/gal1/600/800", category: "Facial" },
+        { id: 2, url: "https://picsum.photos/seed/gal2/800/600", category: "Nails" },
+        { id: 3, url: "https://picsum.photos/seed/gal3/600/600", category: "Nails" },
+        { id: 4, url: "https://picsum.photos/seed/gal4/800/800", category: "Massage" },
+        { id: 5, url: "https://picsum.photos/seed/gal5/600/400", category: "Makeup" },
+        { id: 6, url: "https://picsum.photos/seed/gal6/600/800", category: "Waxing" },
+      ]
     },
     contact: {
       title: "Contact Us",
+      intro: "Talk to us to book your service or clear any doubts.",
+      infoTitle: "Contact Information",
+      formTitle: "Send Us a Message",
       address: "Address",
+      addressValue: "Lichinga, Niassa – Mozambique",
       phone: "Phone",
+      phoneValue: "+258 XX XXX XXXX",
       email: "Email",
+      emailValue: "info@serenaglow.co.mz",
       hours: "Opening Hours",
+      hoursValue: "Monday to Saturday\n08:00 – 18:00",
       form: {
-        name: "Name",
-        phone: "Phone",
-        email: "Email",
-        message: "Message",
-        send: "Send Message",
+        name: "Full name",
+        phone: "Phone number",
+        email: "Email (optional)",
+        message: "Write your message",
+        send: "Send Request",
       }
     },
     booking: {
-      title: "Book an Appointment",
+      title: "Book Session",
       name: "Full Name",
       phone: "Phone Number",
       email: "Email",
@@ -422,11 +450,11 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
       notes: "Additional Notes",
       confirm: "Confirm Booking",
       selectService: "Select a service",
-      services: ["Deep Skin Cleansing", "Facial Treatment", "Manicure", "Gel Manicure", "Pedicure", "Full Pedicure", "Relaxing Massage", "Professional Makeup", "Waxing", "Eyebrow Care"],
+      services: ["Deep Skin Cleansing", "Facial Treatment", "Manicure", "Gel Manicure", "Pedicure", "Full Pedicure", "Relaxing Massage", "Professional Makeup", "Waxing", "Eyebrows"],
     },
     admin: {
       login: "Admin Login",
-      dashboard: "Dashboard",
+      dashboard: "Control Panel",
       bookings: "Today's Bookings",
       clients: "Total Clients",
       services: "Total Services",
@@ -467,7 +495,7 @@ Trabalhamos com dedicação para oferecer serviços de pele, unhas, maquilhagem 
       }
     },
     termsOfService: {
-      title: "Terms of Service",
+      title: "Terms and Conditions",
       intro: "By using Serena Glow's services, you agree to the following terms:",
       sections: [
         {

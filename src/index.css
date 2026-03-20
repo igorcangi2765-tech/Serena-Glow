@@ -1,16 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-<<<<<<< HEAD
 /* stylelint-disable at-rule-no-unknown */
 @theme {
-=======
-/* ----- Dark Mode: use .dark class on <html> ----- */
-@custom-variant dark (&:where(.dark, .dark *));
-
-/* ── Design Tokens ── */
-:root {
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
   --font-sans: Arial, Helvetica, sans-serif;
   --font-serif: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --color-bg: #FAFAFA;
@@ -24,18 +16,8 @@
   --color-border: #F0D6E0;
 }
 
-.dark {
-  --color-bg: #121212;
-  --color-surface: #1E1E1E;
-  --color-text: #EAEAEA;
-  --color-text-muted: #A0A0A0;
-  --color-soft-pink: #2A1520;
-  --color-nude-beige: #1E1A18;
-  --color-deep-rose: #E91E8C;
-  --color-accent-gold: #D4AF37;
-  --color-border: #2E2E2E;
-}
-/* stylelint-enable at-rule-no-unknown */
+/* ----- Dark Mode: use .dark class on <html> ----- */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* ── Color System ── */
 :root {
@@ -81,8 +63,5 @@ h6 {
 
 * {
   transition: background-color 0.2s ease, border-color 0.2s ease, color 0.15s ease;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
+/* stylelint-enable at-rule-no-unknown */

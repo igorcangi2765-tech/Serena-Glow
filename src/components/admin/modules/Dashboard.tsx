@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, Users, Calendar, DollarSign, ArrowUpRight, ArrowDownRight, Clock } from 'lucide-react';
+import { motion } from 'motion/react';
 import { supabase } from '../../../lib/supabase';
 
 export const Dashboard: React.FC = () => {
@@ -47,10 +48,17 @@ export const Dashboard: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-10">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((stat, idx) => (
-          <div key={idx} className="bg-white p-8 rounded-[2.5rem] border border-pink-50 shadow-xl shadow-pink-100/20 hover:shadow-pink-200/30 transition-all group overflow-hidden relative">
+          <motion.div 
+            key={idx} 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: idx * 0.1 }}
+            whileHover={{ scale: 1.02 }}
+            className="bg-white p-8 rounded-[2.5rem] border border-pink-50 shadow-xl shadow-pink-100/20 hover:shadow-pink-200/30 transition-shadow group overflow-hidden relative cursor-default"
+          >
             <div className="absolute top-0 right-0 w-24 h-24 bg-pink-50 rounded-full -mr-12 -mt-12 group-hover:bg-pink-100 transition-colors" />
             <div className="relative">
               <div className="flex justify-between items-start mb-6">
@@ -65,7 +73,7 @@ export const Dashboard: React.FC = () => {
               <h3 className="text-gray-500 text-sm font-bold uppercase tracking-widest mb-1">{stat.title}</h3>
               <p className="text-3xl font-serif font-bold text-gray-800 tracking-tighter">{stat.value}</p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 

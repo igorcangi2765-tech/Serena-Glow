@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD
 import { useLanguage } from '../LanguageContext';
-=======
-import { useLanguage } from '@/LanguageContext';
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
 
 export const Gallery: React.FC = () => {
   const { t } = useLanguage();
@@ -12,19 +8,6 @@ export const Gallery: React.FC = () => {
   const categories = Array.isArray(t('galleryPage.categories')) ? t('galleryPage.categories') : [];
   const images = Array.isArray(t('galleryPage.images')) ? t('galleryPage.images') : [];
 
-<<<<<<< HEAD
-  const filteredImages = (activeCategoryIndex === 0 
-    ? images 
-    : images.filter((img: any) => img.category === categories[activeCategoryIndex])).slice(0, 6);
-
-  return (
-    <div className="pt-24 w-full bg-white min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 mb-4 tracking-wide">{t('gallery.title')}</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto mb-6 text-lg">{t('gallery.intro')}</p>
-          
-=======
   const filteredImages = (activeCategoryIndex === 0
     ? images
     : images.filter((img: any) => img.category === categories[activeCategoryIndex])).slice(0, 6);
@@ -36,7 +19,6 @@ export const Gallery: React.FC = () => {
           <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('gallery.title')}</h1>
           <p className="text-gray-600 dark:text-[#A0A0A0] max-w-2xl mx-auto mb-6 text-lg">{t('gallery.intro')}</p>
 
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
           {/* Filters */}
           <div className="flex flex-wrap justify-center gap-4">
             {categories.map((cat: string, idx: number) => (
