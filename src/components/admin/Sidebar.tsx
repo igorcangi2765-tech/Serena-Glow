@@ -6,8 +6,13 @@ import {
   FileText, 
   MessageSquare, 
   LogOut,
-  User
+  User,
+  Users,
+  Inbox,
+  Languages,
+  Megaphone
 } from 'lucide-react';
+import { useLanguage } from '@/LanguageContext';
 
 interface SidebarProps {
   activeTab: string;
@@ -16,12 +21,16 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout }) => {
+  const { t, language, setLanguage } = useLanguage();
   const menuItems = [
-    { id: 'dashboard', icon: <LayoutDashboard size={20} />, label: 'Dashboard' },
-    { id: 'sales', icon: <ShoppingBag size={20} />, label: 'Vendas' },
-    { id: 'agenda', icon: <Calendar size={20} />, label: 'Agenda' },
-    { id: 'billing', icon: <FileText size={20} />, label: 'Documentos' },
-    { id: 'messaging', icon: <MessageSquare size={20} />, label: 'Mensagens' },
+    { id: 'dashboard', icon: <LayoutDashboard size={20} />, label: t('admin.dashboard') },
+    { id: 'sales', icon: <ShoppingBag size={20} />, label: t('admin.sales') },
+    { id: 'agenda', icon: <Calendar size={20} />, label: t('admin.agenda') },
+    { id: 'billing', icon: <FileText size={20} />, label: t('admin.billing') },
+    { id: 'clients', icon: <Users size={20} />, label: t('admin.clientsModule') },
+    { id: 'marketing', icon: <Megaphone size={20} />, label: t('admin.marketing') },
+    { id: 'inbox', icon: <Inbox size={20} />, label: t('admin.inbox') },
+    { id: 'messaging', icon: <MessageSquare size={20} />, label: t('admin.messaging') },
   ];
 
   return (
@@ -55,13 +64,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLog
         </nav>
       </div>
 
-      <div className="mt-auto p-6">
+      <div className="mt-auto p-6 space-y-4">
+        <button 
+          onClick={() => setLanguage(language === 'pt' ? 'en' : 'pt')}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-pink-50 text-pink-600 hover:bg-pink-100 transition-all duration-200"
+        >
+          <Languages size={20} />
+          <span className="font-medium tracking-wide">{t('admin.language') || 'Language'}: {language.toUpperCase()}</span>
+        </button>
+
         <button
           onClick={onLogout}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all duration-200"
         >
           <LogOut size={20} />
-          <span className="font-medium tracking-wide">Sair</span>
+          <span className="font-medium tracking-wide">{t('admin.logout')}</span>
         </button>
       </div>
     </div>

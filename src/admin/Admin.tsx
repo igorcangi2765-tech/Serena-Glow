@@ -7,11 +7,15 @@ import { SalesPOS } from '@/components/admin/modules/SalesPOS';
 import { Agenda } from '@/components/admin/modules/Agenda';
 import { Billing } from '@/components/admin/modules/Billing';
 import { Messaging } from '@/components/admin/modules/Messaging';
+import { Clients } from '@/components/admin/modules/Clients';
+import { Campaigns } from '@/components/admin/modules/Campaigns';
+import { Inbox } from '@/components/admin/modules/Inbox';
 import { toast, Toaster } from 'react-hot-toast';
 
 export const Admin: React.FC = () => {
   const { t } = useLanguage();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(false);
@@ -20,10 +24,10 @@ export const Admin: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     
-    // Demo login for now, easily swappable for Supabase Auth
-    if (password === 'admin123') {
+    // Demo login with requested credentials
+    if (email.toLowerCase() === 'serena' && password === 'admin123') {
       setIsLoggedIn(true);
-      toast.success('Bem-vinda de volta, Serena!');
+      toast.success(t('admin.welcomeBack') || 'Bem-vinda de volta, Serena!');
     } else {
       toast.error(t('admin.invalidPassword'));
     }
@@ -32,7 +36,7 @@ export const Admin: React.FC = () => {
 
   const onLogout = () => {
     setIsLoggedIn(false);
-    toast('Até breve!', { icon: '👋' });
+    toast(t('admin.seeYouSoon') || 'Até breve!', { icon: '👋' });
   };
 
   if (!isLoggedIn) {
@@ -48,10 +52,23 @@ export const Admin: React.FC = () => {
               <span className="text-white text-3xl font-serif">S</span>
             </div>
             
-            <h1 className="text-4xl font-serif text-gray-800 mb-2 text-center">Serena Glow</h1>
-            <p className="text-gray-500 text-center mb-10 font-medium tracking-wide">Painel de Gestão Integrada</p>
+            <h1 className="text-4xl font-serif text-gray-800 mb-2 text-center">{t('admin.loginTitle')}</h1>
+            <p className="text-gray-500 text-center mb-10 font-medium tracking-wide">Serena Glow | {t('admin.loginSubtitle')}</p>
             
             <form onSubmit={handleLogin} className="space-y-6">
+              <div>
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-3 ml-1">
+                  {t('admin.emailLabel')}
+                </label>
+                <input
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-6 py-4 rounded-2xl border-2 border-pink-50 focus:border-pink-500 focus:outline-none focus:ring-4 focus:ring-pink-500/10 bg-pink-50/30 transition-all font-sans text-lg"
+                  placeholder={t('admin.emailPlaceholder')}
+                  disabled={loading}
+                />
+              </div>
               <div>
                 <label className="block text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-3 ml-1">
                   {t('admin.passwordLabel')}
@@ -70,7 +87,7 @@ export const Admin: React.FC = () => {
                 disabled={loading}
                 className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white py-5 rounded-2xl font-bold tracking-widest hover:shadow-xl hover:shadow-pink-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2 uppercase text-sm"
               >
-                {loading ? 'Entrando...' : t('admin.enter')}
+                {loading ? (t('admin.signingIn') || 'Entrando...') : t('admin.enter')}
               </button>
             </form>
           </div>
@@ -81,11 +98,14 @@ export const Admin: React.FC = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'dashboard': return <Dashboard />;
+      case 'dashboard': return <Dashboard setActiveTab={setActiveTab} />;
       case 'sales': return <SalesPOS />;
       case 'agenda': return <Agenda />;
       case 'billing': return <Billing />;
       case 'messaging': return <Messaging />;
+      case 'clients': return <Clients />;
+      case 'marketing': return <Campaigns />;
+      case 'inbox': return <Inbox />;
       default: return <Dashboard />;
     }
   };

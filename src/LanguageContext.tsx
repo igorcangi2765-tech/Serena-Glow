@@ -1,5 +1,8 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { translations } from './translations';
+import pt from './locales/pt.json';
+import en from './locales/en.json';
+
+const translations: any = { pt, en };
 
 type Language = 'pt' | 'en';
 

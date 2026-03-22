@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useLanguage } from '../LanguageContext';
 import { useLocation } from 'react-router-dom';
 
@@ -29,8 +30,7 @@ export const Booking: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Booking submitted:', formData);
-    alert(t('booking.success'));
+    toast.success(t('booking.success'));
     setFormData({ name: '', phone: '', email: '', service: '', date: '', time: '', notes: '' });
   };
 
@@ -43,7 +43,7 @@ export const Booking: React.FC = () => {
       <div className="max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="bg-white dark:bg-[#1E1E1E] p-6 md:p-16 rounded-3xl shadow-xl border border-pink-100 dark:border-[#2E2E2E]">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-serif font-semibold text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('booking.title')}</h1>
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('booking.title')}</h1>
             <div className="w-24 h-1 bg-pink-400 mx-auto rounded-full" />
           </div>
 

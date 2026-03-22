@@ -24,7 +24,7 @@ export const TermsOfService = () => {
         <div className="bg-white dark:bg-[#1E1E1E] rounded-3xl p-8 md:p-12 shadow-sm border border-pink-100/50 dark:border-[#2E2E2E] space-y-12">
           {t('termsOfService.sections').map((section: any, index: number) => (
             <div key={index} className="space-y-4">
-              <h2 className="text-2xl font-serif font-semibold text-gray-900 dark:text-[#EAEAEA]">
+              <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-[#EAEAEA]">
                 {section.title}
               </h2>
               <div className="text-gray-600 dark:text-[#A0A0A0] leading-relaxed whitespace-pre-line text-lg">

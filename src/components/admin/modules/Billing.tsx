@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, Download, Eye, Plus, Send, RefreshCcw } from 'lucide-react';
-import { supabase } from '../../../lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
+import { useLanguage } from '@/LanguageContext';
 
 interface Document {
   id: string;
@@ -19,6 +20,7 @@ interface Document {
 }
 
 export const Billing: React.FC = () => {
+  const { t } = useLanguage();
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,7 +40,7 @@ export const Billing: React.FC = () => {
       setDocuments(data || []);
     } catch (error: any) {
       console.error('Error fetching documents:', error.message);
-      toast.error('Erro ao carregar documentos');
+      toast.error(t('admin.errorLoadingDocs'));
     } finally {
       setLoading(false);
     }
@@ -50,7 +52,7 @@ export const Billing: React.FC = () => {
     // Header
     pdf.setFontSize(22);
     pdf.setTextColor(219, 39, 119); // Pink-600
-    pdf.text('SERENA GLOW BEAUTY STUDIO', 105, 20, { align: 'center' });
+    pdf.text('SERENA GLOW', 105, 20, { align: 'center' });
     
     pdf.setFontSize(10);
     pdf.setTextColor(100);
@@ -68,12 +70,12 @@ export const Billing: React.FC = () => {
     
     pdf.setFontSize(10);
     pdf.text(`Data: ${format(new Date(doc.created_at), 'dd/MM/yyyy HH:mm')}`, 20, 65);
-    pdf.text(`Cliente: ${doc.sales?.clients?.name || 'Venda de Balcão'}`, 20, 70);
+    pdf.text(`${t('admin.client')}: ${doc.sales?.clients?.name || t('admin.counterSale')}`, 20, 70);
     
     // Table (Mock items for now, in a real app these come from sale_items)
     autoTable(pdf, {
       startY: 85,
-      head: [['Descrição', 'Qtd', 'Preço Unit.', 'Total']],
+      head: [[t('admin.description'), t('admin.quantity'), t('admin.unitPrice'), t('admin.total')]],
       body: [
         ['Serviços Estéticos Diversos', '1', `${doc.sales?.total.toLocaleString()} MZN`, `${doc.sales?.total.toLocaleString()} MZN`]
       ],
@@ -85,19 +87,19 @@ export const Billing: React.FC = () => {
     // Footer
     const finalY = (pdf as any).lastAutoTable.finalY + 30;
     pdf.setFontSize(9);
-    pdf.text('Obrigada pela sua preferência!', 105, finalY, { align: 'center' });
-    pdf.text('Este documento serve de comprovativo de pagamento.', 105, finalY + 5, { align: 'center' });
+    pdf.text(t('admin.thanks'), 105, finalY, { align: 'center' });
+    pdf.text(t('admin.documentProof'), 105, finalY + 5, { align: 'center' });
 
     pdf.save(`${doc.doc_number}.pdf`);
-    toast.success('Documento gerado com sucesso!');
+    toast.success(t('admin.invoiceGenerated'));
   };
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-3xl font-serif text-gray-800">Facturação e Documentos</h2>
-          <p className="text-gray-500 font-sans mt-1">Gestão de faturas, recibos e cotações para os seus clientes.</p>
+          <h2 className="text-3xl font-serif text-gray-800">{t('admin.billingTitle')}</h2>
+          <p className="text-gray-500 font-sans mt-1">{t('admin.billingSubtitle')}</p>
         </div>
         <div className="flex gap-4">
           <button 
@@ -107,32 +109,32 @@ export const Billing: React.FC = () => {
             <RefreshCcw size={20} className={loading ? 'animate-spin' : ''} />
           </button>
           <button 
-            onClick={() => toast('A faturação automática é iniciada após o checkout na Venda de Balcão.', { icon: '📄' })}
+            onClick={() => toast(t('admin.autoBillingNotice'), { icon: '📄' })}
             className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-2xl font-bold hover:shadow-lg hover:shadow-pink-100 transition-all uppercase tracking-widest text-xs active:scale-[0.98]"
           >
-            <Plus size={18} /> Novo Documento
+            <Plus size={18} /> {t('admin.newDocument')}
           </button>
         </div>
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-pink-100 shadow-xl overflow-hidden">
         {loading ? (
-            <div className="p-20 text-center text-pink-500 font-sans">Carregando documentos...</div>
+            <div className="p-20 text-center text-pink-500 font-sans">{t('admin.loadingDocs')}</div>
         ) : documents.length === 0 ? (
             <div className="p-20 text-center text-gray-400 font-sans italic flex flex-col items-center gap-4">
                 <FileText size={48} className="opacity-20" />
-                Sem documentos emitidos ainda.
+                {t('admin.noDocsIssued')}
             </div>
         ) : (
             <table className="w-full text-left">
               <thead className="bg-pink-50/50">
                 <tr className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                  <th className="p-6">Documento</th>
-                  <th className="p-6">Tipo</th>
-                  <th className="p-6">Cliente</th>
-                  <th className="p-6">Data</th>
-                  <th className="p-6">Total</th>
-                  <th className="p-6 text-right">Ações</th>
+                  <th className="p-6">{t('admin.document')}</th>
+                  <th className="p-6">{t('admin.type')}</th>
+                  <th className="p-6">{t('admin.client')}</th>
+                  <th className="p-6">{t('admin.date')}</th>
+                  <th className="p-6">{t('admin.total')}</th>
+                  <th className="p-6 text-right">{t('admin.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-pink-50 font-sans">
@@ -143,10 +145,10 @@ export const Billing: React.FC = () => {
                       <span className={`px-4 py-1 rounded-full text-[10px] font-bold uppercase ${
                         doc.type === 'invoice' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'
                       }`}>
-                        {doc.type === 'invoice' ? 'Fatura' : 'Recibo'}
+                        {doc.type === 'invoice' ? t('admin.invoice') : t('admin.receipt')}
                       </span>
                     </td>
-                    <td className="p-6 text-gray-600">{doc.sales?.clients?.name || 'Balcão'}</td>
+                    <td className="p-6 text-gray-600">{doc.sales?.clients?.name || t('admin.counterSale')}</td>
                     <td className="p-6 text-gray-400 text-sm">{format(new Date(doc.created_at), 'dd/MM/yyyy')}</td>
                     <td className="p-6 font-bold text-gray-800">{doc.sales?.total?.toLocaleString()} MZN</td>
                     <td className="p-6 text-right space-x-2">

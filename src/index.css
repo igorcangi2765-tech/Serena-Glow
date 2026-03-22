@@ -14,6 +14,7 @@
   --color-deep-rose: #C2185B;
   --color-accent-gold: #D4AF37;
   --color-border: #F0D6E0;
+  --color-pink-500: #EC4899;
 }
 
 /* ----- Dark Mode: use .dark class on <html> ----- */
@@ -30,6 +31,7 @@
   --color-deep-rose: #C2185B;
   --color-accent-gold: #D4AF37;
   --color-border: #F0D6E0;
+  --color-pink-500: #EC4899;
 }
 
 .dark {

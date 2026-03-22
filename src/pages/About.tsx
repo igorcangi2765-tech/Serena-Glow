@@ -1,14 +1,14 @@
 import React from 'react';
-<<<<<<< HEAD
 import { useLanguage } from '../LanguageContext';
-=======
-import { useLanguage } from '@/LanguageContext';
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
+import { useTheme } from '../ThemeContext';
 import { Link } from 'react-router-dom';
-import { Target, Eye, Heart } from 'lucide-react';
+import { Target, Eye, Heart, Sparkles, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export const About: React.FC = () => {
   const { t, language } = useLanguage();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const teamMembers = Array.isArray(t('team.members')) ? t('team.members') : [];
   const valuesList = Array.isArray(t('about.values.list')) ? t('about.values.list') : [];
@@ -19,210 +19,165 @@ export const About: React.FC = () => {
     <Heart className="w-8 h-8 text-pink-500" />
   ];
 
-  const teamImages = [
-    "https://picsum.photos/seed/stylist1/400/500",
-    "https://picsum.photos/seed/stylist2/400/500",
-    "https://picsum.photos/seed/stylist3/400/500",
-    "https://picsum.photos/seed/stylist4/400/500"
-  ];
+
 
   return (
-<<<<<<< HEAD
-    <div className="pt-24 w-full bg-neutral-50 min-h-screen">
+    <div className="w-full bg-neutral-50 dark:bg-[#121212] min-h-screen">
       {/* Hero Banner */}
-      <section className="relative py-20 md:py-32 bg-pink-900 text-white text-center">
-        <div className="absolute inset-0 z-0 opacity-40">
-          <img 
-            src="https://picsum.photos/seed/about-hero/1920/600" 
-            alt="Salon Interior" 
-=======
-    <div className="pt-24 w-full bg-neutral-50 dark:bg-[#121212] min-h-screen">
-      {/* Hero Banner */}
-      <section className="relative py-20 md:py-32 bg-pink-900 text-white text-center">
-        <div className="absolute inset-0 z-0 opacity-40">
+      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0 bg-white dark:bg-black">
           <img
-            src="https://picsum.photos/seed/about-hero/1920/600"
-            alt="Salon Interior"
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
-            className="w-full h-full object-cover"
+            src="/images/about_hero.png"
+            alt="Serena Glow About"
+            className="w-full h-full object-cover opacity-100 dark:opacity-70"
+            style={{ objectPosition: 'center center' }}
             referrerPolicy="no-referrer"
           />
+          <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
         </div>
-        <div className="relative z-10 max-w-4xl mx-auto px-4">
-          <h1 className="text-5xl md:text-6xl font-serif font-semibold mb-6 tracking-wide">
+
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-white mb-6 tracking-wide drop-shadow-lg"
+          >
             {t('about.title') && t('about.title').includes('|') ? (
               <>
                 {t('about.title').split('|')[0]}
-                <span className="block mt-2">{t('about.title').split('|')[1]}</span>
+                <span className="block mt-2 text-white">{t('about.title').split('|')[1]}</span>
               </>
             ) : (
               t('about.title')
             )}
-          </h1>
+          </motion.h1>
         </div>
       </section>
 
       {/* Story & Mission */}
-<<<<<<< HEAD
-      <section className="py-12 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-6 tracking-wide">{language === 'pt' ? 'A Nossa História' : 'Our Story'}</h2>
-              <p className="text-gray-600 leading-relaxed text-base md:text-lg font-sans">
-=======
       <section className="py-12 md:py-24 bg-white dark:bg-[#1E1E1E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-serif text-gray-800 dark:text-[#EAEAEA] mb-6 tracking-wide">
+              <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-6 tracking-wide">
                 {language === 'pt' ? 'A Nossa História' : 'Our Story'}
               </h2>
               <p className="text-gray-600 dark:text-[#A0A0A0] leading-relaxed text-base md:text-lg font-sans">
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
                 {t('about.mission')}
               </p>
             </div>
             <div className="relative">
-<<<<<<< HEAD
-              <img 
-                src="https://picsum.photos/seed/salon-story/600/800" 
-                alt="Salon Details" 
-                className="rounded-xl shadow-lg w-full object-cover aspect-[3/4]"
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-pink-100 rounded-full -z-10" />
-              <div className="absolute -top-8 -right-8 w-32 h-32 bg-pink-200/40 rounded-full -z-10 blur-2xl" />
-=======
               <img
-                src="https://picsum.photos/seed/salon-story/600/800"
+                src="/images/about_story.png"
                 alt="Salon Details"
                 className="rounded-xl shadow-lg w-full object-cover aspect-[3/4]"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-pink-100 dark:bg-pink-900/20 rounded-full -z-10" />
               <div className="absolute -top-8 -right-8 w-32 h-32 bg-pink-200/40 dark:bg-pink-900/10 rounded-full -z-10 blur-2xl" />
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
             </div>
           </div>
         </div>
       </section>
 
       {/* Values */}
-<<<<<<< HEAD
-      <section className="py-12 md:py-16 bg-pink-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t('about.values.title')}</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {valuesList.map((val: any, idx: number) => (
-              <div key={idx} className="bg-white px-6 py-8 rounded-2xl text-center shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300 border border-pink-100">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-pink-100 mb-4">
-                  {valueIcons[idx] || <Target className="w-8 h-8 text-pink-500" />}
-                </div>
-                <h3 className="text-2xl font-serif text-gray-800 mt-2 mb-3">{val.title}</h3>
-                <p className="text-gray-600 font-sans leading-relaxed mt-2 max-w-sm mx-auto text-center">{val.desc}</p>
-=======
       <section className="py-12 md:py-16 bg-pink-50 dark:bg-[#121212]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('about.values.title')}</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('about.values.title')}</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {valuesList.map((val: any, idx: number) => (
-              <div key={idx} className="bg-white dark:bg-[#1E1E1E] px-6 py-8 rounded-2xl text-center shadow-md hover:shadow-xl hover:-translate-y-1 transition duration-300 border border-pink-100 dark:border-[#2E2E2E]">
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-pink-100 dark:bg-pink-900/30 mb-4">
-                  {valueIcons[idx] || <Target className="w-8 h-8 text-pink-500" />}
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                whileHover={{ y: -8, boxShadow: "0 20px 25px -5px rgba(244, 63, 94, 0.1)" }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                className="bg-white dark:bg-[#1E1E1E] px-6 py-8 rounded-2xl text-center shadow-md border border-pink-100 dark:border-[#2E2E2E] group transition-all duration-300"
+              >
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-pink-100 dark:bg-pink-900/30 mb-4 group-hover:bg-pink-500 transition-colors duration-300">
+                  <div className="group-hover:text-white transition-colors duration-300">
+                    {React.cloneElement(valueIcons[idx] as React.ReactElement, {
+                      className: `${(valueIcons[idx] as React.ReactElement).props.className} group-hover:text-white`
+                    })}
+                  </div>
                 </div>
-                <h3 className="text-2xl font-serif text-gray-800 dark:text-[#EAEAEA] mt-2 mb-3">{val.title}</h3>
+                <h3 className="text-2xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mt-2 mb-3">{val.title}</h3>
                 <p className="text-gray-600 dark:text-[#A0A0A0] font-sans leading-relaxed mt-2 max-w-sm mx-auto text-center">{val.desc}</p>
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Team Preview */}
-<<<<<<< HEAD
-      <section className="py-12 md:py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 mb-4 tracking-wide">{t('team.title')}</h2>
-=======
       <section className="py-12 md:py-24 bg-white dark:bg-[#1E1E1E]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('team.title')}</h2>
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('team.title')}</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
             {teamMembers.map((member: any, idx: number) => (
-              <div key={idx} className="group text-center">
-<<<<<<< HEAD
-                <div className="relative overflow-hidden rounded-2xl mb-6 aspect-[4/5] shadow-md border border-pink-100">
-                  <img 
-                    src={teamImages[idx] || "https://picsum.photos/seed/staff/400/500"} 
-                    alt={member.name} 
-=======
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                className="group text-center"
+              >
                 <div className="relative overflow-hidden rounded-2xl mb-6 aspect-[4/5] shadow-md border border-pink-100 dark:border-[#2E2E2E]">
                   <img
-                    src={teamImages[idx] || "https://picsum.photos/seed/staff/400/500"}
+                    src={member.img}
                     alt={member.name}
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="w-full h-full object-cover grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-in-out"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute inset-0 bg-pink-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 transition-opacity duration-300" />
                 </div>
-<<<<<<< HEAD
-                <h3 className="text-2xl font-serif text-gray-800 mb-2">{member.name}</h3>
-                <p className="text-pink-600 font-medium uppercase tracking-wider text-sm font-sans mb-3">{member.role}</p>
-                <p className="text-gray-600 text-sm font-sans leading-relaxed max-w-xs mx-auto">{member.desc}</p>
-=======
-                <h3 className="text-2xl font-serif text-gray-800 dark:text-[#EAEAEA] mb-2">{member.name}</h3>
-                <p className="text-pink-600 dark:text-pink-400 font-medium uppercase tracking-wider text-sm font-sans mb-3">{member.role}</p>
+                <h3 className="text-2xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-2">{member.name}</h3>
+                <p className="text-pink-600 dark:text-pink-400 font-bold uppercase tracking-wider text-sm font-sans mb-3">{member.role}</p>
                 <p className="text-gray-600 dark:text-[#A0A0A0] text-sm font-sans leading-relaxed max-w-xs mx-auto">{member.desc}</p>
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-<<<<<<< HEAD
-      <section className="py-12 md:py-24 bg-gradient-to-br from-pink-100 to-pink-50 text-center">
-        <div className="max-w-3xl mx-auto px-4">
-          <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-8 leading-tight tracking-wide">
-=======
-      <section className="py-12 md:py-24 bg-gradient-to-br from-pink-100 to-pink-50 dark:from-[#1a0a10] dark:to-[#121212] text-center">
-        <div className="max-w-3xl mx-auto px-4">
-          <h2 className="text-3xl md:text-5xl font-serif text-gray-900 dark:text-[#EAEAEA] mb-8 leading-tight tracking-wide">
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
-            {t('about.cta') && t('about.cta').includes('|') ? (
+      {/* Standardized CTA Section */}
+      <section className="py-12 md:py-24 relative overflow-hidden bg-gradient-to-br from-pink-50 via-white to-pink-50 dark:from-[#1a0a10] dark:via-[#1a0a10] dark:to-[#121212] border-y border-pink-100 dark:border-pink-900/30">
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-5xl font-serif font-bold text-gray-900 dark:text-[#EAEAEA] mb-8 leading-tight tracking-wide">
+            {t('cta.headline') && t('cta.headline').includes('|') ? (
               <>
-                {t('about.cta').split('|')[0]}
-                <span className="block mt-2">{t('about.cta').split('|')[1]}</span>
+                {t('cta.headline').split('|')[0]}
+                <span className="block mt-2">{t('cta.headline').split('|')[1]}</span>
               </>
             ) : (
-              t('about.cta')
+              t('cta.headline')
             )}
           </h2>
-<<<<<<< HEAD
-          <Link 
-            to="/booking" 
-=======
-          <Link
-            to="/booking"
->>>>>>> 332da6d68128f8c278108ab8b74d0d402204cecc
-            className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-10 py-4 shadow-md hover:shadow-lg transition font-medium tracking-wide inline-block w-full md:w-auto text-center"
-          >
-            {t('nav.bookNow')}
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              to="?booking=true"
+              className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-10 py-4 shadow-md hover:shadow-lg transition-all duration-300 font-medium tracking-wide w-full sm:w-auto text-center"
+            >
+              {t('cta.book')}
+            </Link>
+            <Link
+              to="/contact"
+              className="rounded-full border border-pink-400 text-pink-600 dark:text-pink-300 hover:bg-pink-50 dark:hover:bg-pink-900/30 px-10 py-4 transition-all duration-300 font-medium tracking-wide w-full sm:w-auto text-center bg-white dark:bg-[#1E1E1E]/50 shadow-sm backdrop-blur-sm"
+            >
+              {t('cta.contact')}
+            </Link>
+          </div>
         </div>
       </section>
     </div>
   );
 };
+
+export default About;

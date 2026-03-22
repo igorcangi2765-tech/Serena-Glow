@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { MessageSquare, Send, Users, Mail, CheckCircle2 } from 'lucide-react';
-import { supabase } from '../../../lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
+import { useLanguage } from '@/LanguageContext';
 
 export const Messaging: React.FC = () => {
+  const { t } = useLanguage();
   const [content, setContent] = useState('');
   const [type, setType] = useState('sms');
   const [sending, setSending] = useState(false);
 
   const handleSend = async () => {
-    if (!content) return toast.error('Escreva uma mensagem');
+    if (!content) return toast.error(t('admin.writeMessage'));
     setSending(true);
     
     try {
@@ -24,11 +26,11 @@ export const Messaging: React.FC = () => {
 
       if (error) throw error;
       
-      toast.success(`${type.toUpperCase()} enviado com sucesso para todos os clientes!`);
+      toast.success(`${type.toUpperCase()} ${t('admin.messageSentSuccess')}`);
       setContent('');
     } catch (error: any) {
       console.error('Messaging error:', error.message);
-      toast.error('Erro ao enviar mensagem');
+      toast.error(t('admin.errorSendingMessage'));
     } finally {
       setSending(false);
     }
@@ -38,8 +40,8 @@ export const Messaging: React.FC = () => {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[calc(100vh-12rem)] animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="lg:col-span-2 space-y-8 overflow-y-auto pr-4 custom-scrollbar">
         <div>
-          <h2 className="text-3xl font-serif text-gray-800">Centro de Mensagens</h2>
-          <p className="text-gray-500 font-sans mt-1">Envie notificações e campanhas por SMS e Email.</p>
+          <h2 className="text-3xl font-serif text-gray-800">{t('admin.messagingTitle')}</h2>
+          <p className="text-gray-500 font-sans mt-1">{t('admin.messagingSubtitle')}</p>
         </div>
 
         <div className="bg-white p-8 rounded-[2.5rem] border border-pink-100 shadow-xl space-y-6">
@@ -48,13 +50,13 @@ export const Messaging: React.FC = () => {
               onClick={() => setType('sms')}
               className={`px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${type === 'sms' ? 'bg-pink-500 text-white shadow-md' : 'text-pink-400 hover:bg-pink-100'}`}
             >
-              SMS em Massa
+              {t('admin.smsBulk')}
             </button>
             <button 
               onClick={() => setType('email')}
               className={`px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${type === 'email' ? 'bg-pink-500 text-white shadow-md' : 'text-pink-400 hover:bg-pink-100'}`}
             >
-              Email Marketing
+              {t('admin.emailMarketing')}
             </button>
           </div>
 
@@ -62,13 +64,13 @@ export const Messaging: React.FC = () => {
             <textarea 
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder={`Escreva o conteúdo do seu ${type}...`}
+              placeholder={`${t('admin.writeContentPlaceholder')} ${type}...`}
               className="w-full h-48 p-6 rounded-3xl bg-neutral-50 border-2 border-transparent focus:border-pink-500 focus:bg-white focus:outline-none transition-all font-sans text-gray-700 resize-none"
             />
             
             <div className="flex items-center justify-between">
               <p className="text-xs text-gray-400 font-medium">
-                Esta mensagem será enviada para <span className="text-pink-500 font-bold">845 clientes</span> ativos.
+                {t('admin.recipientsNotice')} <span className="text-pink-500 font-bold">845 {t('admin.activeClients')}</span>
               </p>
               <button 
                 onClick={handleSend}
@@ -77,10 +79,10 @@ export const Messaging: React.FC = () => {
                     sending || !content ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:shadow-lg hover:shadow-pink-100 active:scale-95'
                 }`}
               >
-                {sending ? 'Enviando...' : (
+                {sending ? t('admin.sending') : (
                     <>
                         <Send size={16} /> 
-                        Enviar Agora
+                        {t('admin.sendNow')}
                     </>
                 )}
               </button>
@@ -91,7 +93,7 @@ export const Messaging: React.FC = () => {
         <div className="bg-white p-8 rounded-[2.5rem] border border-pink-100 shadow-sm">
           <h3 className="text-xl font-serif text-gray-800 mb-6 flex items-center gap-2 border-b border-pink-50 pb-4">
             <CheckCircle2 size={20} className="text-emerald-500" />
-            Campanhas Realizadas
+            {t('admin.pastCampaigns')}
           </h3>
           <div className="space-y-4">
             {[1].map(i => (
@@ -102,10 +104,10 @@ export const Messaging: React.FC = () => {
                   </div>
                   <div>
                     <p className="font-bold text-gray-800">Promoção de Março</p>
-                    <p className="text-xs text-gray-500 font-sans">845 destinatários • SMS • Hoje</p>
+                    <p className="text-xs text-gray-500 font-sans">845 {t('admin.recipientsNotice').toLowerCase()} • SMS • Hoje</p>
                   </div>
                 </div>
-                <span className="px-4 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold uppercase tracking-tighter">Enviado</span>
+                <span className="px-4 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-bold uppercase tracking-tighter">{t('admin.completed')}</span>
               </div>
             ))}
           </div>
@@ -118,14 +120,14 @@ export const Messaging: React.FC = () => {
         </div>
         <div>
           <p className="text-4xl font-serif font-bold text-gray-800 tracking-tighter">845</p>
-          <p className="text-sm text-gray-400 font-sans uppercase tracking-widest font-bold mt-1">Clientes na Base</p>
+          <p className="text-sm text-gray-400 font-sans uppercase tracking-widest font-bold mt-1">{t('admin.totalInBase')}</p>
         </div>
         <p className="text-gray-500 text-sm leading-relaxed max-w-[200px]">
-          O SMS é o método mais eficaz para o mercado de Moçambique.
+          {t('admin.smsMarketNotice')}
         </p>
         <div className="w-full pt-6 border-t border-pink-50">
            <button className="w-full py-4 bg-neutral-900 text-white rounded-2xl font-bold hover:bg-black transition-colors uppercase tracking-widest text-xs shadow-xl shadow-neutral-100">
-            Exportar Contactos
+            {t('admin.exportContacts')}
           </button>
         </div>
       </div>

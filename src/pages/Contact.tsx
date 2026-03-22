@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useLanguage } from '../LanguageContext';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 
@@ -12,8 +13,7 @@ export const Contact: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert(t('contact.success'));
+    toast.success(t('contact.success'));
     setFormData({ name: '', phone: '', email: '', message: '' });
   };
 
@@ -21,7 +21,7 @@ export const Contact: React.FC = () => {
     <div className="pt-24 w-full bg-neutral-50 dark:bg-[#121212] min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-serif font-semibold text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('contact.title')}</h1>
+          <h1 className="text-5xl md:text-6xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('contact.title')}</h1>
           <p className="text-gray-600 dark:text-[#A0A0A0] max-w-2xl mx-auto mb-6 text-lg">{t('contact.intro')}</p>
         </div>
 
@@ -29,7 +29,7 @@ export const Contact: React.FC = () => {
           {/* Contact Info */}
           <div className="space-y-12">
             <div className="bg-white dark:bg-[#1E1E1E] p-6 md:p-10 rounded-2xl shadow-md border border-pink-50 dark:border-[#2E2E2E]">
-              <h2 className="text-3xl font-serif text-gray-800 dark:text-[#EAEAEA] mb-8">{t('contact.infoTitle')}</h2>
+              <h2 className="text-3xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-8">{t('contact.infoTitle')}</h2>
               <div className="space-y-6">
                 {[
                   { icon: <MapPin className="w-6 h-6 text-pink-500 transition-colors duration-300 group-hover:text-white" />, label: t('contact.address'), value: t('contact.addressValue') },
@@ -38,11 +38,11 @@ export const Contact: React.FC = () => {
                   { icon: <Clock className="w-6 h-6 text-pink-500 transition-colors duration-300 group-hover:text-white" />, label: t('contact.hours'), value: t('contact.hoursValue') },
                 ].map((item, idx) => (
                   <div key={idx} className="flex items-start gap-4 group cursor-default">
-                    <div className="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:bg-pink-500 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-pink-200">
+                    <div className="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:bg-pink-500 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-pink-200">
                       {item.icon}
                     </div>
                     <div className="transition-transform duration-300 group-hover:translate-x-1">
-                      <h3 className="font-medium text-gray-800 dark:text-[#EAEAEA] uppercase tracking-wider mb-1 font-sans">{item.label}</h3>
+                      <h3 className="font-bold text-gray-800 dark:text-[#EAEAEA] uppercase tracking-wider mb-1 font-sans">{item.label}</h3>
                       <p className="text-gray-600 dark:text-[#A0A0A0] font-sans whitespace-pre-line">{item.value}</p>
                     </div>
                   </div>
@@ -60,7 +60,7 @@ export const Contact: React.FC = () => {
 
           {/* Contact Form */}
           <div className="bg-white dark:bg-[#1E1E1E] p-6 md:p-10 rounded-2xl shadow-md border border-pink-50 dark:border-[#2E2E2E] w-full hover:shadow-lg transition-all duration-300">
-            <h2 className="text-3xl font-serif text-gray-800 dark:text-[#EAEAEA] mb-8">{t('contact.formTitle')}</h2>
+            <h2 className="text-3xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-8">{t('contact.formTitle')}</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-[#A0A0A0] uppercase tracking-wider mb-2 font-sans">{t('contact.form.name')}</label>
