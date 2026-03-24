@@ -11,10 +11,10 @@ const GlassContainer: React.FC<{ children: React.ReactNode; className?: string; 
     initial={{ opacity: 0, y: 30, scale: 0.95 }}
     animate={{ opacity: 1, y: 0, scale: 1 }}
     transition={{ duration: 0.8, cubicBezier: [0.16, 1, 0.3, 1] }}
-    className={`relative w-full max-w-[450px] p-10 lg:p-14 rounded-[3rem] border transition-all duration-700 shadow-3xl overflow-hidden ${
+    className={`relative w-full max-w-[480px] p-12 lg:p-16 rounded-[4rem] border transition-all duration-700 overflow-hidden ${
       isDark 
-        ? 'bg-[#0A0A0A]/60 backdrop-blur-3xl border-white/5 shadow-black/80' 
-        : 'bg-white/80 backdrop-blur-3xl border-pink-50/50 shadow-pink-100/30'
+        ? 'bg-[#0A0A0A]/60 backdrop-blur-3xl border-white/5 shadow-[0_32px_64px_rgba(0,0,0,0.8)]' 
+        : 'bg-white/80 backdrop-blur-3xl border-white shadow-[0_32px_64px_rgba(233,30,99,0.08)]'
     } ${className}`}
   >
     {/* Animated background subtle glow */}
@@ -71,32 +71,32 @@ export const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center px-4 relative overflow-hidden transition-colors duration-1000 ${
-      isDark ? 'bg-[#050505]' : 'bg-[#FAFAFA]'
+    <div className={`min-h-screen flex items-center justify-center px-4 relative overflow-hidden transition-all duration-1000 ${
+      isDark ? 'bg-[#050505]' : 'bg-gradient-to-b from-[#FFF1F5] to-[#FFFFFF]'
     }`}>
       <Toaster position="top-right" />
       
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 10, repeat: Infinity }}
-          className={`absolute top-1/4 -right-40 w-[600px] h-[600px] rounded-full blur-[160px] ${isDark ? 'bg-pink-900' : 'bg-pink-100'}`} 
+          animate={{ scale: [1, 1.1, 1], opacity: [0.05, 0.1, 0.05] }}
+          transition={{ duration: 15, repeat: Infinity }}
+          className={`absolute top-1/4 -right-40 w-[600px] h-[600px] rounded-full blur-[160px] ${isDark ? 'bg-pink-900' : 'bg-pink-200'}`} 
         />
         <motion.div 
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 12, repeat: Infinity }}
-          className={`absolute bottom-1/4 -left-40 w-[600px] h-[600px] rounded-full blur-[160px] ${isDark ? 'bg-rose-900' : 'bg-rose-100'}`} 
+          animate={{ scale: [1.1, 1, 1.1], opacity: [0.05, 0.1, 0.05] }}
+          transition={{ duration: 18, repeat: Infinity }}
+          className={`absolute bottom-1/4 -left-40 w-[600px] h-[600px] rounded-full blur-[160px] ${isDark ? 'bg-rose-900' : 'bg-rose-200'}`} 
         />
       </div>
 
       <GlassContainer isDark={isDark}>
         {/* Logo Section */}
         <motion.div 
-          whileHover={{ scale: 1.05, rotate: -5 }}
-          className="w-20 h-20 bg-gradient-to-br from-[#E91E63] to-[#C2185B] rounded-[2rem] mx-auto mb-12 flex items-center justify-center shadow-2xl shadow-pink-500/30 cursor-pointer text-white"
+          whileHover={{ scale: 1.05, rotate: -3 }}
+          className="w-20 h-20 bg-gradient-to-br from-[#F471B5] via-[#E91E63] to-[#C2185B] rounded-[2rem] mx-auto mb-12 flex items-center justify-center shadow-3xl shadow-pink-500/30 cursor-pointer text-white"
         >
-          <Sparkles size={36} className="text-white/90" />
+          <Sparkles size={36} className="text-white/90 drop-shadow-md" />
         </motion.div>
         
         <div className="text-center mb-14">
@@ -104,7 +104,7 @@ export const AdminLogin: React.FC = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className={`text-4xl font-serif font-black tracking-tighter mb-3 uppercase ${isDark ? 'text-white' : 'text-zinc-900'}`}
+            className={`text-4xl font-serif font-black tracking-tighter mb-3 uppercase ${isDark ? 'text-white' : 'text-[#1E1E1E]'}`}
           >
             Serena <span className="text-[#E91E63] relative">Glow
               <motion.span 
@@ -132,10 +132,10 @@ export const AdminLogin: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full pl-13 pr-6 py-5 rounded-3xl border-2 transition-all font-medium text-sm outline-none ${
+                  className={`w-full pl-14 pr-7 py-6 rounded-[2rem] border-2 transition-all font-medium text-sm outline-none ${
                     isDark 
                       ? 'bg-black/60 border-white/5 text-white focus:border-pink-500/50 focus:ring-8 focus:ring-pink-500/5 placeholder:text-zinc-700' 
-                      : 'bg-zinc-50 border-zinc-100 text-zinc-900 focus:border-pink-500/30 focus:ring-8 focus:ring-pink-500/5 placeholder:text-zinc-300'
+                      : 'bg-[#F9FAFB] border-[#F3F4F6] text-[#1E1E1E] focus:border-[#E91E63] focus:ring-8 focus:ring-pink-500/5 placeholder:text-[#9CA3AF]'
                   }`}
                   placeholder="Administradora"
                   disabled={loading}
@@ -154,10 +154,10 @@ export const AdminLogin: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full pl-13 pr-6 py-5 rounded-3xl border-2 transition-all font-medium text-sm outline-none ${
+                  className={`w-full pl-14 pr-7 py-6 rounded-[2rem] border-2 transition-all font-medium text-sm outline-none ${
                     isDark 
                       ? 'bg-black/60 border-white/5 text-white focus:border-pink-500/50 focus:ring-8 focus:ring-pink-500/5 placeholder:text-zinc-700' 
-                      : 'bg-zinc-50 border-zinc-100 text-zinc-900 focus:border-pink-500/30 focus:ring-8 focus:ring-pink-500/5 placeholder:text-zinc-300'
+                      : 'bg-[#F9FAFB] border-[#F3F4F6] text-[#1E1E1E] focus:border-[#E91E63] focus:ring-8 focus:ring-pink-500/5 placeholder:text-[#9CA3AF]'
                   }`}
                   placeholder="••••••••"
                   disabled={loading}
@@ -173,10 +173,10 @@ export const AdminLogin: React.FC = () => {
               disabled={loading}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-              className={`group w-full h-18 rounded-3xl font-black tracking-[0.4em] uppercase text-[12px] transition-all flex items-center justify-center gap-4 active:scale-[0.97] transform-gpu shadow-2xl ${
+              className={`group w-full h-20 rounded-[2rem] font-black tracking-[0.4em] uppercase text-[13px] transition-all flex items-center justify-center gap-4 active:scale-[0.97] transform-gpu shadow-3xl overflow-hidden relative ${
                 isDark 
-                  ? 'bg-white text-black hover:bg-[#F0F0F0] hover:shadow-white/20' 
-                  : 'bg-zinc-900 text-white hover:bg-black hover:shadow-black/20'
+                  ? 'bg-white text-black hover:bg-[#F0F0F0]' 
+                  : 'bg-gradient-to-r from-[#F06292] to-[#E91E63] text-white hover:shadow-pink-500/40'
               } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {loading ? (

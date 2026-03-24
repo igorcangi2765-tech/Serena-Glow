@@ -52,42 +52,46 @@ export const Admin: React.FC = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className={`min-h-screen flex items-center justify-center px-4 transition-colors duration-700 ${
-        isDark ? 'bg-black' : 'bg-[#FAFAFA]'
+      <div className={`min-h-screen flex items-center justify-center px-4 transition-all duration-1000 ${
+        isDark ? 'bg-[#050505]' : 'bg-gradient-to-b from-[#FFF1F5] to-[#FFFFFF]'
       }`}>
         <Toaster position="top-right" />
         
-        {/* Decorative background elements */}
+        {/* Glow effect behind card */}
+        {!isDark && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-pink-200/20 blur-[120px] rounded-full animate-pulse pointer-events-none" />
+        )}
+        
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className={`absolute top-1/4 -right-20 w-96 h-96 rounded-full blur-[120px] opacity-20 ${isDark ? 'bg-pink-900' : 'bg-pink-100'}`} />
-          <div className={`absolute bottom-1/4 -left-20 w-96 h-96 rounded-full blur-[120px] opacity-20 ${isDark ? 'bg-rose-900' : 'bg-rose-100'}`} />
+          <div className={`absolute top-1/4 -right-20 w-96 h-96 rounded-full blur-[120px] transition-all duration-1000 ${isDark ? 'bg-pink-900/10' : 'bg-pink-200/10'}`} />
+          <div className={`absolute bottom-1/4 -left-20 w-96 h-96 rounded-full blur-[120px] transition-all duration-1000 ${isDark ? 'bg-rose-900/10' : 'bg-rose-200/10'}`} />
         </div>
 
         <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className={`relative w-full max-w-[400px] p-10 lg:p-12 rounded-[2.5rem] border transition-all duration-700 shadow-2xl z-10 ${
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1, cubicBezier: [0.16, 1, 0.3, 1] }}
+          className={`relative w-full max-w-[420px] p-10 lg:p-14 rounded-[3rem] border transition-all duration-700 z-10 ${
             isDark 
-              ? 'bg-zinc-900/40 backdrop-blur-2xl border-white/5 shadow-black/50' 
-              : 'bg-white/70 backdrop-blur-2xl border-pink-50 shadow-pink-100/20'
+              ? 'bg-zinc-900/40 backdrop-blur-3xl border-white/5 shadow-[0_32px_64px_rgba(0,0,0,0.8)]' 
+              : 'bg-white/80 backdrop-blur-3xl border-white shadow-[0_32px_64px_rgba(233,30,99,0.08)]'
           }`}
         >
           <div className="relative">
             {/* Logo Area */}
             <motion.div 
-               whileHover={{ scale: 1.1, rotate: 12 }}
+               whileHover={{ scale: 1.05, rotate: 8 }}
                whileTap={{ scale: 0.95 }}
-               className="w-20 h-20 bg-gradient-to-br from-[#E91E63] to-[#C2185B] rounded-[2rem] mx-auto mb-10 flex items-center justify-center shadow-2xl shadow-pink-500/20 cursor-pointer"
+               className="w-20 h-20 bg-gradient-to-br from-[#F471B5] via-[#E91E63] to-[#C2185B] rounded-[2rem] mx-auto mb-12 flex items-center justify-center shadow-2xl shadow-pink-500/30 cursor-pointer"
             >
-              <span className="text-white text-3xl font-serif font-black drop-shadow-lg">S</span>
+              <span className="text-white text-3xl font-serif font-black drop-shadow-md">S</span>
             </motion.div>
             
-            <div className="text-center mb-12">
-                <h1 className={`text-3xl font-serif font-black tracking-tighter mb-2 uppercase ${isDark ? 'text-white' : 'text-zinc-900'}`}>
+            <div className="text-center mb-14">
+                <h1 className={`text-4xl font-serif font-black tracking-tighter mb-3 uppercase ${isDark ? 'text-white' : 'text-[#1E1E1E]'}`}>
                     Serena <span className="text-[#E91E63]">Glow</span>
                 </h1>
-                <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.4em]">Painel de Gestão Integrado</p>
+                <p className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.5em] opacity-80">Software de Gestão de Luxo</p>
             </div>
             
             <form onSubmit={handleLogin} className="space-y-8">
@@ -99,10 +103,10 @@ export const Admin: React.FC = () => {
                   type="text"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`w-full px-6 py-4 rounded-2xl border transition-all font-medium text-sm outline-none ${
+                  className={`w-full px-7 py-5 rounded-[1.5rem] border transition-all font-medium text-sm outline-none ${
                       isDark 
-                          ? 'bg-black/40 border-white/5 text-white focus:border-pink-500/50 focus:ring-4 focus:ring-pink-500/5 placeholder:text-zinc-700' 
-                          : 'bg-zinc-50 border-zinc-100 text-zinc-900 focus:border-pink-500/30 focus:ring-4 focus:ring-pink-500/5 placeholder:text-zinc-300'
+                          ? 'bg-black/40 border-white/5 text-white focus:border-pink-500/50 focus:ring-8 focus:ring-pink-500/5 placeholder:text-zinc-700' 
+                          : 'bg-[#F9FAFB] border-[#F3F4F6] text-[#1E1E1E] focus:border-[#E91E63] focus:ring-8 focus:ring-pink-500/5 placeholder:text-[#9CA3AF]'
                   }`}
                   placeholder="serena"
                   disabled={loading}
@@ -117,10 +121,10 @@ export const Admin: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full px-6 py-4 rounded-2xl border transition-all font-medium text-sm outline-none ${
+                  className={`w-full px-7 py-5 rounded-[1.5rem] border transition-all font-medium text-sm outline-none ${
                         isDark 
-                            ? 'bg-black/40 border-white/5 text-white focus:border-pink-500/50 focus:ring-4 focus:ring-pink-500/5 placeholder:text-zinc-700' 
-                            : 'bg-zinc-50 border-zinc-100 text-zinc-900 focus:border-pink-500/30 focus:ring-4 focus:ring-pink-500/5 placeholder:text-zinc-300'
+                            ? 'bg-black/40 border-white/5 text-white focus:border-pink-500/50 focus:ring-8 focus:ring-pink-500/5 placeholder:text-zinc-700' 
+                            : 'bg-[#F9FAFB] border-[#F3F4F6] text-[#1E1E1E] focus:border-[#E91E63] focus:ring-8 focus:ring-pink-500/5 placeholder:text-[#9CA3AF]'
                     }`}
                   placeholder="••••••••"
                   disabled={loading}
@@ -132,10 +136,10 @@ export const Admin: React.FC = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className={`group w-full h-16 rounded-2xl font-black tracking-[0.3em] uppercase text-[11px] transition-all flex items-center justify-center gap-3 active:scale-[0.98] shadow-xl ${
+                    className={`group w-full h-18 rounded-[1.5rem] font-black tracking-[0.4em] uppercase text-[12px] transition-all flex items-center justify-center gap-3 active:scale-[0.97] shadow-2xl relative overflow-hidden ${
                         isDark 
-                            ? 'bg-white text-black hover:bg-zinc-100 hover:shadow-white/10' 
-                            : 'bg-[#1E1E1E] text-white hover:bg-black hover:shadow-black/20'
+                            ? 'bg-white text-black hover:bg-zinc-100' 
+                            : 'bg-gradient-to-r from-[#F06292] to-[#E91E63] text-white hover:shadow-pink-500/30'
                     }`}
                   >
                     {loading ? (
