@@ -2,10 +2,14 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useLanguage } from '../LanguageContext';
 import { useLocation } from 'react-router-dom';
+import { api } from '../lib/api';
 
 export const Booking: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const location = useLocation();
+  const [dbServices, setDbServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -17,21 +21,66 @@ export const Booking: React.FC = () => {
   });
 
   useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const data = await api.get('/services');
+      setDbServices(data || []);
+    } catch (err: any) {
+      console.error('Error fetching services:', err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
     const serviceParam = params.get('service');
     if (serviceParam) {
       setFormData(prev => ({ ...prev, service: serviceParam }));
     }
-  }, [location]);
+  }, [location, dbServices]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(t('booking.success'));
-    setFormData({ name: '', phone: '', email: '', service: '', date: '', time: '', notes: '' });
+    setSubmitting(true);
+
+    try {
+      // 1. Get or create client via backend
+      const client = await api.post('/clients/verify', {
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email
+      });
+      
+      const customerId = client.id;
+
+      // 2. Submit appointment
+      const appointmentData = {
+        customer_id: customerId,
+        service_id: formData.service,
+        appointment_date: formData.date,
+        appointment_time: formData.time,
+        status: 'pending',
+        notes: formData.notes
+      };
+
+      await api.post('/bookings', appointmentData);
+
+      toast.success(t('booking.success'));
+      setFormData({ name: '', phone: '', email: '', service: '', date: '', time: '', notes: '' });
+    } catch (err: any) {
+      console.error('Booking error:', err.message);
+      toast.error(t('booking.error') || 'Erro ao realizar marcação');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const services = t('booking.services');
@@ -66,10 +115,20 @@ export const Booking: React.FC = () => {
 
             <div>
               <label htmlFor="service" className={labelClass}>{t('booking.service')}</label>
-              <select id="service" name="service" value={formData.service} onChange={handleChange} required className={inputClass + ' appearance-none'}>
-                <option value="" disabled>{t('booking.selectService')}</option>
-                {services.map((s: string) => (
-                  <option key={s} value={s}>{s}</option>
+              <select 
+                id="service" 
+                name="service" 
+                value={formData.service} 
+                onChange={handleChange} 
+                required 
+                disabled={loading}
+                className={inputClass + ' appearance-none'}
+              >
+                <option value="" disabled>{loading ? 'Carregando serviços...' : t('booking.selectService')}</option>
+                {dbServices.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {language === 'pt' ? s.name_pt : s.name_en} - {s.price} MZN
+                  </option>
                 ))}
               </select>
             </div>
@@ -92,9 +151,10 @@ export const Booking: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full md:w-auto bg-gradient-to-r from-pink-500 to-rose-500 text-white py-4 px-10 rounded-full font-medium tracking-wide hover:shadow-lg transition-shadow shadow-md mt-8 font-sans"
+              disabled={submitting}
+              className={`w-full md:w-auto bg-gradient-to-r from-pink-500 to-rose-500 text-white py-4 px-10 rounded-full font-medium tracking-wide hover:shadow-lg transition-all shadow-md mt-8 font-sans ${submitting ? 'opacity-70 cursor-not-allowed scale-95' : ''}`}
             >
-              {t('booking.confirm')}
+              {submitting ? 'A processar...' : t('booking.confirm')}
             </button>
           </form>
         </div>

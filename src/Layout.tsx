@@ -6,6 +6,7 @@ import { Menu, X, Sparkles, Instagram, Facebook, MapPin, Phone, Mail, Sun, Moon,
 import { BookingModal } from './components/BookingModal';
 import { PolicyModal } from './components/common/PolicyModal';
 import { motion, AnimatePresence } from 'motion/react';
+import { api } from './lib/api';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { language, setLanguage, t } = useLanguage();
@@ -15,7 +16,21 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
   const [policyType, setPolicyType] = useState<'privacy' | 'terms'>('privacy');
+  const [settings, setSettings] = useState<any>(null);
   const location = useLocation();
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const data = await api.get('/settings');
+      setSettings(data);
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,7 +65,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const isTransparent = !isScrolled && (location.pathname === '/' || location.pathname === '/about');
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-300 ${isDark ? 'bg-[#121212] text-[#EAEAEA]' : 'bg-neutral-50 text-gray-800'}`}>
+    <div className={`min-h-screen w-full flex flex-col font-sans transition-colors duration-300 ${isDark ? 'bg-[#121212] text-[#EAEAEA]' : 'bg-neutral-50 text-gray-800'}`}>
       {/* Navbar */}
       <nav
         className={`fixed w-full z-50 transition-all duration-300 ${
@@ -223,45 +238,31 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       </nav>
 
       {/* Main Content */}
-      <main className="flex-grow">
+      <main className="flex-grow w-full">
         {children}
       </main>
 
       {/* Footer */}
       <footer className={`pt-20 pb-10 ${isDark ? 'bg-gradient-to-br from-[#1a0a10] to-[#0d0508]' : 'bg-gradient-to-br from-pink-900 to-rose-900'} text-white`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <div className="col-span-1">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="flex flex-wrap justify-between gap-12 mb-16">
+            <div className="flex-1 flex flex-col items-start text-left min-w-[280px]">
               <Link to="/" className="flex items-center gap-2 mb-6">
                 <span className="font-serif text-2xl font-semibold tracking-wide">
                   Serena Glow
                 </span>
               </Link>
-              <div className="text-pink-100 max-w-sm leading-relaxed mb-8 font-sans transition-all duration-300">
-                <div className="block">
-                  {(t('footer.descriptionDesktop') ? String(t('footer.descriptionDesktop')) : String(t('footer.description'))).split('\n\n').map((paragraph: string, i: number) => (
-                    <p key={`desktop-${i}`} className={i > 0 ? "mt-2" : ""}>
-                      {paragraph.split('\n').map((line: string, j: number) => (
-                        <span key={`desktop-line-${j}`} className="block">{line}</span>
-                      ))}
-                    </p>
-                  ))}
-                </div>
-                {/* Mobile Version */}
-                <div className="md:hidden">
-                  {(t('footer.descriptionMobile') ? String(t('footer.descriptionMobile')) : String(t('footer.description'))).split('\n\n').map((paragraph: string, i: number) => (
-                    <p key={`mobile-${i}`} className={i > 0 ? "mt-2" : ""}>
-                      {paragraph.split('\n').map((line: string, j: number) => (
-                        <span key={`mobile-line-${j}`} className="block">{line}</span>
-                      ))}
-                    </p>
-                  ))}
-                </div>
+              <div className="text-pink-100 w-full leading-relaxed mb-8 font-sans transition-all duration-300" style={{ minWidth: '300px', maxWidth: '448px' }}>
+                <p className="text-base">
+                  {t('footer.descriptionDesktop') || t('footer.description')}
+                </p>
               </div>
               <div className="flex space-x-4">
                 <motion.a 
                   whileHover={{ scale: 1.02, rotate: 5 }}
-                  href="#" 
+                  href={settings?.instagram ? `https://instagram.com/${settings.instagram.replace('@', '')}` : "#"} 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full border border-pink-300/30 flex items-center justify-center hover:bg-pink-500 hover:border-pink-500 transition-colors"
                 >
                   <Instagram className="w-5 h-5 text-pink-100" />
@@ -276,8 +277,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               </div>
             </div>
 
-            <div>
-              <h4 className="font-serif text-lg mb-6 text-pink-200">{t('footer.quickLinks')}</h4>
+            <div className="flex flex-col items-start text-left min-w-[200px]">
+                <h4 className="font-serif text-lg mb-6 text-pink-200">{t('footer.quickLinks')}</h4>
               <ul className="space-y-4 font-sans">
                 {navLinks.map((link) => (
                   <li key={link.path}>
@@ -289,8 +290,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               </ul>
             </div>
 
-            <div>
-              <h4 className="font-serif text-lg mb-6 text-pink-200">{t('footer.services')}</h4>
+            <div className="flex flex-col items-start text-left min-w-[200px]">
+                <h4 className="font-serif text-lg mb-6 text-pink-200">{t('footer.services')}</h4>
               <ul className="space-y-4 font-sans">
                 {t('footer.serviceLinks').map((service: string, idx: number) => {
                   let cat = 'All';
@@ -311,27 +312,33 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               </ul>
             </div>
 
-            <div>
+            <div className="flex flex-col items-start text-left min-w-[250px]">
               <h4 className="font-serif text-lg mb-6 text-pink-200">{t('footer.contactInfo')}</h4>
               <ul className="space-y-4 text-pink-100 font-sans">
                 <li className="flex items-start gap-3 group cursor-default">
                   <MapPin className="w-5 h-5 text-pink-300 shrink-0 mt-0.5 transition-all duration-300 group-hover:scale-125 group-hover:text-pink-400" />
-                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-pink-300">{t('footer.address')}</span>
+                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-pink-300">
+                    {settings?.address || t('footer.address')}
+                  </span>
                 </li>
                 <li className="flex items-center gap-3 group cursor-default">
                   <Phone className="w-5 h-5 text-pink-300 shrink-0 transition-all duration-300 group-hover:scale-125 group-hover:text-pink-400" />
-                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-pink-300">{t('footer.phone')}</span>
+                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-pink-300">
+                    {settings?.phone || t('footer.phone')}
+                  </span>
                 </li>
                 <li className="flex items-center gap-3 group cursor-default">
                   <Mail className="w-5 h-5 text-pink-300 shrink-0 transition-all duration-300 group-hover:scale-125 group-hover:text-pink-400" />
-                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-pink-300">{t('footer.email')}</span>
+                  <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:text-pink-300">
+                    {settings?.email || t('footer.email')}
+                  </span>
                 </li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-pink-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 font-sans">
-            <p className="text-sm text-pink-200">
+          <div className="border-t border-pink-800 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 font-sans">
+            <p className="text-sm text-pink-200 whitespace-nowrap min-w-fit">
               {t('footer.copyright').replace('{year}', new Date().getFullYear().toString())}
             </p>
             <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8 text-sm text-pink-200">

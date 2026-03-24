@@ -3,16 +3,34 @@ import { useLanguage } from '../LanguageContext';
 import { useTheme } from '../ThemeContext';
 import { useLocation } from 'react-router-dom';
 import { BookingModal } from '../components/BookingModal';
+import { api } from '../lib/api';
 import { motion, AnimatePresence } from 'motion/react';
 import { Clock, ArrowRight, Sparkles, Scissors, Hand, HeartHandshake, Brush, Feather, Eye, Footprints, Smile, Palette, Coffee, Flower2, Droplet, Maximize2 } from 'lucide-react';
 import { ImagePreview } from '../components/common/ImagePreview';
 
 export const Services: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
+  const [dbServices, setDbServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
   const location = useLocation();
+
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const data = await api.get('/services');
+      setDbServices(data || []);
+    } catch (err: any) {
+      console.error('Error fetching services:', err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -39,9 +57,64 @@ export const Services: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState('');
 
+  const SERVICE_IMAGE_MAP: Record<string, string> = {
+    'Limpeza de Pele': '/images/facial_cleansing.png',
+    'Tratamento Facial': '/images/facial_treatment.png',
+    'Manicure': '/images/manicure.png',
+    'Manicure com Gel': '/images/gel_manicure.png',
+    'Pedicure': '/images/pedicure.png',
+    'Pedicure Spa': '/images/spa_pedicure.png',
+    'Sobrancelhas': '/images/eyebrows.png',
+    'Maquilhagem': '/images/gallery_hair_1.png',
+    'Maquilhagem Profissional': '/images/gallery_hair_1.png',
+    'Facial Cleansing': '/images/facial_cleansing.png',
+    'Facial Treatment': '/images/facial_treatment.png',
+    'Gel Manicure': '/images/gel_manicure.png',
+    'Spa Pedicure': '/images/spa_pedicure.png',
+    'Eyebrows': '/images/eyebrows.png',
+    'Makeup': '/images/gallery_hair_1.png'
+  };
+
+  const CATEGORY_IMAGE_MAP: Record<string, string> = {
+    'Facial': '/images/facial_treatment.png',
+    'Nails': '/images/manicure.png',
+    'Makeup': '/images/gallery_hair_1.png',
+    'Eyebrows': '/images/eyebrows.png'
+  };
+
+  const getServiceImage = (service: any) => {
+    if (service.image_url) return service.image_url;
+    
+    // Check by name (PT or EN)
+    const nameMap = SERVICE_IMAGE_MAP[service.name_pt] || SERVICE_IMAGE_MAP[service.name_en];
+    if (nameMap) return nameMap;
+    
+    // Check by category
+    const catName = service.category?.name_en || service.category_id || '';
+    const catMap = CATEGORY_IMAGE_MAP[catName];
+    if (catMap) return catMap;
+    
+    return "/images/hero_serena_glow.png";
+  };
 
 
-  const services = Array.isArray(t('services.list')) ? t('services.list') : [];
+
+  const services = dbServices.map(s => {
+    const priceValue = s.price || 0;
+    const catName = s.category?.name_en || '';
+    
+    return {
+      id: s.id,
+      name: language === 'pt' ? (s.name_pt || '') : (s.name_en || ''),
+      price: `${priceValue.toLocaleString()} MZN`,
+      desc: language === 'pt' ? (s.description_pt || s.name_pt || '') : (s.description_en || s.name_en || ''),
+      category: catName.includes('Facial') ? 'Facial' : 
+                catName.includes('Nail') ? 'Nails' : 
+                catName.includes('Makeup') ? 'Makeup' : 
+                catName.includes('Eyebrow') ? 'Eyebrows' : 'All',
+      img: getServiceImage(s)
+    };
+  });
 
 
 
@@ -51,7 +124,7 @@ export const Services: React.FC = () => {
 
   return (
     <div className="pt-24 w-full bg-neutral-50 dark:bg-[#121212] min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 w-full" style={{ maxWidth: '1280px' }}>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,7 +158,7 @@ export const Services: React.FC = () => {
         <motion.div 
           layout
           id="services-grid" 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-w-0"
         >
           <AnimatePresence mode="popLayout">
             {filteredServices.map((service: any, idx: number) => (
@@ -117,7 +190,7 @@ export const Services: React.FC = () => {
                       whileHover={{ scale: 1.02, backgroundColor: "var(--color-pink-500)", color: "white" }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {
-                        setSelectedService(service.name);
+                        setSelectedService(service.id);
                         setIsModalOpen(true);
                       }}
                       className="w-full inline-flex justify-center items-center bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 px-6 py-3 rounded-full text-sm font-bold tracking-wider transition-all duration-300 group border border-pink-100 dark:border-pink-800/40 shadow-sm hover:shadow-md"

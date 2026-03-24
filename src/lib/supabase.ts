@@ -4,10 +4,11 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Supabase credentials missing. Admin features will be limited to mock data.');
+  console.error('CRITICAL: Supabase credentials missing! Admin features and data fetching will fail.');
 }
 
+// In production, we should fail fast if keys are missing
 export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  supabaseAnonKey || 'placeholder-key'
+  supabaseUrl || '',
+  supabaseAnonKey || ''
 );

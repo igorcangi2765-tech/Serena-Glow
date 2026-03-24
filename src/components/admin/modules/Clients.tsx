@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Mail, Phone, Calendar, DollarSign, User, Star, AlertCircle } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { Search, Filter, Mail, Phone, Calendar, DollarSign, User, Star, AlertCircle, TrendingUp, UserCheck, Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { api } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 import { useLanguage } from '@/LanguageContext';
+import { format } from 'date-fns';
 import { Modal } from '../Modal';
 
 interface Client {
@@ -22,11 +24,18 @@ export const Clients: React.FC = () => {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const { t } = useLanguage();
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isNewClientOpen, setIsNewClientOpen] = useState(false);
   const [clientHistory, setClientHistory] = useState<any[]>([]);
+  const [newClient, setNewClient] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    notes: '',
+    is_vip: false
+  });
 
   useEffect(() => {
     fetchClients();
@@ -34,32 +43,34 @@ export const Clients: React.FC = () => {
 
   const fetchClients = async () => {
     try {
-      const { data, error } = await supabase
-        .from('clients')
-        .select('*')
-        .order('name');
-      
-      if (error) throw error;
+      setLoading(true);
+      const data = await api.get('/clients');
       setClients(data || []);
     } catch (error: any) {
-      console.error('Error fetching clients:', error.message);
-      toast.error(t('admin.errorLoadingClients'));
+      toast.error('Erro ao carregar clientes');
     } finally {
       setLoading(false);
     }
   };
+
   const fetchHistory = async (clientId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('appointments')
-        .select('*, services(name)')
-        .eq('client_id', clientId)
-        .order('appointment_date', { ascending: false });
-      
-      if (error) throw error;
+      const data = await api.get(`/clients/${clientId}/history`);
       setClientHistory(data || []);
     } catch (error: any) {
-      toast.error(t('admin.errorLoadingHistory'));
+      toast.error('Erro ao carregar histórico');
+    }
+  };
+
+  const handleCreateClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await api.post('/clients', newClient);
+      toast.success('Cliente adicionada com sucesso');
+      setIsNewClientOpen(false);
+      fetchClients();
+    } catch (error: any) {
+      toast.error('Erro ao adicionar cliente');
     }
   };
 
@@ -68,21 +79,17 @@ export const Clients: React.FC = () => {
     if (!selectedClient) return;
 
     try {
-      const { error } = await supabase
-        .from('clients')
-        .update({
-          notes: selectedClient.notes,
-          allergies: selectedClient.allergies,
-          is_vip: selectedClient.is_vip
-        })
-        .eq('id', selectedClient.id);
+      await api.put(`/clients/${selectedClient.id}`, {
+        notes: selectedClient.notes,
+        allergies: selectedClient.allergies,
+        is_vip: selectedClient.is_vip
+      });
 
-      if (error) throw error;
-      toast.success(t('admin.clientUpdated'));
+      toast.success('Perfil atualizado com sucesso');
       setIsEditOpen(false);
       fetchClients();
     } catch (error: any) {
-      toast.error(t('admin.errorUpdatingClient'));
+      toast.error('Erro ao atualizar cliente');
     }
   };
 
@@ -93,101 +100,107 @@ export const Clients: React.FC = () => {
   );
 
   return (
-    <div className="flex flex-col h-[calc(100vh-12rem)] animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex justify-between items-center mb-8">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white/40 dark:bg-[#1E1E1E]/40 backdrop-blur-xl p-8 rounded-3xl border border-white/50 dark:border-white/5 shadow-xl shrink-0">
         <div>
-          <h2 className="text-3xl font-serif text-gray-800">{t('admin.clientsModule')}</h2>
-          <p className="text-gray-500 font-sans mt-1">{t('admin.clientsSubtitle')} {clients.length} {t('admin.clientsCount')}.</p>
+          <h1 className="text-3xl font-serif font-black text-gray-800 dark:text-white uppercase tracking-tighter italic">Clientes</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium italic text-sm">Gerencie e acompanhe todas as suas clientes</p>
         </div>
-        <div className="flex gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input 
-              type="text"
-              placeholder={t('admin.searchClient')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-pink-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500/20 w-64 transition-all text-sm"
-            />
-          </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-pink-200 rounded-xl text-sm font-medium text-gray-600 hover:bg-pink-50 transition-colors">
-            <Filter size={18} /> {t('admin.filter')}
-          </button>
+        
+        <div className="flex flex-wrap items-center gap-4">
+            <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-pink-500 transition-colors" size={18} />
+                <input 
+                    type="text" 
+                    placeholder="Procurar cliente..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-12 pr-6 py-4 bg-white/40 dark:bg-white/5 backdrop-blur-xl border border-pink-100/30 dark:border-white/5 rounded-2xl outline-none focus:ring-4 focus:ring-pink-500/10 transition-all font-sans text-sm w-full md:w-80 shadow-inner"
+                />
+            </div>
+            <button 
+                onClick={() => setIsNewClientOpen(true)}
+                className="flex items-center gap-3 px-8 py-4 bg-gray-900 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black transition-all active:scale-95 relative z-20"
+            >
+                <Plus size={16} /> + Nova Cliente
+            </button>
         </div>
       </div>
 
-      <div className="flex-1 bg-white rounded-[2.5rem] border border-pink-100 shadow-xl overflow-hidden flex flex-col">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
+      <div className="bg-white/40 dark:bg-[#1E1E1E]/40 backdrop-blur-xl rounded-[3rem] border border-white/50 dark:border-white/5 shadow-2xl overflow-hidden shadow-pink-100/20">
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-pink-50/50 border-b border-pink-50 text-xs font-bold text-gray-400 uppercase tracking-widest">
-                <th className="px-8 py-4">{t('admin.client')}</th>
-                <th className="px-8 py-4">{t('admin.contact')}</th>
-                <th className="px-8 py-4">{t('admin.totalSpent')}</th>
-                <th className="px-8 py-4">{t('admin.lastVisit')}</th>
-                <th className="px-8 py-4">{t('admin.actions')}</th>
+              <tr className="bg-white/60 dark:bg-white/5 border-b border-pink-50/50 dark:border-white/5 text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">
+                <th className="px-10 py-6 italic">Nome</th>
+                <th className="px-10 py-6 italic">Contacto</th>
+                <th className="px-10 py-6 italic">Total gasto</th>
+                <th className="px-10 py-6 italic">Última visita</th>
+                <th className="px-10 py-6 text-center italic">Ações</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-pink-50/30">
+            <tbody className="divide-y divide-pink-50/20 dark:divide-white/5">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-10 text-center text-gray-400 italic">{t('admin.loadingClients')}</td>
+                  <td colSpan={5} className="px-10 py-20 text-center text-gray-400 font-serif italic">A carregar registos...</td>
                 </tr>
               ) : filteredClients.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-10 text-center text-gray-400 italic">{t('admin.noClientsFound')}</td>
+                  <td colSpan={5} className="px-10 py-32 text-center align-middle">
+                      <div className="flex flex-col items-center justify-center">
+                          <div className="w-24 h-24 bg-gray-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-6">
+                            <User size={40} className="text-gray-300" />
+                          </div>
+                          <h3 className="text-2xl font-serif font-bold text-gray-800 dark:text-white mb-2 italic uppercase tracking-widest">Ainda não há clientes registadas</h3>
+                          <p className="text-gray-500 dark:text-gray-400 text-[10px] font-black uppercase tracking-[0.2em]">Adicione uma nova cliente para começar.</p>
+                      </div>
+                  </td>
                 </tr>
               ) : filteredClients.map(client => (
-                <tr key={client.id} className="hover:bg-pink-50/10 transition-colors group">
-                  <td className="px-8 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-pink-100 flex items-center justify-center text-pink-500 font-bold">
+                <tr key={client.id} className="hover:bg-white/40 dark:hover:bg-white/5 transition-all group border-b border-pink-50/10 dark:border-white/5 last:border-0">
+                  <td className="px-10 py-8">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500/10 to-rose-500/10 text-pink-600 flex items-center justify-center font-black text-lg border border-pink-100 dark:border-white/10 shadow-sm transition-transform group-hover:scale-110">
                         {client.name.charAt(0)}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <p className="font-bold text-gray-800">{client.name}</p>
+                          <p className="font-serif font-black text-gray-800 dark:text-white text-base leading-none italic whitespace-normal">{client.name}</p>
                           {client.is_vip && (
-                            <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full border border-amber-200 uppercase tracking-tighter">VIP</span>
+                            <span className="flex items-center px-2 py-0.5 bg-amber-500 text-white text-[8px] font-black rounded-lg uppercase tracking-widest italic">VIP</span>
                           )}
                         </div>
-                        <p className="text-xs text-gray-400 font-sans">{t('admin.memberSince')} {new Date(client.created_at).toLocaleDateString()}</p>
+                        <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-1 italic">Cliente Premium</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-4 space-y-1">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Phone size={14} className="text-pink-400" />
-                      {client.phone}
+                  <td className="px-10 py-6">
+                    <div className="space-y-1 italic">
+                        <div className="flex items-center gap-3 text-xs font-bold text-gray-600 dark:text-gray-300">
+                           <Phone size={12} className="text-pink-500" /> {client.phone}
+                        </div>
+                        {client.email && (
+                          <div className="flex items-center gap-3 text-xs font-bold text-gray-600 dark:text-gray-300">
+                             <Mail size={12} className="text-pink-500" /> {client.email}
+                          </div>
+                        )}
                     </div>
-                    {client.email && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <Mail size={14} className="text-pink-400" />
-                        {client.email}
-                      </div>
-                    )}
                   </td>
-                  <td className="px-8 py-4 text-emerald-600 font-bold font-sans">
-                    {client.total_spent.toLocaleString()} MZN
+                  <td className="px-10 py-6">
+                        <span className="text-lg font-serif font-black text-gray-800 dark:text-white tracking-tighter italic whitespace-normal">{client.total_spent.toLocaleString()} MZN</span>
                   </td>
-                  <td className="px-8 py-4 text-sm text-gray-500 font-sans">
-                    {client.last_visit ? new Date(client.last_visit).toLocaleDateString() : t('admin.never')}
-                    {client.allergies && (
-                      <div className="mt-1 flex items-center gap-1 text-[10px] text-rose-500 font-bold bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100 w-fit">
-                        <AlertCircle size={10} /> {t('admin.allergies')}
-                      </div>
-                    )}
+                  <td className="px-10 py-6">
+                    <p className="text-xs font-bold text-gray-600 dark:text-gray-300 italic">{client.last_visit ? new Date(client.last_visit).toLocaleDateString() : 'Nenhuma visita'}</p>
                   </td>
-                  <td className="px-8 py-4">
-                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <td className="px-10 py-6">
+                    <div className="flex justify-center gap-3">
                       <button 
                         onClick={() => {
                           setSelectedClient(client);
                           fetchHistory(client.id);
                           setIsHistoryOpen(true);
                         }}
-                        className="p-2 bg-pink-50 text-pink-600 rounded-lg hover:bg-pink-100 transition-colors"
-                        title={t('admin.viewHistory')}
+                        className="p-4 bg-gray-50 dark:bg-white/5 text-gray-400 hover:bg-pink-500 hover:text-white rounded-2xl transition-all"
                       >
                         <Calendar size={18} />
                       </button>
@@ -196,17 +209,9 @@ export const Clients: React.FC = () => {
                           setSelectedClient(client);
                           setIsEditOpen(true);
                         }}
-                        className="p-2 bg-pink-50 text-pink-600 rounded-lg hover:bg-pink-100 transition-colors"
-                        title={t('admin.editClient')}
+                        className="p-4 bg-gray-50 dark:bg-white/5 text-gray-400 hover:bg-pink-500 hover:text-white rounded-2xl transition-all"
                       >
                         <User size={18} />
-                      </button>
-                      <button 
-                        onClick={() => toast.success(`${t('admin.sendMessage')} ${client.name}`)}
-                        className="p-2 bg-pink-50 text-pink-600 rounded-lg hover:bg-pink-100 transition-colors"
-                        title={t('admin.sendMessage')}
-                      >
-                        <Mail size={18} />
                       </button>
                     </div>
                   </td>
@@ -217,81 +222,52 @@ export const Clients: React.FC = () => {
         </div>
       </div>
 
-      {/* History Modal */}
-      <Modal isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} title={t('admin.clientHistory')}>
-        <div className="p-8 space-y-6">
-          <div className="flex items-center gap-4 p-6 bg-pink-50/50 rounded-3xl border border-pink-100">
-            <div className="w-16 h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center text-2xl text-pink-500 font-bold border border-pink-100">
-              {selectedClient?.name.charAt(0)}
-            </div>
-            <div>
-              <h4 className="text-xl font-serif font-bold text-gray-800">{selectedClient?.name}</h4>
-              <p className="text-sm text-gray-500 font-sans">{selectedClient?.phone}</p>
-            </div>
-          </div>
-          
-          <div className="space-y-3">
-            <h5 className="text-xs font-bold text-gray-400 uppercase tracking-widest px-2">{t('admin.pastAppointments')}</h5>
-            <div className="max-h-96 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
-              {clientHistory.length === 0 ? (
-                <p className="text-center py-10 text-gray-400 italic text-sm">{t('admin.noHistory')}</p>
-              ) : clientHistory.map(appt => (
-                <div key={appt.id} className="p-4 bg-white border border-pink-50 rounded-2xl flex justify-between items-center hover:border-pink-200 transition-all">
-                  <div>
-                    <p className="font-bold text-gray-800">{appt.services?.name}</p>
-                    <p className="text-xs text-gray-400 font-sans">{new Date(appt.appointment_date).toLocaleDateString()} @ {appt.appointment_time}</p>
-                  </div>
-                  <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${appt.status === 'confirmado' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-50 text-gray-400'}`}>
-                    {t(`admin.${appt.status}`)}
-                  </div>
+      <Modal isOpen={isNewClientOpen} onClose={() => setIsNewClientOpen(false)} title="Nova Cliente">
+        <form onSubmit={handleCreateClient} className="space-y-4">
+          <input type="text" placeholder="Nome" value={newClient.name} onChange={e => setNewClient({...newClient, name: e.target.value})} className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-pink-100 dark:border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-pink-500/20 transition-all font-bold" required />
+          <input type="tel" placeholder="Telemóvel" value={newClient.phone} onChange={e => setNewClient({...newClient, phone: e.target.value})} className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-pink-100 dark:border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-pink-500/20 transition-all font-bold" required />
+          <input type="email" placeholder="Email (Opcional)" value={newClient.email} onChange={e => setNewClient({...newClient, email: e.target.value})} className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-pink-100 dark:border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-pink-500/20 transition-all" />
+          <textarea placeholder="Notas / Preferências" value={newClient.notes} onChange={e => setNewClient({...newClient, notes: e.target.value})} className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-pink-100 dark:border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-pink-500/20 transition-all" rows={3} />
+          <label className="flex items-center gap-3 text-sm font-bold bg-gray-50 dark:bg-white/5 p-4 rounded-2xl border border-pink-100 dark:border-white/10 cursor-pointer">
+            <input type="checkbox" checked={newClient.is_vip} onChange={e => setNewClient({...newClient, is_vip: e.target.checked})} className="w-5 h-5 accent-pink-500" />
+            Marcar como Cliente VIP (Estrela)
+          </label>
+          <button type="submit" className="w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black transition-all mt-4">Adicionar Cliente</button>
+        </form>
+      </Modal>
+
+      <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} title="Editar Cliente">
+        {selectedClient && (
+          <form onSubmit={handleUpdateClient} className="space-y-4">
+            <textarea placeholder="Notas / Preferências" value={selectedClient.notes || ''} onChange={e => setSelectedClient({...selectedClient, notes: e.target.value})} className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-pink-100 dark:border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-pink-500/20 transition-all" rows={3} />
+            <textarea placeholder="Alergias (ex: Produtos específicos)" value={selectedClient.allergies || ''} onChange={e => setSelectedClient({...selectedClient, allergies: e.target.value})} className="w-full p-4 bg-gray-50 dark:bg-white/5 border border-pink-100 dark:border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-pink-500/20 transition-all" rows={2} />
+            <label className="flex items-center gap-3 text-sm font-bold bg-gray-50 dark:bg-white/5 p-4 rounded-2xl border border-pink-100 dark:border-white/10 cursor-pointer">
+              <input type="checkbox" checked={selectedClient.is_vip} onChange={e => setSelectedClient({...selectedClient, is_vip: e.target.checked})} className="w-5 h-5 accent-pink-500" />
+              Estatuto VIP
+            </label>
+            <button type="submit" className="w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black transition-all mt-4">Guardar Alterações</button>
+          </form>
+        )}
+      </Modal>
+
+      <Modal isOpen={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} title={`Histórico: ${selectedClient?.name || ''}`}>
+        <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar pr-2">
+          {clientHistory.length === 0 ? (
+            <p className="text-gray-500 text-center py-10 italic">Nenhum histórico encontrado para esta cliente.</p>
+          ) : (
+            clientHistory.map((appt, idx) => (
+              <div key={idx} className="p-4 bg-gray-50 dark:bg-white/5 rounded-2xl border border-pink-100/50 dark:border-white/10 shadow-sm flex justify-between items-center">
+                <div>
+                  <p className="font-bold text-gray-800 dark:text-white">{new Date(appt.appointment_date).toLocaleDateString()} às {appt.appointment_time}</p>
+                  <p className="text-sm text-gray-500 italic mt-1">{appt.services?.name_pt || 'Serviço'}</p>
                 </div>
-              ))}
-            </div>
-          </div>
+                <span className="text-[9px] font-black uppercase text-pink-500 tracking-widest bg-pink-50 dark:bg-pink-900/20 px-3 py-1.5 rounded-lg">{appt.status}</span>
+              </div>
+            ))
+          )}
         </div>
       </Modal>
 
-      {/* Edit Modal */}
-      <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} title={t('admin.editClient')}>
-        <form onSubmit={handleUpdateClient} className="p-8 space-y-6">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 px-2">{t('admin.notes')}</label>
-              <textarea 
-                value={selectedClient?.notes || ''}
-                onChange={(e) => selectedClient && setSelectedClient({...selectedClient, notes: e.target.value})}
-                className="w-full p-4 bg-pink-50/30 border border-pink-50 rounded-2xl text-sm focus:ring-1 focus:ring-pink-500 outline-none h-24 transition-all"
-                placeholder={t('admin.notesPlaceholder')}
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-rose-400 uppercase tracking-widest mb-2 px-2">{t('admin.allergies')}</label>
-              <input 
-                type="text"
-                value={selectedClient?.allergies || ''}
-                onChange={(e) => selectedClient && setSelectedClient({...selectedClient, allergies: e.target.value})}
-                className="w-full p-4 bg-rose-50/30 border border-rose-50 rounded-2xl text-sm focus:ring-1 focus:ring-rose-500 outline-none transition-all text-rose-600"
-                placeholder={t('admin.allergiesPlaceholder')}
-              />
-            </div>
-            <div className="flex items-center gap-3 p-4 bg-amber-50 rounded-2xl border border-amber-100">
-              <input 
-                type="checkbox"
-                checked={selectedClient?.is_vip || false}
-                onChange={(e) => selectedClient && setSelectedClient({...selectedClient, is_vip: e.target.checked})}
-                id="vip-check"
-                className="w-5 h-5 accent-amber-500"
-              />
-              <label htmlFor="vip-check" className="text-sm font-bold text-amber-700 flex items-center gap-2 cursor-pointer uppercase tracking-tighter">
-                <Star size={16} /> {t('admin.isVip')}
-              </label>
-            </div>
-          </div>
-          <button type="submit" className="w-full py-4 bg-pink-500 text-white rounded-2xl font-bold shadow-lg shadow-pink-100 hover:shadow-xl transition-all uppercase tracking-widest text-sm">
-            {t('admin.saveChanges')}
-          </button>
-        </form>
-      </Modal>
     </div>
   );
 };

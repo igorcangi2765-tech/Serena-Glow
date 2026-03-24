@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../LanguageContext';
 import { useTheme } from '../ThemeContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Maximize2 } from 'lucide-react';
 import { ImagePreview } from '../components/common/ImagePreview';
+import { api } from '../lib/api';
 
 export const Gallery: React.FC = () => {
   const { t } = useLanguage();
@@ -12,6 +13,26 @@ export const Gallery: React.FC = () => {
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [images, setImages] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
+  const fetchImages = async () => {
+    try {
+      const data = await api.get('/gallery');
+      setImages(data.map((img: any) => ({
+        url: img.image_url,
+        category: img.category || 'All'
+      })) || []);
+    } catch (error) {
+      console.error('Error loading gallery:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const openPreview = (index: number) => {
     setSelectedImageIndex(index);
@@ -19,7 +40,6 @@ export const Gallery: React.FC = () => {
   };
 
   const categories = Array.isArray(t('galleryPage.categories')) ? t('galleryPage.categories') : [];
-  const images = Array.isArray(t('galleryPage.images')) ? (t('galleryPage.images') as any[]) : [];
 
   const filteredImages = activeCategoryIndex === 0
     ? images
@@ -27,7 +47,7 @@ export const Gallery: React.FC = () => {
 
   return (
     <div className="pt-24 w-full bg-white dark:bg-[#121212] min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 w-full" style={{ maxWidth: '1280px' }}>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -59,7 +79,7 @@ export const Gallery: React.FC = () => {
 
         <motion.div 
           layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0"
         >
           <AnimatePresence mode="popLayout">
             {filteredImages.map((img: any, idx: number) => (

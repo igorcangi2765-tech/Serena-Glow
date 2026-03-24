@@ -36,7 +36,7 @@ export const About: React.FC = () => {
           <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+        <div className="relative z-10 mx-auto px-4 text-center" style={{ maxWidth: '896px' }}>
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -56,18 +56,18 @@ export const About: React.FC = () => {
       </section>
 
       {/* Story & Mission */}
-      <section className="py-12 md:py-24 bg-white dark:bg-[#1E1E1E]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 bg-white dark:bg-[#1E1E1E]">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 w-full" style={{ maxWidth: '1280px' }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div>
+            <div className="w-full" style={{ minWidth: '300px', flexShrink: 0 }}>
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-6 tracking-wide">
                 {language === 'pt' ? 'A Nossa História' : 'Our Story'}
               </h2>
-              <p className="text-gray-600 dark:text-[#A0A0A0] leading-relaxed text-base md:text-lg font-sans">
+              <p className="text-gray-600 dark:text-[#A0A0A0] leading-relaxed text-base md:text-lg font-sans leading-relaxed">
                 {t('about.mission')}
               </p>
             </div>
-            <div className="relative">
+            <div className="relative w-full" style={{ minWidth: '300px', flexShrink: 0 }}>
               <img
                 src="/images/about_story.png"
                 alt="Salon Details"
@@ -82,31 +82,32 @@ export const About: React.FC = () => {
       </section>
 
       {/* Values */}
-      <section className="py-12 md:py-16 bg-pink-50 dark:bg-[#121212]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 bg-pink-50 dark:bg-[#121212]">
+        <div className="mx-auto px-6 w-full" style={{ maxWidth: '1200px' }}>
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('about.values.title')}</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
             {valuesList.map((val: any, idx: number) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                whileHover={{ y: -8, boxShadow: "0 20px 25px -5px rgba(244, 63, 94, 0.1)" }}
+                whileHover={{ y: -4, boxShadow: "0 20px 25px -5px rgba(244, 63, 94, 0.1)" }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="bg-white dark:bg-[#1E1E1E] px-6 py-8 rounded-2xl text-center shadow-md border border-pink-100 dark:border-[#2E2E2E] group transition-all duration-300"
+                transition={{ duration: 0.3, delay: idx * 0.1 }}
+                className="bg-white dark:bg-[#1E1E1E] px-8 py-7 rounded-2xl text-center shadow-md border border-pink-100 dark:border-[#2E2E2E] group transition-all duration-300 w-full"
+                style={{ minWidth: '260px', maxWidth: '360px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', flexShrink: 0, margin: '0 auto' }}
               >
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-pink-100 dark:bg-pink-900/30 mb-4 group-hover:bg-pink-500 transition-colors duration-300">
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-pink-100 dark:bg-pink-900/30 mb-3 group-hover:bg-pink-500 transition-colors duration-300">
                   <div className="group-hover:text-white transition-colors duration-300">
                     {React.cloneElement(valueIcons[idx] as React.ReactElement, {
                       className: `${(valueIcons[idx] as React.ReactElement).props.className} group-hover:text-white`
                     })}
                   </div>
                 </div>
-                <h3 className="text-2xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mt-2 mb-3">{val.title}</h3>
-                <p className="text-gray-600 dark:text-[#A0A0A0] font-sans leading-relaxed mt-2 max-w-sm mx-auto text-center">{val.desc}</p>
+                <h3 className="text-2xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mt-0 mb-2">{val.title}</h3>
+                <p className="text-gray-600 dark:text-[#A0A0A0] font-sans leading-relaxed text-center text-base md:text-lg max-w-[310px] mx-auto">{val.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -114,12 +115,12 @@ export const About: React.FC = () => {
       </section>
 
       {/* Team Preview */}
-      <section className="py-12 md:py-24 bg-white dark:bg-[#1E1E1E]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 bg-white dark:bg-[#1E1E1E]">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 w-full" style={{ maxWidth: '1280px' }}>
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('team.title')}</h2>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
             {teamMembers.map((member: any, idx: number) => (
               <motion.div
                 key={idx}
@@ -138,9 +139,9 @@ export const About: React.FC = () => {
                   />
                   <div className="absolute inset-0 transition-opacity duration-300" />
                 </div>
-                <h3 className="text-2xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-2">{member.name}</h3>
-                <p className="text-pink-600 dark:text-pink-400 font-bold uppercase tracking-wider text-sm font-sans mb-3">{member.role}</p>
-                <p className="text-gray-600 dark:text-[#A0A0A0] text-sm font-sans leading-relaxed max-w-xs mx-auto">{member.desc}</p>
+                <h3 className="text-xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-1">{member.name}</h3>
+                <p className="text-pink-600 dark:text-pink-400 font-bold uppercase tracking-wider text-[10px] md:text-xs font-sans mb-3">{member.role}</p>
+                <p className="text-gray-600 dark:text-[#A0A0A0] text-[15px] font-sans leading-relaxed max-w-[260px] mx-auto">{member.desc}</p>
               </motion.div>
             ))}
           </div>

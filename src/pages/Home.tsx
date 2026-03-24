@@ -38,11 +38,12 @@ export const Home: React.FC = () => {
   const team = t('team.members');
 
   const gallery = [
-    "/images/facial_cleansing.png",
-    "/images/gallery_skin_1.png",
-    "/images/manicure.png",
-    "/images/gallery_hair_1.png",
-    "/images/hero_serena_glow.png",
+    "/images/gallery_ai_interior.png",
+    "/images/gallery_ai_facial.png",
+    "/images/gallery_ai_nails.png",
+    "/images/gallery_ai_makeup.png",
+    "/images/gallery_ai_hair.png",
+    "/images/gallery_ai_pedicure.png",
   ];
 
   const testimonials = t('testimonials.list').map((testimonial: any) => ({
@@ -70,8 +71,13 @@ export const Home: React.FC = () => {
         </div>
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-20">
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight tracking-wide whitespace-pre-line drop-shadow-md">
-            {t('hero.headline')}
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight tracking-wide drop-shadow-md">
+            {t('hero.headline').split('\n').map((line, i, arr) => (
+              <React.Fragment key={i}>
+                {line}
+                {i < arr.length - 1 && <br />}
+              </React.Fragment>
+            ))}
           </h1>
           <p className="text-base md:text-lg text-white mb-8 font-sans leading-relaxed text-center max-w-2xl mx-auto drop-shadow-sm font-medium">
             {t('hero.subheadline')}

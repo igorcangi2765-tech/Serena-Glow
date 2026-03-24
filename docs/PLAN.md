@@ -1,31 +1,26 @@
-# PLAN: Fix Light Mode Contrast Bug 🎼⚖️
+# Orchestration Plan: SalesPOS Final Polish
 
-## 🕵️ Phase 1: Problem Analysis
-The "Marcar Agora" buttons on the Services page exhibit a contrast bug in Light Mode, where the button background/text becomes invisible or near-invisible, especially during hover states. This is caused by:
-1.  **Missing Design Tokens**: `Services.tsx` references `var(--pink-500)` in Framer Motion's `whileHover`, but this variable is not defined in `index.css`.
-2.  **Inconsistent Styling**: Hover states in `whileHover` are competing with Tailwind's `hover:` classes, leading to unpredictable rendering in Light Mode.
-3.  **Color Variable Misalignment**: The project uses a custom `@theme` but attempts to use standard Tailwind variable naming in JS.
+The user is still experiencing issues with the SalesPOS cart items being too small, showing in the background, and having a "black opacity" overlay. We will use a multi-agent approach to resolve this.
 
-## 🛠️ Phase 2: Proposed Changes
+## Phase 1: Planning and Discovery
+- **Agent**: `project-planner` + `explorer-agent`
+- **Task**: Identify all CSS classes and components contributing to the "black opacity" and "small font" look. Trace the `AnimatePresence` and `motion.div` styles for the cart.
 
-### 1. `src/index.css`
-- Ensure essential color variables are correctly mapped for both CSS and JS access.
-- Define `--color-pink-500` if necessary, or standardize on existing `--color-deep-rose`.
+## Phase 2: Implementation (Parallel)
+- **Agent**: `frontend-specialist`
+- **Task**: 
+    - Remove the `bg-black/40` overlay if it's the target.
+    - Increase cart item font sizes to `text-lg` for names and `text-base` for details.
+    - Change grid layout to a more spacious 2-row or 2-column stacked layout per item.
+    - Ensure `z-index` of professional selector is at least `50+`.
+- **Agent**: `debugger`
+- **Task**: Check for any `opacity` or `filter: blur` properties applied to the cart container or its children.
 
-### 2. `src/pages/Services.tsx`
-- **[FIX]** Update `whileHover` to use valid CSS variables (`var(--color-pink-500)` or `var(--color-deep-rose)`) or direct hex values consistent with the theme.
-- **[REFINE]** Synchronize button styles with the premium "Serena Glow" design language (pink-500/rose-500 gradients).
-- **[CLEANUP]** Remove redundant or conflicting `hover:` classes when using Framer Motion for state management.
+## Phase 3: Verification
+- **Agent**: `test-engineer`
+- **Task**: Verify the layout doesn't clip on common screen sizes after the size increase.
 
-### 3. `src/pages/Home.tsx`
-- Audit the "Services Preview" section to ensure the same bug doesn't exist in the small cards.
-
-## 🧪 Phase 3: Verification Plan
-
-### Automated Checks
-- Run `npm run lint` to catch any remaining theme variable issues.
-- Verification of accessibility (contrast ratios) for the fixed buttons.
-
-### Manual Verification
-- Visual check in both Light and Dark modes.
-- Hover state verification across all service cards.
+## Deliverables
+- [ ] Fixed `SalesPOS.tsx` with large, clear item list.
+- [ ] No dark overlays obscuring the view.
+- [ ] Responsive professional selector.

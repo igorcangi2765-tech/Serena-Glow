@@ -1,20 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useLanguage } from '../LanguageContext';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
+import { api } from '../lib/api';
 
 export const Contact: React.FC = () => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [settings, setSettings] = useState<any>(null);
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const data = await api.get('/settings');
+      setSettings(data);
+    } catch (error) {
+      console.error('Error loading settings:', error);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(t('contact.success'));
-    setFormData({ name: '', phone: '', email: '', message: '' });
+    setIsSubmitting(true);
+    
+    try {
+      await api.post('/inbox', formData);
+      toast.success(t('contact.success'));
+      setFormData({ name: '', phone: '', email: '', message: '' });
+    } catch (error: any) {
+      console.error('Error submitting form:', error.message);
+      toast.error('Erro ao enviar mensagem. Tente novamente.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -32,10 +58,10 @@ export const Contact: React.FC = () => {
               <h2 className="text-3xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-8">{t('contact.infoTitle')}</h2>
               <div className="space-y-6">
                 {[
-                  { icon: <MapPin className="w-6 h-6 text-pink-500 transition-colors duration-300 group-hover:text-white" />, label: t('contact.address'), value: t('contact.addressValue') },
-                  { icon: <Phone className="w-6 h-6 text-pink-500 transition-colors duration-300 group-hover:text-white" />, label: t('contact.phone'), value: t('contact.phoneValue') },
-                  { icon: <Mail className="w-6 h-6 text-pink-500 transition-colors duration-300 group-hover:text-white" />, label: t('contact.email'), value: t('contact.emailValue') },
-                  { icon: <Clock className="w-6 h-6 text-pink-500 transition-colors duration-300 group-hover:text-white" />, label: t('contact.hours'), value: t('contact.hoursValue') },
+                  { icon: <MapPin className="w-6 h-6 text-pink-500 transition-colors duration-300 group-hover:text-white" />, label: t('contact.address'), value: settings?.address || t('contact.addressValue') },
+                  { icon: <Phone className="w-6 h-6 text-pink-500 transition-colors duration-300 group-hover:text-white" />, label: t('contact.phone'), value: settings?.phone || t('contact.phoneValue') },
+                  { icon: <Mail className="w-6 h-6 text-pink-500 transition-colors duration-300 group-hover:text-white" />, label: t('contact.email'), value: settings?.email || t('contact.emailValue') },
+                  { icon: <Clock className="w-6 h-6 text-pink-500 transition-colors duration-300 group-hover:text-white" />, label: t('contact.hours'), value: t('contact.hoursValue') }, // Hours usually still in translation
                 ].map((item, idx) => (
                   <div key={idx} className="flex items-start gap-4 group cursor-default">
                     <div className="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center shrink-0 transition-all duration-300 group-hover:bg-pink-500 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-pink-200">
