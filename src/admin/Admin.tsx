@@ -16,11 +16,11 @@ import { Gallery } from '@/components/admin/modules/Gallery';
 import { Settings } from '@/components/admin/modules/Settings';
 import { toast, Toaster } from 'react-hot-toast';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowUpRight, Menu as MenuIcon, X as CloseIcon, User as UserIcon } from 'lucide-react';
+import { ArrowUpRight, Menu as MenuIcon, X as CloseIcon, User as UserIcon, Sun, Moon } from 'lucide-react';
 
 export const Admin: React.FC = () => {
   const { t } = useLanguage();
-  const { theme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -65,6 +65,18 @@ export const Admin: React.FC = () => {
         <div className="fixed inset-0 overflow-hidden pointer-events-none">
           <div className={`absolute top-1/4 -right-20 w-96 h-96 rounded-full blur-[120px] transition-all duration-1000 ${isDark ? 'bg-pink-900/10' : 'bg-pink-200/10'}`} />
           <div className={`absolute bottom-1/4 -left-20 w-96 h-96 rounded-full blur-[120px] transition-all duration-1000 ${isDark ? 'bg-rose-900/10' : 'bg-rose-200/10'}`} />
+        </div>
+
+        {/* Quick Theme Toggle for Review */}
+        <div className="fixed top-8 right-8 z-50">
+          <button 
+            onClick={toggleTheme}
+            className={`p-4 rounded-full border transition-all active:scale-95 shadow-lg backdrop-blur-xl ${
+              isDark ? 'bg-white/10 border-white/10 text-white hover:bg-white/20' : 'bg-black/5 border-black/5 text-black hover:bg-black/10'
+            }`}
+          >
+            {isDark ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
         </div>
 
         <motion.div 

@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 import { toast, Toaster } from 'react-hot-toast';
 import { useTheme } from '@/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, ArrowRight, Sparkles, ChevronLeft } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Sparkles, ChevronLeft, Sun, Moon } from 'lucide-react';
 
 const GlassContainer: React.FC<{ children: React.ReactNode; className?: string; isDark: boolean }> = ({ children, className = '', isDark }) => (
   <motion.div
@@ -25,7 +25,7 @@ const GlassContainer: React.FC<{ children: React.ReactNode; className?: string; 
 
 export const AdminLogin: React.FC = () => {
   const navigate = useNavigate();
-  const { theme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -165,6 +165,18 @@ export const AdminLogin: React.FC = () => {
                 />
               </div>
             </div>
+          </div>
+
+          <div className="absolute top-10 right-12">
+            <button 
+                type="button"
+                onClick={toggleTheme}
+                className={`p-4 rounded-full border transition-all active:scale-95 shadow-xl backdrop-blur-xl ${
+                    isDark ? 'bg-white/10 border-white/10 text-white hover:bg-white/20' : 'bg-black/5 border-black/5 text-black hover:bg-black/10'
+                }`}
+            >
+                {isDark ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
           </div>
 
           <div className="pt-6 relative">
