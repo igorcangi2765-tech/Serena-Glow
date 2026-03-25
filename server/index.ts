@@ -2,8 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -639,8 +644,19 @@ app.post('/api/clients/verify', async (req, res) => {
   }
 });
 
+// --- PRODUCTION SETUP ---
+// Serve static files from the frontend build
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+
+// Catch-all route for SPA history API fallback
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
+});
+
 const server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
+  console.log(`Serving static files from: ${distPath}`);
 });
 
 server.on('error', (err: any) => {
