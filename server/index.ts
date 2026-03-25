@@ -119,17 +119,24 @@ app.get('/api/services', async (req, res) => {
       .from('services')
       .select(`
         *,
-        category_name:service_categories(name_pt)
+        category_name:service_categories(id, name_pt, name_en)
       `)
       .order('name_pt');
     
     if (error) throw error;
 
     // Transform to maintain frontend compatibility
-    const transformedData = data?.map(s => ({
-      ...s,
-      category: s.category_name ? (s.category_name as any).name_pt : 'Geral'
-    }));
+    const transformedData = data?.map(s => {
+      const cat = s.category_name as any;
+      return {
+        ...s,
+        category: cat ? {
+          id: cat.id,
+          name_pt: cat.name_pt,
+          name_en: cat.name_en || cat.name_pt
+        } : { name_pt: 'Geral', name_en: 'General' }
+      };
+    });
 
     res.json(transformedData);
   } catch (err: any) {

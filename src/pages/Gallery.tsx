@@ -84,7 +84,7 @@ export const Gallery: React.FC = () => {
           <AnimatePresence mode="popLayout">
             {filteredImages.map((img: any, idx: number) => (
               <motion.div
-                key={img}
+                key={img.url}
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
