@@ -19,8 +19,12 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SU
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('CRITICAL: Missing Supabase credentials in environment.');
+  console.log('Detected VITE_SUPABASE_URL:', supabaseUrl ? 'Set' : 'MISSING');
+  console.log('Detected SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Set' : 'MISSING');
+  console.log('Detected VITE_SUPABASE_ANON_KEY:', process.env.VITE_SUPABASE_ANON_KEY ? 'Set' : 'MISSING');
 } else {
-  console.log('Supabase initialized for:', supabaseUrl);
+  console.log('Supabase check: OK');
+  console.log('Supabase URL:', supabaseUrl);
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
@@ -645,18 +649,45 @@ app.post('/api/clients/verify', async (req, res) => {
 });
 
 // --- PRODUCTION SETUP ---
-// Serve static files from the frontend build
-const distPath = path.join(__dirname, '../dist');
+// Support both structured (dist/) and flat (public_html/) deployments
+let distPath = path.join(__dirname, '../dist');
+
+// If ../dist doesn't exist, we assume the files were moved to the root (public_html)
+import fs from 'fs';
+if (!fs.existsSync(distPath)) {
+  distPath = path.join(__dirname, '..');
+  console.log('Dist folder not found, falling back to root path:', distPath);
+}
+
+console.log('Runtime __dirname:', __dirname);
+console.log('Final static files path:', distPath);
+
+if (fs.existsSync(distPath)) {
+  console.log('Static directory found: YES');
+  if (fs.existsSync(path.join(distPath, 'index.html'))) {
+    console.log('index.html found: YES');
+  } else {
+    console.warn('index.html MISSING in expected path:', distPath);
+  }
+} else {
+  console.error('Static directory NOT FOUND at:', distPath);
+}
+
 app.use(express.static(distPath));
 
 // Catch-all route for SPA history API fallback
 app.get('*', (req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'));
+  const targetIndex = path.join(distPath, 'index.html');
+  if (fs.existsSync(targetIndex)) {
+     res.sendFile(targetIndex);
+  } else {
+     res.status(404).send('Serena Glow: dist/index.html not found. Deployment structure issue.');
+  }
 });
 
 const server = app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
-  console.log(`Serving static files from: ${distPath}`);
+  console.log(`Environment PORT detected: ${process.env.PORT || 'Using fallback 3001'}`);
 });
 
 server.on('error', (err: any) => {
