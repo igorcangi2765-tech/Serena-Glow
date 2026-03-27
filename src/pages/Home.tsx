@@ -1,13 +1,15 @@
 import React from 'react';
 import { useLanguage } from '../LanguageContext';
 import { useTheme } from '../ThemeContext';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Star, Users, Sparkles, Award, ArrowRight, CheckCircle2, ChevronDown, Hand, HeartHandshake, Brush, Feather, Eye, UserCheck, Footprints, Smile, Palette, Coffee, Flower2, Droplet, Maximize2 } from 'lucide-react';
 import { ImagePreview } from '../components/common/ImagePreview';
+import { SafeImage } from '../components/common/SafeImage';
 import { useState } from 'react';
 
 export const Home: React.FC = () => {
+  const navigate = useNavigate();
   const { t } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
@@ -60,12 +62,11 @@ export const Home: React.FC = () => {
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 bg-white dark:bg-black">
-          <img
+          <SafeImage
             src="/images/hero_serena_glow.png"
             alt="Serena Glow"
             className="w-full h-full object-cover opacity-100 dark:opacity-70"
             style={{ objectPosition: 'center center' }}
-            referrerPolicy="no-referrer"
           />
           <div className="absolute inset-0 bg-black/30 dark:bg-black/50" />
         </div>
@@ -89,7 +90,7 @@ export const Home: React.FC = () => {
               className="w-full sm:w-auto"
             >
               <Link
-                to="?booking=true"
+                to="/booking"
                 className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-4 shadow-md hover:shadow-lg transition font-medium tracking-wide block text-center"
               >
                 {t('hero.primaryBtn')}
@@ -204,11 +205,10 @@ export const Home: React.FC = () => {
                 className="group text-center"
               >
                 <div className="relative overflow-hidden rounded-2xl mb-6 aspect-square sm:aspect-[4/5] shadow-md border border-pink-100 dark:border-[#2E2E2E]">
-                  <img
+                  <SafeImage
                     src={member.img}
                     alt={member.name}
                     className="w-full h-full object-cover grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-in-out"
-                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 transition-opacity duration-300" />
                 </div>
@@ -246,11 +246,10 @@ export const Home: React.FC = () => {
                 onClick={() => openPreview(idx)}
                 className="relative overflow-hidden group shadow-md hover:shadow-xl transition duration-300 cursor-pointer rounded-xl"
               >
-                <img
+                <SafeImage
                   src={img}
                   alt={`Gallery image ${idx + 1}`}
                   className="w-full h-64 object-cover transition-transform duration-700"
-                  referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
                   <motion.div 
@@ -286,11 +285,10 @@ export const Home: React.FC = () => {
             ].map((item: any, idx: number) => (
               <div key={idx} className="bg-white dark:bg-[#121212] rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden border border-pink-50 dark:border-[#2E2E2E]">
                 <div className="relative h-64">
-                  <img
+                  <SafeImage
                     src={item.img}
                     alt={item.title}
                     className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute top-4 left-4 bg-white/90 dark:bg-[#1E1E1E]/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-gray-800 dark:text-[#EAEAEA]">
                     {t('common.beforeAfter')}
@@ -332,11 +330,10 @@ export const Home: React.FC = () => {
               >
                 <div className="flex items-center gap-4 mb-6">
                   <div className="relative">
-                    <img
+                    <SafeImage
                       src={testimonial.img}
                       alt={testimonial.name}
                       className="w-12 h-12 rounded-full border-2 border-pink-500 object-cover shadow-sm transition-transform duration-300"
-                      referrerPolicy="no-referrer"
                     />
                     <motion.div 
                       className="absolute -bottom-1 -right-1 bg-pink-500 rounded-full p-0.5"
@@ -405,8 +402,8 @@ export const Home: React.FC = () => {
                     ))}
                   </ul>
                 </div>
-                <Link
-                  to="?booking=true"
+                <button
+                  onClick={() => navigate('/booking', { state: { serviceName: pkg.name } })}
                   className={`block w-full text-center px-6 py-3 rounded-full font-medium tracking-wide transition shadow-md hover:shadow-lg ${
                     pkg.popular
                       ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white'
@@ -414,7 +411,7 @@ export const Home: React.FC = () => {
                   }`}
                 >
                   {t('pricing.book')}
-                </Link>
+                </button>
               </motion.div>
             ))}
           </div>
@@ -461,7 +458,7 @@ export const Home: React.FC = () => {
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              to="?booking=true"
+              to="/booking"
               className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-10 py-4 shadow-md hover:shadow-lg transition-all duration-300 font-medium tracking-wide w-full sm:w-auto text-center"
             >
               {t('cta.book')}

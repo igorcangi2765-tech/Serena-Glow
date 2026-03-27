@@ -7,6 +7,7 @@ import { api } from '../lib/api';
 import { motion, AnimatePresence } from 'motion/react';
 import { Clock, ArrowRight, Sparkles, Scissors, Hand, HeartHandshake, Brush, Feather, Eye, Footprints, Smile, Palette, Coffee, Flower2, Droplet, Maximize2 } from 'lucide-react';
 import { ImagePreview } from '../components/common/ImagePreview';
+import { SafeImage } from '../components/common/SafeImage';
 
 export const Services: React.FC = () => {
   const { t, language } = useLanguage();
@@ -173,11 +174,10 @@ export const Services: React.FC = () => {
                 className="bg-white dark:bg-[#1E1E1E] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 flex flex-col border border-pink-50 dark:border-[#2E2E2E]"
               >
                 <div className="relative h-64 overflow-hidden">
-                  <img
+                  <SafeImage
                     src={service.img}
                     alt={service.name}
                     className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
                   />
                 </div>
                 <div className="p-6 flex flex-col flex-grow">

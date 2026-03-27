@@ -38,10 +38,23 @@ export const Booking: React.FC = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const serviceParam = params.get('service');
+    const stateServiceName = location.state?.serviceName;
+
     if (serviceParam) {
       setFormData(prev => ({ ...prev, service: serviceParam }));
+    } else if (stateServiceName && dbServices.length > 0) {
+      // Find the service that matches the name passed in state
+      const matchedService = dbServices.find(s => 
+        s.name_en === stateServiceName || 
+        s.name_pt === stateServiceName ||
+        t('pricing.packages').find((p: any) => p.name === stateServiceName)?.name === s.name_en // Fallback for package name matching
+      );
+      
+      if (matchedService) {
+        setFormData(prev => ({ ...prev, service: matchedService.id }));
+      }
     }
-  }, [location, dbServices]);
+  }, [location, dbServices, t]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

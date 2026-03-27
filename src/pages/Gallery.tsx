@@ -4,6 +4,7 @@ import { useTheme } from '../ThemeContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Maximize2 } from 'lucide-react';
 import { ImagePreview } from '../components/common/ImagePreview';
+import { SafeImage } from '../components/common/SafeImage';
 import { api } from '../lib/api';
 
 export const Gallery: React.FC = () => {
@@ -94,12 +95,10 @@ export const Gallery: React.FC = () => {
                 onClick={() => openPreview(idx)}
                 className="relative aspect-square overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border border-pink-50 dark:border-pink-900/10"
               >
-                <img
+                <SafeImage
                   src={img.url}
                   alt={t('gallery.title')}
                   className="w-full h-full object-cover transition-transform duration-700"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
                   <motion.div 

@@ -5,6 +5,7 @@ import { useTheme } from './ThemeContext';
 import { Menu, X, Sparkles, Instagram, Facebook, MapPin, Phone, Mail, Sun, Moon, Shield, FileText } from 'lucide-react';
 import { BookingModal } from './components/BookingModal';
 import { PolicyModal } from './components/common/PolicyModal';
+import { SafeImage } from './components/common/SafeImage';
 import { motion, AnimatePresence } from 'motion/react';
 import { api } from './lib/api';
 
@@ -138,7 +139,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     : 'bg-white/60 backdrop-blur-md border-pink-100/50 hover:bg-pink-50'
                 }`}
               >
-                <img
+                <SafeImage
                   src={language === 'pt' ? '/icons/mz.png' : '/icons/en.png'}
                   alt={language === 'pt' ? 'Português' : 'English'}
                   className="w-5 h-5 rounded-full object-cover shadow-sm group-hover:scale-105 transition-transform duration-300"
@@ -177,7 +178,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                   isDark ? 'bg-[#2E2E2E] border-[#3E3E3E]' : 'bg-white border-pink-100 active:bg-pink-50'
                 }`}
               >
-                <img
+                <SafeImage
                   src={language === 'pt' ? '/icons/mz.png' : '/icons/en.png'}
                   alt={language === 'pt' ? 'Português' : 'English'}
                   className="w-5 h-5 rounded-full object-cover"
