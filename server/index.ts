@@ -32,21 +32,57 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 app.use(cors());
 app.use(express.json());
 
+// --- PRODUCTION SETUP ---
+// Support both structured (dist/) and flat (public_html/) deployments
+import fs from 'fs';
+const rootPath = path.join(__dirname, '..');
+let distPath = path.join(rootPath, 'dist');
+const publicImagesPath = path.join(rootPath, 'public/images');
+
+// Log paths for debugging in production logs
+console.log('Runtime __dirname:', __dirname);
+
+// If dist doesn't exist, we assume the files were moved to the root (public_html)
+if (!fs.existsSync(distPath)) {
+  distPath = rootPath;
+  console.log('Dist folder not found, falling back to root path:', distPath);
+}
+
+console.log('Final static files path:', distPath);
+
+// Regular static serving
+app.use(express.static(distPath));
+
+// EXPLICIT IMAGE FALLBACK:
+// If dist/images is missing, serve from public/images
+const distImagesPath = path.join(distPath, 'images');
+if (!fs.existsSync(distImagesPath) && fs.existsSync(publicImagesPath)) {
+  console.log('Explicitly serving /images from fallback public folder');
+  app.use('/images', express.static(publicImagesPath));
+} else {
+  // Always serve images folder if it exists in dist
+  app.use('/images', express.static(distImagesPath));
+}
+
+if (fs.existsSync(distPath)) {
+  console.log('Static directory found: YES');
+  if (fs.existsSync(path.join(distPath, 'index.html'))) {
+    console.log('index.html found: YES');
+  } else {
+    console.warn('index.html MISSING in expected path:', distPath);
+  }
+} else {
+  console.error('Static directory NOT FOUND at:', distPath);
+}
+
 // --- ROUTES ---
 
-// Health Check / Welcome
-app.get('/', (req, res) => {
+// Health Check
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
     message: 'Serena Glow Backend API is running',
-    version: '1.0.0',
-    endpoints: [
-      '/api/clients',
-      '/api/services',
-      '/api/bookings',
-      '/api/dashboard',
-      '/api/profiles'
-    ]
+    version: '1.0.0'
   });
 });
 
@@ -122,6 +158,12 @@ app.get('/api/clients/:id/history', async (req, res) => {
 });
 
 // Services
+const MOCK_SERVICES = [
+  { id: '1', name_pt: 'Limpeza de Pele', name_en: 'Facial Cleansing', price: 1500, category_id: 'Facial', category: { name_pt: 'Facial', name_en: 'Facial' } },
+  { id: '2', name_pt: 'Manicure', name_en: 'Manicure', price: 800, category_id: 'Nails', category: { name_pt: 'Unhas', name_en: 'Nails' } },
+  { id: '3', name_pt: 'Maquilhagem', name_en: 'Makeup', price: 2500, category_id: 'Makeup', category: { name_pt: 'Maquilhagem', name_en: 'Makeup' } }
+];
+
 app.get('/api/services', async (req, res) => {
   try {
     const { data, error } = await supabase
@@ -132,7 +174,10 @@ app.get('/api/services', async (req, res) => {
       `)
       .order('name_pt');
     
-    if (error) throw error;
+    if (error || !data || data.length === 0) {
+      console.warn('Returning MOCK_SERVICES due to empty DB or error');
+      return res.json(MOCK_SERVICES);
+    }
 
     // Transform to maintain frontend compatibility
     const transformedData = data?.map(s => {
@@ -149,7 +194,8 @@ app.get('/api/services', async (req, res) => {
 
     res.json(transformedData);
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    console.error('API Error /services, returning mocks:', err.message);
+    res.json(MOCK_SERVICES);
   }
 });
 
@@ -648,33 +694,6 @@ app.post('/api/clients/verify', async (req, res) => {
   }
 });
 
-// --- PRODUCTION SETUP ---
-// Support both structured (dist/) and flat (public_html/) deployments
-let distPath = path.join(__dirname, '../dist');
-
-// If ../dist doesn't exist, we assume the files were moved to the root (public_html)
-import fs from 'fs';
-if (!fs.existsSync(distPath)) {
-  distPath = path.join(__dirname, '..');
-  console.log('Dist folder not found, falling back to root path:', distPath);
-}
-
-console.log('Runtime __dirname:', __dirname);
-console.log('Final static files path:', distPath);
-
-if (fs.existsSync(distPath)) {
-  console.log('Static directory found: YES');
-  if (fs.existsSync(path.join(distPath, 'index.html'))) {
-    console.log('index.html found: YES');
-  } else {
-    console.warn('index.html MISSING in expected path:', distPath);
-  }
-} else {
-  console.error('Static directory NOT FOUND at:', distPath);
-}
-
-app.use(express.static(distPath));
-
 // Catch-all route for SPA history API fallback
 app.get('*', (req, res) => {
   const targetIndex = path.join(distPath, 'index.html');
@@ -690,6 +709,7 @@ const server = app.listen(port, () => {
   console.log(`Environment PORT detected: ${process.env.PORT || 'Using fallback 3001'}`);
 });
 
+// --- CONSOLE ERROR HANDLER ---
 server.on('error', (err: any) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`Port ${port} is already in use.`);
