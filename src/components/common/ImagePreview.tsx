@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ChevronLeft, ChevronRight, Maximize2, Minimize2 } from 'lucide-react';
+import { SafeImage } from './SafeImage';
 
 interface ImagePreviewProps {
   isOpen: boolean;
@@ -96,11 +97,10 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({ isOpen, onClose, ima
                 className={`flex items-center justify-center w-full h-full ${isFullScreen ? 'p-0' : 'p-2'}`}
                 onClick={(e) => e.stopPropagation()}
               >
-                <img
+                <SafeImage
                   src={images[currentIndex]}
                   alt={`Preview ${currentIndex + 1}`}
                   className={`max-w-full max-h-full object-contain shadow-2xl transition-all duration-700 select-none ${isFullScreen ? 'rounded-none' : 'rounded-2xl border border-white/20'}`}
-                  referrerPolicy="no-referrer"
                 />
               </motion.div>
             </AnimatePresence>
@@ -134,7 +134,7 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({ isOpen, onClose, ima
                 onClick={(e) => { e.stopPropagation(); setCurrentIndex(idx); }}
                 className={`w-12 h-12 rounded-lg overflow-hidden border-2 transition-all ${currentIndex === idx ? 'border-pink-500' : 'border-transparent opacity-40 hover:opacity-100'}`}
               >
-                <img src={img} alt="" className="w-full h-full object-cover" />
+                <SafeImage src={img} alt="" className="w-full h-full object-cover" />
               </button>
             ))}
           </div>

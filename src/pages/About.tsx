@@ -4,6 +4,7 @@ import { useTheme } from '../ThemeContext';
 import { Link } from 'react-router-dom';
 import { Target, Eye, Heart, Sparkles, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { SafeImage } from '../components/common/SafeImage';
 
 export const About: React.FC = () => {
   const { t, language } = useLanguage();
@@ -26,12 +27,11 @@ export const About: React.FC = () => {
       {/* Hero Banner */}
       <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 bg-white dark:bg-black">
-          <img
+          <SafeImage
             src="/images/about_hero.png"
             alt="Serena Glow About"
             className="w-full h-full object-cover opacity-100 dark:opacity-70"
             style={{ objectPosition: 'center center' }}
-            referrerPolicy="no-referrer"
           />
           <div className="absolute inset-0 bg-black/40 dark:bg-black/60" />
         </div>
@@ -68,11 +68,10 @@ export const About: React.FC = () => {
               </p>
             </div>
             <div className="relative w-full" style={{ minWidth: '300px', flexShrink: 0 }}>
-              <img
+              <SafeImage
                 src="/images/about_story.png"
                 alt="Salon Details"
                 className="rounded-xl shadow-lg w-full object-cover aspect-[3/4]"
-                referrerPolicy="no-referrer"
               />
               <div className="absolute -bottom-8 -left-8 w-48 h-48 bg-pink-100 dark:bg-pink-900/20 rounded-full -z-10" />
               <div className="absolute -top-8 -right-8 w-32 h-32 bg-pink-200/40 dark:bg-pink-900/10 rounded-full -z-10 blur-2xl" />
@@ -131,11 +130,10 @@ export const About: React.FC = () => {
                 className="group text-center"
               >
                 <div className="relative overflow-hidden rounded-2xl mb-6 aspect-[4/5] shadow-md border border-pink-100 dark:border-[#2E2E2E]">
-                  <img
+                  <SafeImage
                     src={member.img}
                     alt={member.name}
                     className="w-full h-full object-cover grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000 ease-in-out"
-                    referrerPolicy="no-referrer"
                   />
                   <div className="absolute inset-0 transition-opacity duration-300" />
                 </div>
@@ -163,7 +161,7 @@ export const About: React.FC = () => {
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              to="?booking=true"
+              to="/booking"
               className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-10 py-4 shadow-md hover:shadow-lg transition-all duration-300 font-medium tracking-wide w-full sm:w-auto text-center"
             >
               {t('cta.book')}

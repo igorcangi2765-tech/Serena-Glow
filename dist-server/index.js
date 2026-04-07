@@ -32,6 +32,7 @@ else {
 export const supabase = createClient(supabaseUrl, supabaseKey);
 app.use(cors());
 app.use(express.json());
+<<<<<<< HEAD
 const asyncHandler = (fn) => (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next);
 };
@@ -46,20 +47,54 @@ const resolveCategoryId = async (categoryName) => {
     const { data: fallbackData } = await supabase.from('service_categories').select('id').limit(1);
     return fallbackData && fallbackData.length > 0 ? fallbackData[0].id : null;
 };
+=======
+// --- PRODUCTION SETUP ---
+// Support both structured (dist/) and flat (public_html/) deployments
+import fs from 'fs';
+const rootPath = path.join(__dirname, '..');
+let distPath = path.join(rootPath, 'dist');
+const publicImagesPath = path.join(rootPath, 'public/images');
+// Log paths for debugging in production logs
+console.log('Runtime __dirname:', __dirname);
+// If dist doesn't exist, we assume the files were moved to the root (public_html)
+if (!fs.existsSync(distPath)) {
+    distPath = rootPath;
+    console.log('Dist folder not found, falling back to root path:', distPath);
+}
+console.log('Final static files path:', distPath);
+// Regular static serving
+app.use(express.static(distPath));
+// EXPLICIT IMAGE FALLBACK:
+// If dist/images is missing, serve from public/images
+const distImagesPath = path.join(distPath, 'images');
+if (!fs.existsSync(distImagesPath) && fs.existsSync(publicImagesPath)) {
+    console.log('Explicitly serving /images from fallback public folder');
+    app.use('/images', express.static(publicImagesPath));
+}
+else {
+    // Always serve images folder if it exists in dist
+    app.use('/images', express.static(distImagesPath));
+}
+if (fs.existsSync(distPath)) {
+    console.log('Static directory found: YES');
+    if (fs.existsSync(path.join(distPath, 'index.html'))) {
+        console.log('index.html found: YES');
+    }
+    else {
+        console.warn('index.html MISSING in expected path:', distPath);
+    }
+}
+else {
+    console.error('Static directory NOT FOUND at:', distPath);
+}
+>>>>>>> f5f71ff2fa829bbfb1f283ae61e0cc4bd6f7f626
 // --- ROUTES ---
-// Health Check / Welcome
-app.get('/', (req, res) => {
+// Health Check
+app.get('/api/health', (req, res) => {
     res.json({
         status: 'online',
         message: 'Serena Glow Backend API is running',
-        version: '1.0.0',
-        endpoints: [
-            '/api/clients',
-            '/api/services',
-            '/api/bookings',
-            '/api/dashboard',
-            '/api/profiles'
-        ]
+        version: '1.0.0'
     });
 });
 app.get('/api/profiles', asyncHandler(async (req, res) => {
@@ -109,6 +144,7 @@ app.get('/api/clients/:id/history', asyncHandler(async (req, res) => {
     res.json(data);
 }));
 // Services
+<<<<<<< HEAD
 app.get('/api/services', asyncHandler(async (req, res) => {
     const { data, error } = await supabase
         .from('services')
@@ -154,6 +190,43 @@ app.put('/api/services/:id', asyncHandler(async (req, res) => {
     if (serviceData.category) {
         serviceData.category_id = await resolveCategoryId(serviceData.category);
         delete serviceData.category;
+=======
+const MOCK_SERVICES = [
+    { id: '1', name_pt: 'Limpeza de Pele', name_en: 'Facial Cleansing', price: 1500, category_id: 'Facial', category: { name_pt: 'Facial', name_en: 'Facial' } },
+    { id: '2', name_pt: 'Manicure', name_en: 'Manicure', price: 800, category_id: 'Nails', category: { name_pt: 'Unhas', name_en: 'Nails' } },
+    { id: '3', name_pt: 'Maquilhagem', name_en: 'Makeup', price: 2500, category_id: 'Makeup', category: { name_pt: 'Maquilhagem', name_en: 'Makeup' } }
+];
+app.get('/api/services', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('services')
+            .select(`
+        *,
+        category_name:service_categories(id, name_pt, name_en)
+      `)
+            .order('name_pt');
+        if (error || !data || data.length === 0) {
+            console.warn('Returning MOCK_SERVICES due to empty DB or error');
+            return res.json(MOCK_SERVICES);
+        }
+        // Transform to maintain frontend compatibility
+        const transformedData = data?.map(s => {
+            const cat = s.category_name;
+            return {
+                ...s,
+                category: cat ? {
+                    id: cat.id,
+                    name_pt: cat.name_pt,
+                    name_en: cat.name_en || cat.name_pt
+                } : { name_pt: 'Geral', name_en: 'General' }
+            };
+        });
+        res.json(transformedData);
+    }
+    catch (err) {
+        console.error('API Error /services, returning mocks:', err.message);
+        res.json(MOCK_SERVICES);
+>>>>>>> f5f71ff2fa829bbfb1f283ae61e0cc4bd6f7f626
     }
     const { data, error } = await supabase.from('services').update(serviceData).eq('id', req.params.id).select().single();
     if (error)
@@ -516,6 +589,7 @@ app.post('/api/clients/verify', asyncHandler(async (req, res) => {
         console.log('Cliente já existe:', existing.id);
         return res.json(existing);
     }
+<<<<<<< HEAD
     console.log('Criando novo cliente...');
     const { data: created, error: createError } = await supabase
         .from('clients')
@@ -557,6 +631,11 @@ app.use((err, req, res, next) => {
         error: err.message || 'Internal Server Error',
         status
     });
+=======
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+>>>>>>> f5f71ff2fa829bbfb1f283ae61e0cc4bd6f7f626
 });
 // Catch-all route for SPA history API fallback
 app.get('*', (req, res) => {
@@ -590,6 +669,7 @@ const server = app.listen(port, async () => {
         console.warn('Seeding warning:', err);
     }
 });
+// --- CONSOLE ERROR HANDLER ---
 server.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
         console.error(`Port ${port} is already in use.`);
