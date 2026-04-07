@@ -6,14 +6,15 @@ import { Menu, X, Sparkles, Instagram, Facebook, MapPin, Phone, Mail, Sun, Moon,
 import { BookingModal } from './components/BookingModal';
 import { PolicyModal } from './components/common/PolicyModal';
 import { motion, AnimatePresence } from 'motion/react';
-import { api } from './lib/api';
+import { supabase } from './lib/supabase';
+import { useBooking } from './BookingContext';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+  const { isBookingModalOpen, closeBookingModal, selectedService, openBookingModal } = useBooking();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
   const [policyType, setPolicyType] = useState<'privacy' | 'terms'>('privacy');
   const [settings, setSettings] = useState<any>(null);
@@ -25,7 +26,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   const fetchSettings = async () => {
     try {
-      const data = await api.get('/settings');
+      const { data, error } = await supabase
+        .from('settings')
+        .select('*')
+        .single();
+        
+      if (error) throw error;
       setSettings(data);
     } catch (error) {
       console.error('Error fetching settings:', error);
@@ -40,18 +46,24 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Handle scroll to top on actual page navigation (pathname change)
   useEffect(() => {
     setIsMobileMenuOpen(false);
     window.scrollTo(0, 0);
-    
-    // Check for booking query parameter
+  }, [location.pathname]);
+
+  // Handle booking query parameters (deep linking) without scrolling
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
     if (params.get('booking') === 'true') {
-      setIsBookingModalOpen(true);
-      // Optional: clear the param to avoid re-opening on manual refresh
-      window.history.replaceState({}, '', location.pathname);
+      const serviceParam = params.get('service');
+      openBookingModal(serviceParam || undefined);
+      
+      // Clear the params to avoid re-opening on manual refresh or back button
+      const newPath = location.pathname;
+      window.history.replaceState({}, '', newPath);
     }
-  }, [location.pathname, location.search]);
+  }, [location.search, openBookingModal, location.pathname]);
 
   const navLinks = [
     { name: t('nav.home'), path: '/' },
@@ -73,20 +85,19 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             ? isDark
               ? 'bg-[#1E1E1E]/95 backdrop-blur-sm shadow-sm py-4'
               : 'bg-white/95 backdrop-blur-sm shadow-sm py-4'
-            : 'bg-transparent py-6'
+            : 'bg-transparent py-4'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group">
-              <span className={`font-serif text-2xl font-semibold tracking-wide transition-colors ${
-                isTransparent 
-                  ? 'text-white' 
-                  : (isDark ? 'text-[#EAEAEA]' : 'text-gray-900')
-              }`}>
-                Serena Glow
-              </span>
+                <img 
+                  src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
+                  alt="Serena Glow" 
+                  className="h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105 rounded-xl shadow-[0_4px_20px_rgba(233,30,99,0.1)] bg-white p-1"
+                  referrerPolicy="no-referrer"
+                />
             </Link>
 
             <div className="hidden md:flex items-center space-x-8">
@@ -151,7 +162,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               <motion.button
                 whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(244, 63, 94, 0.4)" }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setIsBookingModalOpen(true)}
+                onClick={() => openBookingModal()}
                 className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 shadow-md transition font-medium tracking-wide text-sm"
               >
                 {t('nav.bookNow')}
@@ -227,7 +238,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <button
               onClick={() => {
                 setIsMobileMenuOpen(false);
-                setIsBookingModalOpen(true);
+                openBookingModal();
               }}
               className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 shadow-md hover:shadow-lg transition font-medium tracking-wide text-sm text-center"
             >
@@ -248,9 +259,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           <div className="flex flex-wrap justify-between gap-12 mb-16">
             <div className="flex-1 flex flex-col items-start text-left min-w-[280px]">
               <Link to="/" className="flex items-center gap-2 mb-6">
-                <span className="font-serif text-2xl font-semibold tracking-wide">
-                  Serena Glow
-                </span>
+                <img 
+                  src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
+                  alt="Serena Glow" 
+                  className="h-24 md:h-32 w-auto object-contain rounded-2xl shadow-xl bg-white p-2 transition-transform hover:scale-105"
+                  referrerPolicy="no-referrer"
+                />
               </Link>
               <div className="text-pink-100 w-full leading-relaxed mb-8 font-sans transition-all duration-300" style={{ minWidth: '300px', maxWidth: '448px' }}>
                 <p className="text-base">
@@ -368,7 +382,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       {/* Booking Modal */}
       <BookingModal 
         isOpen={isBookingModalOpen} 
-        onClose={() => setIsBookingModalOpen(false)} 
+        onClose={closeBookingModal} 
+        initialService={selectedService}
       />
 
       {/* Policy Modal */}

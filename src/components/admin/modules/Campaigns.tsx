@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Megaphone, Target, Users, BarChart3, PieChart as PieChartIcon, ArrowUpRight, Plus, Send, Calendar, Mail, MessageSquare, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { supabase } from '@/lib/supabase';
-import { api } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 import { useLanguage } from '@/LanguageContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { Eye } from 'lucide-react';
+import { AdminCampaignPreview } from '../AdminCampaignPreview';
 
 export const Campaigns: React.FC = () => {
   const { t } = useLanguage();
@@ -30,23 +31,25 @@ export const Campaigns: React.FC = () => {
     target_audience: 'all',
     content: ''
   });
+  const [previewingCampaign, setPreviewingCampaign] = useState<any | null>(null);
 
   const fetchCampaignData = async () => {
     try {
       setLoading(true);
-      const data = await api.get('/marketing/stats');
+      const { data: camps, error } = await supabase
+        .from('campaigns')
+        .select('*')
+        .order('created_at', { ascending: false });
       
-      const comms = data.communications || [];
-      const camps = data.campaigns || [];
+      if (error) throw error;
 
-      // Process stats
-      const sentCount = comms.length || 0;
-      const emailCount = comms.filter((c: any) => c.type === 'email').length || 0;
-      const smsCount = comms.filter((c: any) => c.type === 'sms').length || 0;
+      // Process stats (mocked logic or based on communications table if exists)
+      const emailCount = (camps || []).filter((c: any) => c.type === 'email').length || 0;
+      const smsCount = (camps || []).filter((c: any) => c.type === 'sms').length || 0;
 
       setStats(prev => ({
         ...prev,
-        sent: sentCount,
+        sent: (camps || []).length,
       }));
 
       setCampaignPerformance([
@@ -54,7 +57,7 @@ export const Campaigns: React.FC = () => {
         { name: 'SMS', value: smsCount, color: '#ec4899' },
       ]);
 
-      setRecentCampaigns(camps);
+      setRecentCampaigns(camps || []);
     } catch (error) {
       console.error('Error fetching campaigns:', error);
     } finally {
@@ -65,7 +68,12 @@ export const Campaigns: React.FC = () => {
   const handleCreateCampaign = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post('/marketing/campaigns', newCampaign);
+      const { error } = await supabase
+        .from('campaigns')
+        .insert([newCampaign]);
+        
+      if (error) throw error;
+      
       toast.success('Campanha planeada com sucesso!');
       setIsNewCampaignOpen(false);
       fetchCampaignData();
@@ -171,12 +179,21 @@ export const Campaigns: React.FC = () => {
                     <p className="font-serif text-lg font-bold">Oferta de Véspera de Feriado</p>
                     <p className="text-xs opacity-80 mt-2 font-sans">Ideal para aumentar as marcações nos próximos 3 dias.</p>
                 </div>
-                <button 
-                  onClick={handleAIGeneration}
-                  className="w-full py-4 bg-white text-pink-600 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl hover:scale-[1.02] transition-all"
-                >
-                  Criar com IA
-                </button>
+                <div className="flex gap-4">
+                  <button 
+                    onClick={handleAIGeneration}
+                    className="flex-grow py-4 bg-white text-pink-600 rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-xl hover:scale-[1.02] transition-all"
+                  >
+                    Criar com IA
+                  </button>
+                  <button 
+                    onClick={() => setPreviewingCampaign(newCampaign)}
+                    className="p-4 bg-white/20 text-white rounded-2xl hover:bg-white/30 transition-all"
+                    title="Pré-visualizar rascunho"
+                  >
+                    <Eye size={20} />
+                  </button>
+                </div>
             </div>
         </div>
       </div>
@@ -234,12 +251,21 @@ export const Campaigns: React.FC = () => {
                     </td>
                     <td className="py-6 text-[10px] text-gray-400 uppercase tracking-widest font-black">{new Date(camp.created_at).toLocaleDateString()}</td>
                     <td className="py-6 pr-4 text-center">
-                      <button 
-                        onClick={() => toast.success('A exportar relatório da campanha...')}
-                        className="p-3 bg-pink-50 dark:bg-pink-900/20 text-pink-500 rounded-xl hover:bg-pink-500 hover:text-white transition-all"
-                      >
-                          <BarChart3 size={16} />
-                      </button>
+                      <div className="flex items-center justify-center gap-2">
+                        <button 
+                          onClick={() => setPreviewingCampaign(camp)}
+                          className="p-3 bg-pink-50 dark:bg-pink-900/20 text-pink-500 rounded-xl hover:bg-pink-500 hover:text-white transition-all"
+                          title="Pré-visualizar"
+                        >
+                            <Eye size={16} />
+                        </button>
+                        <button 
+                          onClick={() => toast.success('A exportar relatório da campanha...')}
+                          className="p-3 bg-gray-50 dark:bg-white/5 text-gray-400 rounded-xl hover:bg-gray-100 hover:text-gray-600 transition-all"
+                        >
+                            <BarChart3 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -306,6 +332,14 @@ export const Campaigns: React.FC = () => {
                 </form>
             </motion.div>
         </div>
+      )}
+
+      {/* Campaign Preview Modal */}
+      {previewingCampaign && (
+        <AdminCampaignPreview 
+          campaign={previewingCampaign} 
+          onClose={() => setPreviewingCampaign(null)} 
+        />
       )}
     </div>
   );

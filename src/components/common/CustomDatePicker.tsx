@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays, eachDayOfInterval } from 'date-fns';
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays, eachDayOfInterval, isBefore, startOfDay } from 'date-fns';
 import { pt, enUS } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -9,9 +9,10 @@ interface CustomDatePickerProps {
   value: string;
   onChange: (date: string) => void;
   label?: string;
+  error?: boolean;
 }
 
-const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onChange, label }) => {
+const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onChange, label, error }) => {
   const { language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(value ? new Date(value) : new Date());
@@ -89,15 +90,18 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onChange, la
           const isSelected = value && isSameDay(day, new Date(value));
           const isCurrentMonth = isSameMonth(day, monthStart);
           const isToday = isSameDay(day, new Date());
+          const isPast = isBefore(startOfDay(day), startOfDay(new Date()));
 
           return (
             <div
               key={day.toString()}
-              onClick={() => onDateClick(day)}
+              onClick={() => !isPast && onDateClick(day)}
               className={`
-                relative h-9 w-9 flex items-center justify-center rounded-lg cursor-pointer text-sm transition-all duration-200
-                ${!isCurrentMonth ? 'text-gray-300 dark:text-gray-600' : 'text-gray-700 dark:text-gray-300 hover:bg-pink-50 dark:hover:bg-pink-500/10 hover:text-pink-600'}
-                ${isSelected ? 'bg-gradient-to-br from-pink-500 to-rose-500 !text-white shadow-lg shadow-pink-500/30' : ''}
+                relative h-9 w-9 flex items-center justify-center rounded-lg text-sm transition-all duration-200
+                ${isPast ? 'opacity-20 cursor-not-allowed pointer-events-none' : 'cursor-pointer'}
+                ${!isCurrentMonth && !isPast ? 'text-gray-300 dark:text-gray-600' : ''}
+                ${isCurrentMonth && !isPast ? 'text-gray-700 dark:text-gray-300 hover:bg-pink-50 dark:hover:bg-pink-500/10 hover:text-pink-600' : ''}
+                ${isSelected ? 'bg-gradient-to-br from-pink-500 to-rose-500 !text-white shadow-lg shadow-pink-500/30 opacity-100' : ''}
                 ${isToday && !isSelected ? 'border border-pink-200 dark:border-pink-500/30' : ''}
               `}
             >
@@ -121,7 +125,8 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({ value, onChange, la
         <div className="relative group">
           <CalendarIcon className="absolute left-4 top-[14px] text-pink-400 pointer-events-none group-focus-within:text-pink-500 transition-colors" size={18} />
           <div className={`
-            w-full h-[46px] pl-12 pr-4 flex items-center bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl text-gray-700 dark:text-white group-hover:border-pink-200 dark:group-hover:border-pink-500/30 transition-all duration-300
+            w-full h-[46px] pl-12 pr-4 flex items-center bg-white dark:bg-white/5 border rounded-2xl text-gray-700 dark:text-white group-hover:border-pink-200 dark:group-hover:border-pink-500/30 transition-all duration-300
+            ${error ? 'border-red-400 dark:border-red-500/50 bg-red-50/10' : 'border-gray-100 dark:border-white/10'}
             ${isOpen ? 'border-pink-400 dark:border-pink-500 shadow-lg shadow-pink-500/5 ring-2 ring-pink-500/10' : ''}
           `}>
             {value ? format(new Date(value), 'PPP', { locale }) : (label || '--/--/----')}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, Mail, Phone, Calendar, DollarSign, User, Star, AlertCircle, TrendingUp, UserCheck, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { api } from '@/lib/api';
+import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
 import { useLanguage } from '@/LanguageContext';
 import { format } from 'date-fns';
@@ -44,9 +44,37 @@ export const Clients: React.FC = () => {
   const fetchClients = async () => {
     try {
       setLoading(true);
-      const data = await api.get('/clients');
-      setClients(data || []);
+      const { data, error } = await supabase
+        .from('clients')
+        .select(`
+          *,
+          appointments (
+            total_price,
+            appointment_date
+          )
+        `)
+        .order('name');
+        
+      if (error) throw error;
+
+      // Transform data to match the UI expectations (total_spent, last_visit)
+      const transformed = (data || []).map(client => {
+        const appointments = client.appointments || [];
+        const total_spent = appointments.reduce((sum: number, appt: any) => sum + (Number(appt.total_price) || 0), 0);
+        const last_visit = appointments.length > 0 
+          ? appointments.sort((a: any, b: any) => new Date(b.appointment_date).getTime() - new Date(a.appointment_date).getTime())[0].appointment_date 
+          : null;
+
+        return {
+          ...client,
+          total_spent,
+          last_visit
+        };
+      });
+
+      setClients(transformed);
     } catch (error: any) {
+      console.error('Error:', error);
       toast.error('Erro ao carregar clientes');
     } finally {
       setLoading(false);
@@ -55,22 +83,55 @@ export const Clients: React.FC = () => {
 
   const fetchHistory = async (clientId: string) => {
     try {
-      const data = await api.get(`/clients/${clientId}/history`);
+      const { data, error } = await supabase
+        .from('appointments')
+        .select(`
+          *,
+          services (
+            name_pt
+          )
+        `)
+        .eq('customer_id', clientId)
+        .order('appointment_date', { ascending: false });
+        
+      if (error) throw error;
       setClientHistory(data || []);
     } catch (error: any) {
       toast.error('Erro ao carregar histórico');
     }
   };
 
+  const [saving, setSaving] = useState(false);
+
   const handleCreateClient = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!newClient.name.trim() || !newClient.phone.trim()) {
+      toast.error('Nombre e telemóvel são obrigatórios');
+      return;
+    }
+
     try {
-      await api.post('/clients', newClient);
+      setSaving(true);
+      const { error } = await supabase
+        .from('clients')
+        .insert([{
+          ...newClient,
+          name: newClient.name.trim(),
+          phone: newClient.phone.trim(),
+          email: newClient.email.trim() || null
+        }]);
+        
+      if (error) throw error;
+      
       toast.success('Cliente adicionada com sucesso');
       setIsNewClientOpen(false);
+      setNewClient({ name: '', phone: '', email: '', notes: '', is_vip: false });
       fetchClients();
     } catch (error: any) {
-      toast.error('Erro ao adicionar cliente');
+      console.error('Create Client Error:', error);
+      toast.error('Erro ao adicionar cliente. Verifique se o número já existe.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -79,17 +140,26 @@ export const Clients: React.FC = () => {
     if (!selectedClient) return;
 
     try {
-      await api.put(`/clients/${selectedClient.id}`, {
-        notes: selectedClient.notes,
-        allergies: selectedClient.allergies,
-        is_vip: selectedClient.is_vip
-      });
+      setSaving(true);
+      const { error } = await supabase
+        .from('clients')
+        .update({
+          notes: selectedClient.notes?.trim(),
+          allergies: selectedClient.allergies?.trim(),
+          is_vip: selectedClient.is_vip
+        })
+        .eq('id', selectedClient.id);
+
+      if (error) throw error;
 
       toast.success('Perfil atualizado com sucesso');
       setIsEditOpen(false);
       fetchClients();
     } catch (error: any) {
-      toast.error('Erro ao atualizar cliente');
+      console.error('Update Client Error:', error);
+      toast.error('Erro ao atualizar dados da cliente');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -232,7 +302,13 @@ export const Clients: React.FC = () => {
             <input type="checkbox" checked={newClient.is_vip} onChange={e => setNewClient({...newClient, is_vip: e.target.checked})} className="w-5 h-5 accent-pink-500" />
             Marcar como Cliente VIP (Estrela)
           </label>
-          <button type="submit" className="w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black transition-all mt-4">Adicionar Cliente</button>
+          <button 
+            type="submit" 
+            disabled={saving}
+            className={`w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black transition-all mt-4 ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {saving ? 'Adicionando...' : 'Adicionar Cliente'}
+          </button>
         </form>
       </Modal>
 
@@ -245,7 +321,13 @@ export const Clients: React.FC = () => {
               <input type="checkbox" checked={selectedClient.is_vip} onChange={e => setSelectedClient({...selectedClient, is_vip: e.target.checked})} className="w-5 h-5 accent-pink-500" />
               Estatuto VIP
             </label>
-            <button type="submit" className="w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black transition-all mt-4">Guardar Alterações</button>
+            <button 
+              type="submit" 
+              disabled={saving}
+              className={`w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black transition-all mt-4 ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {saving ? 'Guardando...' : 'Guardar Alterações'}
+            </button>
           </form>
         )}
       </Modal>

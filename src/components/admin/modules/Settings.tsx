@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Save, User, MapPin, Phone, Instagram, Bell, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
+import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
-import { api } from '@/lib/api';
 
 export const Settings: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [settings, setSettings] = useState({
-    name: '',
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [settings, setSettings] = useState<any>({
+    id: '',
+    store_name: 'Serena Glow Beauty',
     phone: '',
     email: '',
     address: '',
-    instagram: '',
-    nif: ''
+    social_instagram: '',
+    opening_hours: {}
   });
+
   const [notifications, setNotifications] = useState({
     email_bookings: true,
     sms_reminders: false,
@@ -26,22 +29,37 @@ export const Settings: React.FC = () => {
 
   const fetchSettings = async () => {
     try {
-      const data = await api.get('/settings');
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('settings')
+        .select('*')
+        .limit(1)
+        .maybeSingle();
+        
+      if (error) throw error;
       if (data) setSettings(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching settings:', error);
+      toast.error('Erro ao carregar definições');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSave = async () => {
     try {
-      setLoading(true);
-      await api.post('/settings', settings);
+      setSaving(true);
+      const { error } = await supabase
+        .from('settings')
+        .upsert([settings]);
+        
+      if (error) throw error;
       toast.success('Definições guardadas com sucesso');
+      fetchSettings();
     } catch (error) {
       toast.error('Erro ao guardar definições');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -55,10 +73,10 @@ export const Settings: React.FC = () => {
         
         <button 
           onClick={handleSave}
-          disabled={loading}
+          disabled={saving}
           className="flex items-center gap-3 px-10 py-4 bg-gray-900 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black transition-all active:scale-95 relative z-20"
         >
-          {loading ? 'A guardar...' : <><Save size={16} /> Guardar Alterações</>}
+          {saving ? 'A guardar...' : <><Save size={16} /> Guardar Alterações</>}
         </button>
       </div>
 
@@ -66,7 +84,7 @@ export const Settings: React.FC = () => {
         <div className="space-y-10">
           <div className="bg-white/60 dark:bg-[#1E1E1E]/60 backdrop-blur-xl p-10 rounded-[3rem] border border-white/50 dark:border-white/5 shadow-xl space-y-8">
             <h3 className="text-xl font-serif font-black text-gray-800 dark:text-white uppercase tracking-tighter flex items-center gap-3 italic">
-              <Sparkles size={24} className="text-pink-500" /> Perfil do Salão
+              Perfil do Salão
             </h3>
             
             <div className="space-y-6">
@@ -76,8 +94,8 @@ export const Settings: React.FC = () => {
                         <User className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-pink-500 transition-colors" size={18} />
                         <input 
                             type="text"
-                            value={settings.name}
-                            onChange={(e) => setSettings({...settings, name: e.target.value})}
+                            value={settings.store_name}
+                            onChange={(e) => setSettings({...settings, store_name: e.target.value})}
                             className="w-full pl-14 pr-6 py-4 bg-white/40 dark:bg-white/5 border border-pink-100/30 dark:border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-pink-500/10 transition-all font-bold italic"
                         />
                     </div>
@@ -117,8 +135,8 @@ export const Settings: React.FC = () => {
                         <label className="text-[10px] font-black opacity-40 uppercase tracking-widest ml-4">Instagram</label>
                         <input 
                             type="text"
-                            value={settings.instagram}
-                            onChange={(e) => setSettings({...settings, instagram: e.target.value})}
+                            value={settings.social_instagram}
+                            onChange={(e) => setSettings({...settings, social_instagram: e.target.value})}
                             className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:ring-4 focus:ring-pink-500/20 transition-all font-bold italic"
                         />
                     </div>
@@ -156,7 +174,7 @@ export const Settings: React.FC = () => {
 
             <div className="bg-gradient-to-br from-pink-500 to-rose-500 p-10 rounded-[3rem] text-white shadow-xl">
                 <h3 className="text-xl font-serif font-black uppercase tracking-tighter mb-4 flex items-center gap-3 italic">
-                    <Sparkles size={24} /> Toque Premium
+                    Toque Premium
                 </h3>
                 <div className="space-y-6">
                     <div className="p-8 bg-white/10 backdrop-blur-md rounded-[2.5rem] border border-white/20">

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Calendar, Search, Filter, CheckCircle, Trash2, ChevronRight, User, MessageSquare, Clock, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import { api } from '@/lib/api';
 import { useLanguage } from '@/LanguageContext';
 import { toast } from 'react-hot-toast';
 import { Modal } from '../Modal';
@@ -47,7 +46,12 @@ export const Inbox: React.FC = () => {
   const fetchMessages = async () => {
     try {
       setLoading(true);
-      const data = await api.get('/inbox');
+      const { data, error } = await supabase
+        .from('inbox')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (error) throw error;
       setMessages(data || []);
     } catch (error) {
       console.error('Error fetching inbox:', error);
@@ -59,7 +63,12 @@ export const Inbox: React.FC = () => {
 
   const markAsRead = async (id: string) => {
     try {
-      await api.put(`/inbox/${id}`, { status: 'read' });
+      const { error } = await supabase
+        .from('inbox')
+        .update({ status: 'read' })
+        .eq('id', id);
+        
+      if (error) throw error;
       
       setMessages(prev => prev.map(m => m.id === id ? { ...m, status: 'read' } : m));
       if (selectedMessage?.id === id) {
@@ -72,7 +81,12 @@ export const Inbox: React.FC = () => {
 
   const archiveMessage = async (id: string) => {
     try {
-      await api.put(`/inbox/${id}`, { status: 'archived' });
+      const { error } = await supabase
+        .from('inbox')
+        .update({ status: 'archived' })
+        .eq('id', id);
+        
+      if (error) throw error;
       
       setMessages(prev => prev.map(m => m.id === id ? { ...m, status: 'archived' } : m));
       if (selectedMessage?.id === id) {
@@ -89,7 +103,12 @@ export const Inbox: React.FC = () => {
     if (!confirm('Eliminar esta mensagem permanentemente?')) return;
     
     try {
-      await api.delete(`/inbox/${id}`);
+      const { error } = await supabase
+        .from('inbox')
+        .delete()
+        .eq('id', id);
+        
+      if (error) throw error;
       
       setMessages(prev => prev.filter(m => m.id !== id));
       if (selectedMessage?.id === id) setSelectedMessage(null);
@@ -104,7 +123,13 @@ export const Inbox: React.FC = () => {
     e.preventDefault();
     if (!selectedMessage) return;
     try {
-      await api.put(`/inbox/${selectedMessage.id}`, { status: 'replied' });
+      const { error } = await supabase
+        .from('inbox')
+        .update({ status: 'replied' })
+        .eq('id', selectedMessage.id);
+        
+      if (error) throw error;
+
       setMessages(prev => prev.map(m => m.id === selectedMessage.id ? { ...m, status: 'replied' } : m));
       setSelectedMessage(prev => prev ? { ...prev, status: 'replied' } : null);
       toast.success('Resposta enviada com sucesso!', { icon: '📨' });
@@ -155,7 +180,7 @@ export const Inbox: React.FC = () => {
             <select 
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as any)}
-                className="px-6 py-3 bg-white dark:bg-[#1E1E1E] border border-pink-100/30 dark:border-[#2E2E2E] rounded-2xl outline-none focus:border-pink-500/50 transition-all font-black uppercase text-[10px] tracking-widest text-gray-500"
+                className="px-6 py-3 bg-white dark:bg-[#1E1E1E] border border-pink-100/30 dark:border-[#2E2E2E] rounded-2xl outline-none focus:border-pink-500/50 transition-all font-black uppercase text-[10px] tracking-normal text-gray-500"
             >
                 <option value="all">Todas</option>
                 <option value="unread">Não Lidas</option>
@@ -166,11 +191,11 @@ export const Inbox: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-grow flex gap-8 overflow-hidden min-h-0">
+      <div className="flex-grow flex gap-8 overflow-hidden min-h-0 min-w-0">
         {/* Sidebar List */}
         <div className="w-full md:w-[400px] shrink-0 flex flex-col bg-white/40 dark:bg-[#1E1E1E]/40 backdrop-blur-xl rounded-[2.5rem] border border-white/50 dark:border-white/5 overflow-hidden shadow-xl">
           <div className="p-6 border-b border-pink-50/50 dark:border-white/5 bg-white/40">
-            <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Conversas ({filteredMessages.length})</h2>
+            <h2 className="text-[10px] font-black uppercase tracking-normal text-gray-400">Conversas ({filteredMessages.length})</h2>
           </div>
           <div className="flex-grow overflow-y-auto custom-scrollbar p-4 space-y-4">
             {loading ? (
@@ -220,8 +245,8 @@ export const Inbox: React.FC = () => {
           </div>
         </div>
 
-        {/* Message View */}
-        <div className="hidden md:flex flex-grow flex-col bg-white/60 dark:bg-[#1E1E1E]/60 backdrop-blur-xl rounded-[2.5rem] border border-white/50 dark:border-white/5 overflow-hidden shadow-xl">
+        {/* Message View (PARENT ANCHOR) */}
+        <div className="hidden md:flex flex-1 min-w-0 flex-col bg-white/60 dark:bg-[#1E1E1E]/60 backdrop-blur-xl rounded-[2.5rem] border border-white/50 dark:border-white/5 overflow-hidden shadow-xl">
              {selectedMessage ? (
                <div 
                  key={selectedMessage.id}
@@ -272,7 +297,7 @@ export const Inbox: React.FC = () => {
                     <div className="max-w-3xl mx-auto">
                         <div className="flex items-center gap-3 mb-8 opacity-40">
                             <Clock size={14} />
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em]">Recebida em {new Date(selectedMessage.created_at).toLocaleString()}</span>
+                            <span className="text-[10px] font-black uppercase tracking-normal">Recebida em {new Date(selectedMessage.created_at).toLocaleString()}</span>
                         </div>
                         
                         <div className="bg-white/40 dark:bg-white/5 rounded-[2rem] p-10 border border-white shadow-inner relative">
@@ -283,7 +308,7 @@ export const Inbox: React.FC = () => {
                         </div>
 
                         <div className="mt-12 flex flex-col gap-6">
-                            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-pink-500">Acções Rápidas</h4>
+                            <h4 className="text-[10px] font-black uppercase tracking-normal text-pink-500">Acções Rápidas</h4>
                             <div className="grid grid-cols-2 gap-4">
                                 <button 
                                     onClick={() => setIsReplyOpen(true)}
@@ -305,15 +330,18 @@ export const Inbox: React.FC = () => {
                  </div>
                </div>
              ) : (
-               <div className="flex flex-col items-center justify-center h-full opacity-30 p-20 text-center">
-                 <div className="w-32 h-32 bg-pink-100 dark:bg-pink-900/10 rounded-full flex items-center justify-center mb-8 shadow-inner">
-                    <Mail size={48} className="text-pink-500" />
-                 </div>
-                 <h3 className="text-2xl font-serif text-gray-500 dark:text-gray-400 mb-4 tracking-tighter italic font-medium">Seleccione uma mensagem</h3>
-                 <div className="text-[10px] font-black uppercase tracking-[0.2em] max-w-sm leading-relaxed text-gray-400 text-center mx-auto">
-                    Clique numa conversa à esquerda para ver os detalhes e responder ao cliente.
-                 </div>
-               </div>
+                <div className="flex-grow flex flex-col items-center justify-center h-full w-full p-10 animate-in fade-in duration-700">
+                  {/* Step 1 to 4: Fixed Container Width & Behavior */}
+                  <div className="w-full max-w-md mx-auto px-6 flex flex-col items-center justify-center space-y-4 bg-red-200 p-8 rounded-[2.5rem] border-2 border-dashed border-red-300/30 min-w-[280px] max-w-[400px] flex-shrink-0 basis-full">
+                    <Mail size={48} className="text-pink-500 mb-2 opacity-40 shrink-0" />
+                    <h3 className="text-xl font-semibold text-gray-800 tracking-normal whitespace-normal break-normal leading-relaxed text-center w-full" style={{ wordBreak: 'normal', overflowWrap: 'normal' }}>
+                      Selecione uma mensagem
+                    </h3>
+                    <p className="text-sm text-gray-600 leading-relaxed w-full max-w-none whitespace-normal break-normal text-center" style={{ wordBreak: 'normal', overflowWrap: 'normal' }}>
+                      Clique numa conversa à esquerda para ver os detalhes e responder ao cliente.
+                    </p>
+                  </div>
+                </div>
              )}
            
         </div>
@@ -332,7 +360,7 @@ export const Inbox: React.FC = () => {
             className="w-full p-6 bg-gray-50 dark:bg-white/5 border border-pink-100 dark:border-white/10 rounded-[2rem] outline-none focus:ring-4 focus:ring-pink-500/20 transition-all min-h-[200px] resize-y" 
             required 
           />
-          <button type="submit" className="w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black transition-all">Enviar Resposta</button>
+          <button type="submit" className="w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-normal text-[10px] shadow-2xl hover:bg-black transition-all">Enviar Resposta</button>
         </form>
       </Modal>
 

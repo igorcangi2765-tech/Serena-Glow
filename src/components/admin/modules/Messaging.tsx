@@ -21,16 +21,19 @@ export const Messaging: React.FC = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [countRes, historyRes] = await Promise.all([
+      const [
+        { count: clientCount, error: clientError },
+        { data: communications, error: commsError }
+      ] = await Promise.all([
         supabase.from('clients').select('*', { count: 'exact', head: true }),
-        supabase.from('communications').select('*').order('created_at', { ascending: false }).limit(5)
+        supabase.from('campaigns').select('*').order('created_at', { ascending: false })
       ]);
 
-      if (countRes.error) throw countRes.error;
-      if (historyRes.error) throw historyRes.error;
+      if (clientError) throw clientError;
+      if (commsError) throw commsError;
 
-      setClientCount(countRes.count || 0);
-      setHistory(historyRes.data || []);
+      setClientCount(clientCount || 0);
+      setHistory(communications || []);
     } catch (error) {
       console.error('Error fetching messaging data:', error);
     } finally {
@@ -44,14 +47,14 @@ export const Messaging: React.FC = () => {
     
     try {
       const { error } = await supabase
-        .from('communications')
-        .insert({
-          type: type,
-          recipient: `Base Total / ${clientCount} Clientes`,
-          content: content,
-          status: 'sent'
-        });
-
+        .from('campaigns')
+        .insert([{
+            type: type,
+            recipient: `Base Total / ${clientCount} Clientes`,
+            content: content,
+            status: 'sent'
+        }]);
+      
       if (error) throw error;
       
       toast.success(`${type.toUpperCase()} enviado com sucesso para a base total!`, {

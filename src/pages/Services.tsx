@@ -3,18 +3,21 @@ import { useLanguage } from '../LanguageContext';
 import { useTheme } from '../ThemeContext';
 import { useLocation } from 'react-router-dom';
 import { BookingModal } from '../components/BookingModal';
-import { api } from '../lib/api';
+import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, ArrowRight, Sparkles, Scissors, Hand, HeartHandshake, Brush, Feather, Eye, Footprints, Smile, Palette, Coffee, Flower2, Droplet, Maximize2 } from 'lucide-react';
-import { ImagePreview } from '../components/common/ImagePreview';
+import { Clock, ArrowRight, Sparkles } from 'lucide-react';
+import { Service } from '../types';
 
 export const Services: React.FC = () => {
   const { t, language } = useLanguage();
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const [dbServices, setDbServices] = useState<any[]>([]);
+  const [dbServices, setDbServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState('');
+  const [previewId, setPreviewId] = useState<string | null>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -23,7 +26,11 @@ export const Services: React.FC = () => {
 
   const fetchServices = async () => {
     try {
-      const data = await api.get('/services');
+      const { data, error } = await supabase
+        .from('services')
+        .select('*, category:service_categories(*)');
+        
+      if (error) throw error;
       setDbServices(data || []);
     } catch (err: any) {
       console.error('Error fetching services:', err.message);
@@ -35,6 +42,8 @@ export const Services: React.FC = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const cat = params.get('category');
+    const preview = params.get('preview');
+
     if (cat) {
       setActiveCategory(cat);
       setTimeout(() => {
@@ -43,6 +52,22 @@ export const Services: React.FC = () => {
           window.scrollTo({ top: grid.offsetTop - 100, behavior: 'smooth' });
         }
       }, 100);
+    }
+
+    if (preview) {
+      setPreviewId(preview);
+      setTimeout(() => {
+        const element = document.getElementById(preview);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 500);
+
+      // Remove preview highlight after 5 seconds
+      const timer = setTimeout(() => {
+        setPreviewId(null);
+      }, 5000);
+      return () => clearTimeout(timer);
     }
   }, [location.search]);
 
@@ -53,9 +78,6 @@ export const Services: React.FC = () => {
     { id: 'Makeup', label: t('services.categories.makeup') },
     { id: 'Eyebrows', label: t('services.categories.eyebrows') },
   ];
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState('');
 
   const SERVICE_IMAGE_MAP: Record<string, string> = {
     'Limpeza de Pele': '/images/facial_cleansing.png',
@@ -72,7 +94,13 @@ export const Services: React.FC = () => {
     'Gel Manicure': '/images/gel_manicure.png',
     'Spa Pedicure': '/images/spa_pedicure.png',
     'Eyebrows': '/images/eyebrows.png',
-    'Makeup': '/images/gallery_hair_1.png'
+    'Makeup': '/images/gallery_hair_1.png',
+    'Essencial': '/images/facial_treatment.png',
+    'Beleza Completa': '/images/gallery_ai_skincare.png',
+    'Beleza Premium': '/images/gallery_ai_interior.png',
+    'Essential': '/images/facial_treatment.png',
+    'Complete Beauty': '/images/gallery_ai_skincare.png',
+    'Premium Beauty': '/images/gallery_ai_interior.png'
   };
 
   const CATEGORY_IMAGE_MAP: Record<string, string> = {
@@ -82,22 +110,18 @@ export const Services: React.FC = () => {
     'Eyebrows': '/images/eyebrows.png'
   };
 
-  const getServiceImage = (service: any) => {
+  const getServiceImage = (service: Service) => {
     if (service.image_url) return service.image_url;
     
-    // Check by name (PT or EN)
     const nameMap = SERVICE_IMAGE_MAP[service.name_pt] || SERVICE_IMAGE_MAP[service.name_en];
     if (nameMap) return nameMap;
     
-    // Check by category
-    const catName = service.category?.name_en || service.category_id || '';
+    const catName = service.category?.name_en || '';
     const catMap = CATEGORY_IMAGE_MAP[catName];
     if (catMap) return catMap;
     
     return "/images/hero_serena_glow.png";
   };
-
-
 
   const services = dbServices.map(s => {
     const priceValue = s.price || 0;
@@ -105,9 +129,9 @@ export const Services: React.FC = () => {
     
     return {
       id: s.id,
-      name: language === 'pt' ? (s.name_pt || '') : (s.name_en || ''),
+      name: language === 'pt' ? s.name_pt : s.name_en,
       price: `${priceValue.toLocaleString()} MZN`,
-      desc: language === 'pt' ? (s.description_pt || s.name_pt || '') : (s.description_en || s.name_en || ''),
+      desc: language === 'pt' ? (s.description_pt || s.name_pt) : (s.description_en || s.name_en),
       category: catName.includes('Facial') ? 'Facial' : 
                 catName.includes('Nail') ? 'Nails' : 
                 catName.includes('Makeup') ? 'Makeup' : 
@@ -116,11 +140,9 @@ export const Services: React.FC = () => {
     };
   });
 
-
-
   const filteredServices = activeCategory === 'All'
     ? services
-    : services.filter((s: any) => s.category === activeCategory);
+    : services.filter((s) => s.category === activeCategory);
 
   return (
     <div className="pt-24 w-full bg-neutral-50 dark:bg-[#121212] min-h-screen">
@@ -134,9 +156,8 @@ export const Services: React.FC = () => {
           <h1 className="text-5xl md:text-6xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-4 tracking-wide">{t('services.title')}</h1>
           <p className="text-gray-600 dark:text-[#A0A0A0] max-w-2xl mx-auto mb-6 text-lg">{t('services.intro')}</p>
 
-          {/* Filters */}
           <div className="flex flex-wrap justify-center gap-4">
-            {categories.map((cat: any) => (
+            {categories.map((cat) => (
               <motion.button
                 key={cat.id}
                 whileHover={{ scale: 1.02 }}
@@ -154,23 +175,23 @@ export const Services: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Services Grid */}
         <motion.div 
           layout
           id="services-grid" 
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-w-0"
         >
           <AnimatePresence mode="popLayout">
-            {filteredServices.map((service: any, idx: number) => (
+            {filteredServices.map((service, idx) => (
               <motion.div 
                 key={service.id}
+                id={service.id}
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 whileHover={{ scale: 1.02, translateY: -5 }}
                 transition={{ duration: 0.4, delay: idx * 0.05 }}
-                className="bg-white dark:bg-[#1E1E1E] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 flex flex-col border border-pink-50 dark:border-[#2E2E2E]"
+                className={`bg-white dark:bg-[#1E1E1E] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 flex flex-col border border-pink-50 dark:border-[#2E2E2E] ${previewId === service.id ? 'glow-highlight shadow-2xl scale-[1.03] border-pink-500' : ''}`}
               >
                 <div className="relative h-64 overflow-hidden">
                   <img
@@ -204,7 +225,6 @@ export const Services: React.FC = () => {
           </AnimatePresence>
         </motion.div>
       </div>
-
 
       <BookingModal 
         isOpen={isModalOpen} 

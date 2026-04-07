@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../LanguageContext';
 import { useTheme } from '../ThemeContext';
+import { useBooking } from '../BookingContext';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Star, Users, Sparkles, Award, ArrowRight, CheckCircle2, ChevronDown, Hand, HeartHandshake, Brush, Feather, Eye, UserCheck, Footprints, Smile, Palette, Coffee, Flower2, Droplet, Maximize2 } from 'lucide-react';
@@ -8,8 +9,9 @@ import { ImagePreview } from '../components/common/ImagePreview';
 import { useState } from 'react';
 
 export const Home: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { theme } = useTheme();
+  const { openBookingModal } = useBooking();
   const isDark = theme === 'dark';
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -88,12 +90,12 @@ export const Home: React.FC = () => {
               whileTap={{ scale: 0.95 }}
               className="w-full sm:w-auto"
             >
-              <Link
-                to="?booking=true"
-                className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-4 shadow-md hover:shadow-lg transition font-medium tracking-wide block text-center"
+              <button
+                onClick={() => openBookingModal()}
+                className="w-full rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-4 shadow-md hover:shadow-lg transition font-medium tracking-wide block text-center"
               >
                 {t('hero.primaryBtn')}
-              </Link>
+              </button>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.15)" }}
@@ -405,8 +407,8 @@ export const Home: React.FC = () => {
                     ))}
                   </ul>
                 </div>
-                <Link
-                  to="?booking=true"
+                <button
+                  onClick={() => openBookingModal(pkg.name)}
                   className={`block w-full text-center px-6 py-3 rounded-full font-medium tracking-wide transition shadow-md hover:shadow-lg ${
                     pkg.popular
                       ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white'
@@ -414,7 +416,7 @@ export const Home: React.FC = () => {
                   }`}
                 >
                   {t('pricing.book')}
-                </Link>
+                </button>
               </motion.div>
             ))}
           </div>
@@ -460,12 +462,12 @@ export const Home: React.FC = () => {
             )}
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="?booking=true"
+            <button
+              onClick={() => openBookingModal()}
               className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-10 py-4 shadow-md hover:shadow-lg transition-all duration-300 font-medium tracking-wide w-full sm:w-auto text-center"
             >
               {t('cta.book')}
-            </Link>
+            </button>
             <Link
               to="/contact"
               className="rounded-full border border-pink-400 text-pink-600 dark:text-pink-300 hover:bg-pink-50 dark:hover:bg-pink-900/30 px-10 py-4 transition-all duration-300 font-medium tracking-wide w-full sm:w-auto text-center bg-white dark:bg-[#1E1E1E]/50 shadow-sm backdrop-blur-sm"

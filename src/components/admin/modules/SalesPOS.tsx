@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Plus, Trash2, CheckCircle2, Minus, Search, UserPlus, User, CreditCard, Banknote, Smartphone, Tag, ArrowRight, Zap, Star, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '@/lib/supabase';
-import { api } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 import { useLanguage } from '@/LanguageContext';
 import { useTheme } from '@/ThemeContext';
@@ -64,12 +63,20 @@ export const SalesPOS: React.FC = () => {
 
   const fetchServices = async () => {
     try {
-      const [servicesData, categoriesData, staffData] = await Promise.all([
-        api.get('/services'),
-        api.get('/services/categories'),
-        api.get('/profiles')
+      const [
+        { data: servicesData, error: servicesError },
+        { data: categoriesData, error: categoriesError },
+        { data: staffData, error: staffError }
+      ] = await Promise.all([
+        supabase.from('services').select('*').order('name_pt'),
+        supabase.from('service_categories').select('*').order('name_pt'),
+        supabase.from('profiles').select('*').order('full_name')
       ]);
       
+      if (servicesError) throw servicesError;
+      if (categoriesError) throw categoriesError;
+      if (staffError) throw staffError;
+
       setServices(servicesData || []);
       setCategories(categoriesData || []);
       setStaff(staffData || []);
@@ -121,7 +128,7 @@ export const SalesPOS: React.FC = () => {
     setProcessing(true);
     
     try {
-      const saleData = {
+      const salePayload = {
         total: calculateSubtotal(),
         discount_amount: 0,
         discount_type: 'fixed',
@@ -132,31 +139,58 @@ export const SalesPOS: React.FC = () => {
         created_at: saleDate === new Date().toISOString().split('T')[0] ? new Date().toISOString() : `${saleDate}T12:00:00Z`
       };
 
+      // 1. Create Sale
+      const { data: saleData, error: saleError } = await supabase
+        .from('sales')
+        .insert([salePayload])
+        .select()
+        .single();
+
+      if (saleError) throw saleError;
+      if (!saleData) throw new Error('Falha ao criar registo de venda');
+
+      // 2. Create Sale Items (Removing 'name' column as per schema)
       const saleItems = cart.map(item => ({
+        sale_id: saleData.id,
         service_id: item.id,
-        name: language === 'pt' ? item.name_pt : item.name_en, // For metadata
         quantity: item.quantity,
         unit_price: item.price,
         staff_id: item.staff_id || null
       }));
 
-      await api.post('/sales', { sale: saleData, items: saleItems });
+      const { error: itemsError } = await supabase
+        .from('sale_items')
+        .insert(saleItems);
 
-      toast.success(t('admin.checkoutSuccess'), {
+      if (itemsError) {
+        await supabase.from('sales').delete().eq('id', saleData.id);
+        throw itemsError;
+      }
+
+      // 3. Create Document (Receipt) automatically
+      const docNumber = `REC-${Math.floor(1000 + Math.random() * 9000)}-${new Date().getFullYear()}`;
+      await supabase.from('documents').insert([{
+        sale_id: saleData.id,
+        doc_number: docNumber,
+        type: 'receipt',
+        metadata: { generated_by: 'POS' }
+      }]);
+
+      toast.success('Venda concluída com sucesso!', {
           duration: 4000,
           position: 'bottom-center',
-          style: { borderRadius: '2rem', padding: '1rem 2rem', background: '#10b981', color: '#fff', fontWeight: 'bold' }
+          style: { borderRadius: '1.5rem', background: '#10b981', color: '#fff', fontWeight: 'bold' }
       });
       setCart([]);
       setSelectedClient(null);
+      setShowCart(false);
     } catch (error: any) {
       console.error('Checkout error:', error.message);
-      toast.error(t('admin.checkoutError'));
+      toast.error('Ocorreu um erro ao processar o checkout');
     } finally {
       setProcessing(false);
     }
   };
-
   const handleQuickAddClient = async () => {
     const name = prompt(t('admin.quickAddClientName'));
     if (!name) return;
@@ -164,7 +198,14 @@ export const SalesPOS: React.FC = () => {
     if (!phone) return;
 
     try {
-      const data = await api.post('/clients', { name, phone });
+      const { data, error } = await supabase
+        .from('clients')
+        .insert([{ name, phone }])
+        .select()
+        .single();
+        
+      if (error) throw error;
+      
       setSelectedClient(data);
       toast.success(t('admin.clientAdded'));
     } catch (error: any) {
@@ -212,10 +253,10 @@ export const SalesPOS: React.FC = () => {
             <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3">
                     <h1 className="text-2xl lg:text-3xl font-serif font-black text-gray-900 dark:text-white tracking-tighter uppercase">
-                        VENDAS <span className="text-[#E91E63] font-light">/</span> <span className="text-[#E91E63]/60 font-serif font-light lowercase italic tracking-normal">pos</span>
+                        {t('admin.sales')} <span className="text-[#E91E63] font-light">/</span> <span className="text-[#E91E63]/60 font-serif font-light lowercase italic tracking-normal">pos</span>
                     </h1>
                 </div>
-                <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.4em] mt-1">Terminal de faturação instantânea</p>
+                <p className="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.4em] mt-1">{t('admin.posSale')}</p>
             </div>
             
             <div className="flex items-center gap-4 w-full lg:w-auto">
@@ -223,7 +264,7 @@ export const SalesPOS: React.FC = () => {
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#E91E63] transition-all" size={18} />
                     <input 
                         type="text"
-                        placeholder="Procurar serviço por nome..."
+                        placeholder={t('admin.search')}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full pl-14 pr-6 py-4 bg-white/80 dark:bg-white/5 border border-white/50 dark:border-white/10 rounded-2xl text-xs font-bold focus:ring-8 focus:ring-[#E91E63]/5 focus:border-[#E91E63]/30 focus:bg-white dark:focus:bg-[#1A1A1A] outline-none transition-all shadow-sm placeholder:text-gray-300 placeholder:font-medium"
@@ -266,7 +307,7 @@ export const SalesPOS: React.FC = () => {
                         : 'bg-[#F3F4F6] dark:bg-white/5 border-transparent text-gray-400 hover:text-[#E91E63] hover:bg-white dark:hover:bg-white/10 shadow-sm'
                 }`}
             >
-                Todos
+                {t('admin.all')}
             </button>
             {categories.map(cat => (
                 <button
@@ -287,7 +328,7 @@ export const SalesPOS: React.FC = () => {
             {filteredServices.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-40 text-center opacity-30">
                     <Zap size={48} className="mx-auto mb-6 text-gray-400" />
-                    <p className="font-serif italic text-2xl text-gray-400 mb-2 uppercase tracking-widest">Nenhum serviço disponível</p>
+                    <p className="font-serif italic text-2xl text-gray-400 mb-2 uppercase tracking-widest">{t('admin.noData')}</p>
                     <p className="text-[10px] font-black uppercase tracking-widest">Verifique a ligação ao catálogo.</p>
                 </div>
             ) : (
@@ -330,7 +371,7 @@ export const SalesPOS: React.FC = () => {
                     
                     <div className="relative z-10 flex justify-between items-end mt-6">
                         <div>
-                            <p className="text-[10px] text-gray-300 dark:text-gray-500 font-black uppercase tracking-[0.2em] mb-1">Preço</p>
+                            <p className="text-[10px] text-gray-300 dark:text-gray-500 font-black uppercase tracking-[0.2em] mb-1">{t('admin.unitPrice')}</p>
                             <p className={`text-xl font-black tracking-tighter ${lastAddedId === service.id ? 'text-[#E91E63]' : 'text-[#E91E63] group-hover:text-[#C2185B]'}`}>
                                 {service.price.toLocaleString()} <span className="text-[10px] font-sans">MZN</span>
                             </p>
@@ -353,7 +394,7 @@ export const SalesPOS: React.FC = () => {
         {/* 1. Header (Fixed) */}
         <div className="px-8 pt-8 pb-6 flex items-center justify-between border-b border-pink-50/50 dark:border-white/5 bg-white/80 dark:bg-black/80 backdrop-blur-xl shrink-0">
             <div>
-                <h2 className="text-2xl font-serif font-black text-gray-900 dark:text-white tracking-tight uppercase">Carrinho</h2>
+                <h2 className="text-2xl font-serif font-black text-gray-900 dark:text-white tracking-tight uppercase">{t('admin.cart')}</h2>
                 <p className="text-[10px] font-black text-[#E91E63] uppercase tracking-[0.2em] mt-1">
                     {cart.length} {cart.length === 1 ? 'Serviço' : 'Serviços'} selecionados
                 </p>
@@ -375,14 +416,14 @@ export const SalesPOS: React.FC = () => {
                          onClick={() => setSelectedClient(null)}
                          className="text-[10px] font-black text-[#E91E63] uppercase border-b border-transparent hover:border-[#E91E63] transition-all"
                      >
-                         Trocar
+                         {t('admin.filter')}
                      </button>
                  ) : (
                     <button 
                         onClick={handleQuickAddClient}
                         className="text-[10px] font-black text-[#E91E63] uppercase border-b border-transparent hover:border-[#E91E63] transition-all"
                     >
-                        + Novo
+                        {t('admin.newBooking')}
                     </button>
                  )}
             </div>
@@ -396,7 +437,11 @@ export const SalesPOS: React.FC = () => {
                         onChange={async (e) => {
                             const val = e.target.value;
                             if (val.length > 2) {
-                                const data = await api.get(`/clients/search?q=${val}`);
+                                const { data } = await supabase
+                                    .from('clients')
+                                    .select('*')
+                                    .or(`name.ilike.%${val}%,phone.ilike.%${val}%`)
+                                    .limit(1);
                                 if (data?.[0]) setSelectedClient(data[0]);
                             }
                         }}
@@ -427,7 +472,7 @@ export const SalesPOS: React.FC = () => {
                     <div className="w-20 h-20 bg-pink-50 dark:bg-white/5 rounded-full flex items-center justify-center mb-4">
                         <ShoppingCart size={32} className="text-[#E91E63]" />
                     </div>
-                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest leading-relaxed">Carrinho vazio<br/>Selecione um serviço</p>
+                    <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest leading-relaxed">{t('admin.emptyCart')}<br/>{t('booking.selectService')}</p>
                 </div>
             ) : (
                 <AnimatePresence mode="popLayout">
@@ -452,7 +497,7 @@ export const SalesPOS: React.FC = () => {
                                             onChange={(e) => updateStaffItem(item.id, e.target.value)}
                                             className="bg-transparent text-[9px] font-black text-gray-400 uppercase tracking-widest outline-none cursor-pointer hover:text-[#E91E63] transition-colors"
                                         >
-                                            <option value="">Atribuir Profissional</option>
+                                            <option value="">{t('admin.selectStaff')}</option>
                                             {staff.map(s => (
                                                 <option key={s.id} value={s.id}>{s.full_name}</option>
                                             ))}
@@ -498,17 +543,17 @@ export const SalesPOS: React.FC = () => {
         <div className="px-8 pt-6 pb-6 border-t border-pink-50/50 dark:border-white/5 bg-[#FAFAFA]/80 dark:bg-black/40 backdrop-blur-md shrink-0">
             <div className="space-y-3 mb-6">
                 <div className="flex justify-between items-center text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">
-                    <span>Subtotal</span>
+                    <span>{t('admin.subtotal')}</span>
                     <span className="text-zinc-600 dark:text-zinc-300">{calculateSubtotal().toLocaleString()} MZN</span>
                 </div>
                 <div className="flex justify-between items-center text-[10px] font-black text-[#E91E63] uppercase tracking-widest cursor-pointer hover:opacity-80 transition-opacity">
-                    <span className="flex items-center gap-2"><Tag size={12}/> Adicionar Desconto</span>
+                    <span className="flex items-center gap-2"><Tag size={12}/> {t('admin.discount')}</span>
                     <span>0 MZN</span>
                 </div>
                 <div className="h-px bg-pink-100/50 dark:bg-white/5 my-4" />
                 <div className="flex justify-between items-end">
                     <div>
-                        <span className="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-[0.3em]">Total Final</span>
+                        <span className="text-[10px] font-black text-gray-900 dark:text-white uppercase tracking-[0.3em]">{t('admin.total')}</span>
                         <p className="text-[8px] text-gray-400 uppercase tracking-widest mt-1">IVA Incluído (17%)</p>
                     </div>
                     <motion.div 
@@ -528,10 +573,10 @@ export const SalesPOS: React.FC = () => {
             {/* 5. Pagamento (Fixed) */}
             <div className="grid grid-cols-2 gap-3 mb-8">
                 {[
-                    { id: 'Dinheiro', label: 'Dinheiro', icon: <Banknote size={18} />, brandColor: 'bg-emerald-500' },
-                    { id: 'M-Pesa', label: 'M-Pesa', icon: <div className="w-5 h-5 rounded-full bg-green-600 text-white flex items-center justify-center text-[8px] font-black">M</div>, brandColor: 'bg-green-600' },
+                    { id: 'Dinheiro', label: t('admin.cash'), icon: <Banknote size={18} />, brandColor: 'bg-emerald-500' },
+                    { id: 'M-Pesa', label: t('admin.mpesa'), icon: <div className="w-5 h-5 rounded-full bg-green-600 text-white flex items-center justify-center text-[8px] font-black">M</div>, brandColor: 'bg-green-600' },
                     { id: 'E-Mola', label: 'E-Mola', icon: <div className="w-5 h-5 rounded-full bg-orange-500 text-white flex items-center justify-center text-[8px] font-black">E</div>, brandColor: 'bg-orange-500' },
-                    { id: 'Cartão', label: 'Cartão', icon: <CreditCard size={18} />, brandColor: 'bg-blue-600' }
+                    { id: 'Cartão', label: t('admin.card'), icon: <CreditCard size={18} />, brandColor: 'bg-blue-600' }
                 ].map((method) => (
                     <button
                         key={method.id}
@@ -566,7 +611,7 @@ export const SalesPOS: React.FC = () => {
                     <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
                     <>
-                        <span>Confirmar Venda — {calculateSubtotal().toLocaleString()} MZN</span>
+                        <span>{t('admin.finishSale')} — {calculateSubtotal().toLocaleString()} MZN</span>
                         <CheckCircle2 size={20} className="group-hover:scale-110 transition-transform" />
                     </>
                 )}

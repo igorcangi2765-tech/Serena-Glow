@@ -93,10 +93,15 @@ export const AdminLogin: React.FC = () => {
       <GlassContainer isDark={isDark}>
         {/* Logo Section */}
         <motion.div 
-          whileHover={{ scale: 1.05, rotate: -3 }}
-          className="w-20 h-20 bg-gradient-to-br from-[#F471B5] via-[#E91E63] to-[#C2185B] rounded-[2rem] mx-auto mb-12 flex items-center justify-center shadow-3xl shadow-pink-500/30 cursor-pointer text-white"
+          whileHover={{ scale: 1.05, rotate: -2 }}
+          className="mx-auto mb-10 flex items-center justify-center cursor-pointer drop-shadow-2xl"
         >
-          <Sparkles size={36} className="text-white/90 drop-shadow-md" />
+          <img 
+            src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
+            alt="Serena Glow Beauty Studio" 
+            className="h-44 md:h-52 w-auto object-contain bg-white p-4 rounded-[3rem] shadow-2xl"
+            referrerPolicy="no-referrer"
+          />
         </motion.div>
         
         <div className="text-center mb-14">

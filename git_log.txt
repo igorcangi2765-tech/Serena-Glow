@@ -1,0 +1,30 @@
+﻿2f17387f8619c27c0b6ae9cb762f11dde7f11328 Refactor: Save API migration and SEO cleanup before reverting main 2026-03-28
+f5f71ff2fa829bbfb1f283ae61e0cc4bd6f7f626 fix: deploy fix - update dist files, index.html and assets 2026-03-28
+b64e282a73238762d5f794d3f29254255e9dacfc feat: Implement initial backend API with Express and Supabase, providing endpoints for profiles, clients, services, and bookings, alongside static file serving. 2026-03-28
+5b984c7e534fcbe8b102129655e1ae369bf79073 fix: robust image serving fallback for Hostinger 2026-03-28
+fd8118e784ea993e51046f41670b798eeac82f6e feat: Implement Node.js backend server with build scripts and Hostinger deployment configurations. 2026-03-27
+3cd342fb7b7957ee24f166c15ff812769145522e deploy 2026-03-25
+3a6b782fbc29419e560e405ed36edd4660dbf910 gallery 2026-03-25
+aad8a681c10d009e634d71f01b74532a48560a8a servicos 2026-03-25
+2f4fff9a40f7f4b8ebee70fd2029850c0b94e706 deploy build: include production assets 2026-03-25
+880f189eacf3622604970b8b7b82690b70c64406 feat: add theme toggle to login screens for easy verification 2026-03-25
+58a106c203c41270635509f2ded1f0faba714074 Add SSH public key for Hostinger and ignore private key 2026-03-25
+71878ab498d71700c980b0ab73c13ff6822d0bd3 Add SSH keys for Hostinger deployment 2026-03-25
+3351275f4bb7ef1c94097afcbe4bcf25fd8597a9 feat: implement core application structure, pages, components, styling, and internationalization for the Serena Glow Beauty application. 2026-03-25
+f91e8f457f8564ad76998aad7111b020743f5115 feat: premium light mode login and updated remote sync 2026-03-25
+779ef060b0b93ddfcd38c59f58e65438c376f708 feat: premium admin overhaul and unified api migration 2026-03-25
+e0679fd5bf3f5246e783824b88691497fd4e141a feat: update website content and SEO for Serena Glow 2026-03-22
+91822176dd87e44bdf116e7a8918ecf1544c2cbf feat: Implement core application structure with public pages, booking and policy modals, localization, and a comprehensive admin panel. 2026-03-22
+ef0e7ba2082008e9851bc5fb6f02860be85a398b feat: Implement core application layout with i18n, theme switching, and initial admin components, alongside configuration updates. 2026-03-21
+c6c82efc0a199f8f97524a36b8f48b6ba6bea118 Resolve conflicts and update translations for PT-Mo├ºambique 2026-03-20
+e1dac425b833d2d8b150a91f0aabecbf112a9b7b feat: implement initial public pages and admin panel with core modules 2026-03-20
+445e5d97eaaf752ce79a9eedf4e88ad82c2fac4b On main: Backup antes do revert do layout 2026-03-20
+6e12038676aa3f8731bdb32acc997b7d70663e61 index on main: 332da6d skip 2026-03-20
+332da6d68128f8c278108ab8b74d0d402204cecc skip 2026-03-18
+edca2f08256b5c11edee514e28c65277c744c04c feat: Introduce internationalization, an admin section, and new legal pages. 2026-03-18
+6c0787f890c474b36675f7f0e6f4dd2196779a93 - Refactored project structure into scalable architecture - Moved pages into /src/pages - Created admin base structure (/admin) - Added admin layout, login, and auth guard - Integrated i18n system with PT and EN locales - Added translation files (en.json, pt.json) - Updated App and language context - Cleaned unused files and removed old layout - Fixed imports and lint issues - Added language flag assets (mz, en) 2026-03-18
+db30821a3d029daf56abe289de30dba4f1137946 feat: Implement initial application structure with core pages (Home, About, Services, Contact, Gallery, Admin), layout, and internationalization. 2026-03-17
+798544bf89be6d41a1f5268a4674ab23e610c541 improve services content and localize website for Lichinga (PT-MZ) 2026-03-17
+f434360ba1d23747479550e7b871d1837c337944 improve services content and localize website for Lichinga (PT-MZ) 2026-03-17
+27714ab2d6992972a6a7dd324def5f5d83899818 feat: improve services content and localize website for Lichinga (PT-MZ) 2026-03-17
+f337b91dd5593c7334703c600f633b7c137a75f8 feat: improve services content and localize website for Lichinga (PT-MZ) 2026-03-17

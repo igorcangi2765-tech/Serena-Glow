@@ -4,7 +4,7 @@ import { useTheme } from '../ThemeContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Maximize2 } from 'lucide-react';
 import { ImagePreview } from '../components/common/ImagePreview';
-import { api } from '../lib/api';
+import { GalleryImage } from '../types';
 
 export const Gallery: React.FC = () => {
   const { t } = useLanguage();
@@ -13,7 +13,7 @@ export const Gallery: React.FC = () => {
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [images, setImages] = useState<any[]>([]);
+  const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,11 +22,10 @@ export const Gallery: React.FC = () => {
 
   const fetchImages = async () => {
     try {
-      const data = await api.get('/gallery');
-      setImages(data.map((img: any) => ({
-        url: img.image_url,
-        category: img.category || 'All'
-      })) || []);
+      const response = await fetch('/api/gallery');
+      if (!response.ok) throw new Error('API request failed');
+      const data = await response.json();
+      setImages(data || []);
     } catch (error) {
       console.error('Error loading gallery:', error);
     } finally {
@@ -39,11 +38,11 @@ export const Gallery: React.FC = () => {
     setIsPreviewOpen(true);
   };
 
-  const categories = Array.isArray(t('galleryPage.categories')) ? t('galleryPage.categories') : [];
+  const categories = Array.isArray(t('galleryPage.categories')) ? t('galleryPage.categories') as string[] : [];
 
   const filteredImages = activeCategoryIndex === 0
     ? images
-    : images.filter((img: any) => img.category === categories[activeCategoryIndex]);
+    : images.filter((img) => img.category === categories[activeCategoryIndex]);
 
   return (
     <div className="pt-24 w-full bg-white dark:bg-[#121212] min-h-screen">
@@ -59,9 +58,9 @@ export const Gallery: React.FC = () => {
  
           {/* Filters */}
           <div className="flex flex-wrap justify-center gap-4">
-            {categories.map((cat: string, idx: number) => (
+            {categories.map((cat, idx) => (
               <motion.button
-                key={idx}
+                key={`${cat}-${idx}`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveCategoryIndex(idx)}
@@ -82,21 +81,21 @@ export const Gallery: React.FC = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0"
         >
           <AnimatePresence mode="popLayout">
-            {filteredImages.map((img: any, idx: number) => (
+            {filteredImages.map((img, idx) => (
               <motion.div
-                key={img.url}
+                key={img.id || img.image_url}
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 whileHover={{ y: -5 }}
-                transition={{ duration: 0.4, delay: idx % 12 * 0.05 }}
+                transition={{ duration: 0.4, delay: (idx % 12) * 0.05 }}
                 onClick={() => openPreview(idx)}
                 className="relative aspect-square overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border border-pink-50 dark:border-pink-900/10"
               >
                 <img
-                  src={img.url}
-                  alt={t('gallery.title')}
+                  src={img.image_url}
+                  alt={img.title || t('gallery.title')}
                   className="w-full h-full object-cover transition-transform duration-700"
                   loading="lazy"
                   referrerPolicy="no-referrer"
@@ -121,7 +120,7 @@ export const Gallery: React.FC = () => {
       <ImagePreview 
         isOpen={isPreviewOpen} 
         onClose={() => setIsPreviewOpen(false)} 
-        images={filteredImages.map((img: any) => img.url)} 
+        images={filteredImages.map((img) => img.image_url)} 
         initialIndex={selectedImageIndex}
       />
     </div>

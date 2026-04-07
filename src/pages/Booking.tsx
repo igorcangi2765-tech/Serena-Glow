@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useLanguage } from '../LanguageContext';
 import { useLocation } from 'react-router-dom';
-import { api } from '../lib/api';
+import { supabase } from '../lib/supabase';
 
 export const Booking: React.FC = () => {
   const { t, language } = useLanguage();
@@ -26,7 +26,12 @@ export const Booking: React.FC = () => {
 
   const fetchServices = async () => {
     try {
-      const data = await api.get('/services');
+      const { data, error } = await supabase
+        .from('services')
+        .select('*')
+        .order('name_pt');
+        
+      if (error) throw error;
       setDbServices(data || []);
     } catch (err: any) {
       console.error('Error fetching services:', err.message);
@@ -52,26 +57,43 @@ export const Booking: React.FC = () => {
     setSubmitting(true);
 
     try {
-      // 1. Get or create client via backend
-      const client = await api.post('/clients/verify', {
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email
-      });
-      
-      const customerId = client.id;
+      // 1. Get or create client
+      let customerId;
+      const { data: existingClient, error: clientError } = await supabase
+        .from('clients')
+        .select('id')
+        .or(`phone.eq.${formData.phone},email.eq.${formData.email}`)
+        .single();
+
+      if (existingClient) {
+        customerId = existingClient.id;
+      } else {
+        const { data: newClient, error: createError } = await supabase
+          .from('clients')
+          .insert([{ 
+            name: formData.name, 
+            phone: formData.phone, 
+            email: formData.email 
+          }])
+          .select()
+          .single();
+          
+        if (createError) throw createError;
+        customerId = newClient.id;
+      }
 
       // 2. Submit appointment
-      const appointmentData = {
-        customer_id: customerId,
-        service_id: formData.service,
-        appointment_date: formData.date,
-        appointment_time: formData.time,
-        status: 'pending',
-        notes: formData.notes
-      };
+      const { error: appointError } = await supabase
+        .from('appointments')
+        .insert([{
+          customer_id: customerId,
+          service_id: formData.service,
+          appointment_date: `${formData.date}T${formData.time}:00`,
+          status: 'pending',
+          notes: formData.notes
+        }]);
 
-      await api.post('/bookings', appointmentData);
+      if (appointError) throw appointError;
 
       toast.success(t('booking.success'));
       setFormData({ name: '', phone: '', email: '', service: '', date: '', time: '', notes: '' });

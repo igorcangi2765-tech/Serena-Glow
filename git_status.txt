@@ -1,0 +1,47 @@
+﻿On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	new file:   src/Admin.tsx
+	modified:   src/App.tsx
+	modified:   src/LanguageContext.tsx
+	modified:   src/Layout.tsx
+	modified:   src/components/admin/Sidebar.tsx
+	modified:   src/components/admin/modules/Agenda.tsx
+	modified:   src/components/admin/modules/Billing.tsx
+	modified:   src/components/admin/modules/Dashboard.tsx
+	modified:   src/components/admin/modules/Messaging.tsx
+	modified:   src/components/admin/modules/SalesPOS.tsx
+	modified:   src/index.css
+	modified:   src/lib/supabase.ts
+	modified:   src/pages/About.tsx
+	modified:   src/pages/Booking.tsx
+	modified:   src/pages/Contact.tsx
+	modified:   src/pages/Gallery.tsx
+	modified:   src/pages/Home.tsx
+	modified:   src/pages/PrivacyPolicy.tsx
+	modified:   src/pages/Services.tsx
+	modified:   src/pages/TermsOfService.tsx
+	new file:   src/translations.ts
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   dist-server/index.js
+	deleted:    dist/assets/index-CAWRVQ9t.css
+	deleted:    dist/assets/index-Can_oqbe.js
+	deleted:    dist/assets/index.es-BpF6_p-V.js
+	modified:   dist/index.html
+	modified:   package-lock.json
+	modified:   package.json
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	dist/assets/index-LoTnHQwv.css
+	dist/assets/index-rIb7Wfrl.js
+	dist/assets/index.es-D9Wcq7tG.js
+	git_log.txt
+	git_status.txt
+	server_index_current.ts
+

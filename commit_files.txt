@@ -1,0 +1,12 @@
+﻿commit fd8118e784ea993e51046f41670b798eeac82f6e
+Author: igorcangi2765-tech <igorcangi2765@gmail.com>
+Date:   Fri Mar 27 00:57:24 2026 +0530
+
+    feat: Implement Node.js backend server with build scripts and Hostinger deployment configurations.
+
+ .htaccess                    | 13 ++++++-------
+ dist-server/index.js         | 40 +++++++++++++++++++++++++++++++++++-----
+ index.html => index.html.dev |  0
+ server/index.ts              | 41 ++++++++++++++++++++++++++++++++++++-----
+ src/lib/api.ts               |  2 +-
+ 5 files changed, 78 insertions(+), 18 deletions(-)
