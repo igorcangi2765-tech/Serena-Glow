@@ -99,7 +99,7 @@ export const AdminLogin: React.FC = () => {
           <img 
             src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
             alt="Serena Glow Beauty Studio" 
-            className="h-44 md:h-52 w-auto object-contain bg-white p-4 rounded-[3rem] shadow-2xl"
+            className="h-44 md:h-52 w-auto object-contain"
             referrerPolicy="no-referrer"
           />
         </motion.div>

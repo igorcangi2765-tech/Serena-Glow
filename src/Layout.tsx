@@ -96,7 +96,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <img 
                   src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
                   alt="Serena Glow" 
-                  className="h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105 rounded-xl shadow-[0_4px_20px_rgba(233,30,99,0.1)] bg-white p-1"
+                  className="h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105"
                   referrerPolicy="no-referrer"
                 />
             </Link>
@@ -263,7 +263,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <img 
                   src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
                   alt="Serena Glow" 
-                  className="h-24 md:h-32 w-auto object-contain rounded-2xl shadow-xl bg-white p-2 transition-transform hover:scale-105"
+                  className="h-24 md:h-32 w-auto object-contain transition-transform hover:scale-105"
                   referrerPolicy="no-referrer"
                 />
               </Link>

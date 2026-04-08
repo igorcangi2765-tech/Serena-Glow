@@ -84,12 +84,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLog
           </button>
         )}
 
-        <div className={`flex items-center gap-4 mb-8 p-4 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/10 dark:to-rose-900/10 rounded-[1.5rem] border border-pink-100/30 dark:border-pink-500/10 shadow-sm group ${isCollapsed ? 'justify-center p-2' : ''}`}>
-          <div className="w-full flex items-center justify-center cursor-pointer group-hover:scale-105 transition-transform shrink-0 mb-4">
+        <div className={`flex items-center gap-4 mb-2 p-4 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/10 dark:to-rose-900/10 rounded-[1.5rem] border border-pink-100/30 dark:border-pink-500/10 shadow-sm group ${isCollapsed ? 'justify-center p-2' : ''}`}>
+          <div className="w-full flex items-center justify-center cursor-pointer group-hover:scale-105 transition-transform shrink-0">
             <img 
               src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
               alt="Logo" 
-              className="h-20 md:h-24 w-auto object-contain bg-white p-2 rounded-2xl shadow-md"
+              className="h-20 md:h-24 w-auto object-contain"
               referrerPolicy="no-referrer"
             />
           </div>

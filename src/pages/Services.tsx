@@ -5,9 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { BookingModal } from '../components/BookingModal';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, ArrowRight, Sparkles, Scissors, Hand, HeartHandshake, Brush, Feather, Eye, Footprints, Smile, Palette, Coffee, Flower2, Droplet, Maximize2 } from 'lucide-react';
-import { ImagePreview } from '../components/common/ImagePreview';
-import { SafeImage } from '../components/common/SafeImage';
+import { Clock, ArrowRight, Sparkles } from 'lucide-react';
 import { Service } from '../types';
 
 export const Services: React.FC = () => {
@@ -196,10 +194,11 @@ export const Services: React.FC = () => {
                 className={`bg-white dark:bg-[#1E1E1E] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 flex flex-col border border-pink-50 dark:border-[#2E2E2E] ${previewId === service.id ? 'glow-highlight shadow-2xl scale-[1.03] border-pink-500' : ''}`}
               >
                 <div className="relative h-64 overflow-hidden">
-                  <SafeImage
+                  <img
                     src={service.img}
                     alt={service.name}
                     className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
                   />
                 </div>
                 <div className="p-6 flex flex-col flex-grow">
