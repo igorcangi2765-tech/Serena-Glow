@@ -14,7 +14,8 @@
     "preview": "vite preview",
     "clean": "rm -rf dist dist-server",
     "lint": "tsc --noEmit",
-    "clean:git": "git rebase --abort; git merge --abort; git reset --hard HEAD; git clean -fd"
+    "clean:git": "git rebase --abort; git merge --abort; git reset --hard HEAD; git clean -fd",
+    "deploy:reset": "git add . && git commit -m 'chore: force sync for deployment' && git push origin main --force"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.2",

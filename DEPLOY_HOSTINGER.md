@@ -66,3 +66,16 @@ Se você estiver usando um VPS:
 *   **Supabase**: Certifique-se de que a URL do seu site está na lista de URLs permitidas (Authentication > URL Configuration) no painel do Supabase.
 *   **Imagens**: As imagens na pasta `public/images` serão servidas automaticamente.
 *   **Erros**: Se o site não abrir, verifique os logs no painel do Hostinger em `logs/stderr.log`.
+
+---
+
+## Solucionando Conflitos de Deploy (Erro: index.html)
+
+Se o deploy falhar com o erro: *"untracked working tree files would be overwritten by merge: index.html"*, siga estes passos:
+
+1.  **Abra o Gerenciador de Arquivos** no painel do Hostinger.
+2.  **Delete o arquivo `index.html`** que está na raiz (onde você subiu o projeto).
+3.  **Delete as pastas `dist` e `dist-server`** se elas existirem na raiz.
+4.  **Volte à seção Git** e clique no botão **"Deploy"** novamente.
+
+Isso limpará os arquivos "fantasmas" que estão bloqueando a sincronização com o GitHub.
