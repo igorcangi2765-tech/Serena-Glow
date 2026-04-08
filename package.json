@@ -13,7 +13,8 @@
     "start": "node dist-server/index.js",
     "preview": "vite preview",
     "clean": "rm -rf dist dist-server",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "clean:git": "git rebase --abort; git merge --abort; git reset --hard HEAD; git clean -fd"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.2",
