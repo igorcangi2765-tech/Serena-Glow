@@ -102,22 +102,25 @@ export const Services: React.FC = () => {
 
   const services = dbServices.map(s => {
     const priceValue = s.price || 0;
-    const catName = s.category?.name_en || '';
+    const catNameEn = (s.category?.name_en || '').toLowerCase();
+    const catNamePt = (s.category?.name_pt || '').toLowerCase();
     
+    // Improved mapping to handle both PT and EN names
+    const category = 
+      (catNameEn.includes('facial') || catNamePt.includes('facial')) ? 'Facial' : 
+      (catNameEn.includes('nail') || catNamePt.includes('unha')) ? 'Nails' : 
+      (catNameEn.includes('makeup') || catNamePt.includes('maquilhagem')) ? 'Makeup' : 
+      (catNameEn.includes('eyebrow') || catNamePt.includes('sobrancelha')) ? 'Eyebrows' : 'All';
+
     return {
       id: s.id,
       name: language === 'pt' ? (s.name_pt || '') : (s.name_en || ''),
       price: `${priceValue.toLocaleString()} MZN`,
       desc: language === 'pt' ? (s.description_pt || s.name_pt || '') : (s.description_en || s.name_en || ''),
-      category: catName.includes('Facial') ? 'Facial' : 
-                catName.includes('Nail') ? 'Nails' : 
-                catName.includes('Makeup') ? 'Makeup' : 
-                catName.includes('Eyebrow') ? 'Eyebrows' : 'All',
+      category,
       img: getServiceImage(s)
     };
   });
-
-
 
   const filteredServices = activeCategory === 'All'
     ? services
@@ -156,53 +159,86 @@ export const Services: React.FC = () => {
         </motion.div>
 
         {/* Services Grid */}
-        <motion.div 
-          layout
-          id="services-grid" 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-w-0"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredServices.map((service: any, idx: number) => (
-              <motion.div 
-                key={service.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ scale: 1.02, translateY: -5 }}
-                transition={{ duration: 0.4, delay: idx * 0.05 }}
-                className="bg-white dark:bg-[#1E1E1E] rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition duration-300 flex flex-col border border-pink-50 dark:border-[#2E2E2E]"
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <SafeImage
-                    src={service.img}
-                    alt={service.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-6 flex flex-col flex-grow">
-                  <div className="flex flex-col items-center text-center mb-4">
-                    <h3 className="text-2xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA]">{service.name}</h3>
-                    <span className="text-xl font-bold text-pink-600 dark:text-pink-400 mt-2">{service.price}</span>
+        <div id="services-grid" className="min-h-[400px]">
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="bg-white dark:bg-[#1E1E1E] rounded-2xl overflow-hidden shadow-sm border border-pink-50 dark:border-[#2E2E2E] animate-pulse">
+                  <div className="h-64 bg-gray-200 dark:bg-gray-800" />
+                  <div className="p-6 space-y-4">
+                    <div className="h-6 bg-gray-200 dark:bg-gray-800 rounded w-3/4 mx-auto" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/4 mx-auto" />
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-full" />
+                      <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-5/6 mx-auto" />
+                    </div>
+                    <div className="h-12 bg-gray-200 dark:bg-gray-800 rounded-full w-full" />
                   </div>
-                  <p className="text-gray-600 dark:text-[#A0A0A0] font-sans mb-6 flex-grow leading-relaxed text-center">{service.desc}</p>
-                    <motion.button
-                      whileHover={{ scale: 1.02, backgroundColor: "var(--color-pink-500)", color: "white" }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => {
-                        setSelectedService(service.id);
-                        setIsModalOpen(true);
-                      }}
-                      className="w-full inline-flex justify-center items-center bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 px-6 py-3 rounded-full text-sm font-bold tracking-wider transition-all duration-300 group border border-pink-100 dark:border-pink-800/40 shadow-sm hover:shadow-md"
-                    >
-                      {t('services.book')}
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </motion.button>
                 </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+              ))}
+            </div>
+          ) : filteredServices.length > 0 ? (
+            <motion.div 
+              layout
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-w-0"
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredServices.map((service: any, idx: number) => (
+                  <motion.div 
+                    key={service.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    whileHover={{ y: -8 }}
+                    transition={{ duration: 0.4, delay: idx * 0.05 }}
+                    className="bg-white dark:bg-[#1E1E1E] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col border border-pink-50 dark:border-[#2E2E2E] group"
+                  >
+                    <div className="relative h-64 overflow-hidden">
+                      <SafeImage
+                        src={service.img}
+                        alt={service.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    </div>
+                    <div className="p-6 flex flex-col flex-grow">
+                      <div className="flex flex-col items-center text-center mb-4">
+                        <h3 className="text-2xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] group-hover:text-pink-600 transition-colors duration-300">{service.name}</h3>
+                        <span className="text-xl font-bold text-pink-600 dark:text-pink-400 mt-2">{service.price}</span>
+                      </div>
+                      <p className="text-gray-600 dark:text-[#A0A0A0] font-sans mb-6 flex-grow leading-relaxed text-center opacity-80 group-hover:opacity-100 transition-opacity">{service.desc}</p>
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => {
+                            setSelectedService(service.id);
+                            setIsModalOpen(true);
+                          }}
+                          className="w-full inline-flex justify-center items-center bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 px-6 py-4 rounded-full text-sm font-bold tracking-wider transition-all duration-300 group border border-pink-100 dark:border-pink-800/40 shadow-sm hover:bg-pink-500 hover:text-white hover:border-pink-500"
+                        >
+                          {t('services.book')}
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        </motion.button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-20 bg-white dark:bg-[#1E1E1E] rounded-3xl border border-dashed border-pink-200 dark:border-[#2E2E2E]"
+            >
+              <div className="w-20 h-20 bg-pink-50 dark:bg-pink-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Sparkles className="w-10 h-10 text-pink-400" />
+              </div>
+              <h3 className="text-2xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-2">Nenhum serviço disponível</h3>
+              <p className="text-gray-500 dark:text-[#A0A0A0]">Estamos a preparar novos serviços para si. Por favor, volte mais tarde.</p>
+            </motion.div>
+          )}
+        </div>
       </div>
 
 

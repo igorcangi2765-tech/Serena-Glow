@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../LanguageContext';
 import { useTheme } from '../ThemeContext';
 import { motion, AnimatePresence } from 'motion/react';
-import { Maximize2 } from 'lucide-react';
+import { Maximize2, Sparkles } from 'lucide-react';
 import { ImagePreview } from '../components/common/ImagePreview';
 import { SafeImage } from '../components/common/SafeImage';
 import { api } from '../lib/api';
@@ -78,44 +78,68 @@ export const Gallery: React.FC = () => {
           </div>
         </motion.div>
 
-        <motion.div 
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredImages.map((img: any, idx: number) => (
-              <motion.div
-                key={img.url}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ y: -5 }}
-                transition={{ duration: 0.4, delay: idx % 12 * 0.05 }}
-                onClick={() => openPreview(idx)}
-                className="relative aspect-square overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border border-pink-50 dark:border-pink-900/10"
-              >
-                <SafeImage
-                  src={img.url}
-                  alt={t('gallery.title')}
-                  className="w-full h-full object-cover transition-transform duration-700"
-                />
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    className="bg-white/20 backdrop-blur-md border border-white/30 px-5 py-2 rounded-full shadow-lg flex items-center gap-2 group/btn transition-all duration-300"
+        {/* Gallery Grid */}
+        <div id="gallery-grid" className="min-h-[400px]">
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="aspect-square bg-gray-200 dark:bg-gray-800 rounded-2xl animate-pulse" />
+              ))}
+            </div>
+          ) : filteredImages.length > 0 ? (
+            <motion.div 
+              layout
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0"
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredImages.map((img: any, idx: number) => (
+                  <motion.div
+                    key={img.url}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    whileHover={{ y: -8 }}
+                    transition={{ duration: 0.4, delay: idx % 12 * 0.05 }}
+                    onClick={() => openPreview(idx)}
+                    className="relative aspect-square overflow-hidden group shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer rounded-2xl border border-pink-50 dark:border-pink-900/10"
                   >
-                    <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-white drop-shadow-md">
-                      {t('gallery.preview') || 'Visualizar'}
-                    </span>
-                    <Maximize2 className="text-white w-3 h-3 drop-shadow-md" />
+                    <SafeImage
+                      src={img.url}
+                      alt={t('gallery.title')}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        whileHover={{ scale: 1.1 }}
+                        className="bg-white/20 backdrop-blur-md border border-white/30 px-5 py-2 rounded-full shadow-lg flex items-center gap-2 group/btn transition-all duration-300"
+                      >
+                        <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-white drop-shadow-md">
+                          {t('gallery.preview') || 'Visualizar'}
+                        </span>
+                        <Maximize2 className="text-white w-3 h-3 drop-shadow-md" />
+                      </motion.div>
+                    </div>
                   </motion.div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-20 bg-white dark:bg-[#1E1E1E] rounded-3xl border border-dashed border-pink-200 dark:border-[#2E2E2E]"
+            >
+              <div className="w-20 h-20 bg-pink-50 dark:bg-pink-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Sparkles className="w-10 h-10 text-pink-400" />
+              </div>
+              <h3 className="text-2xl font-serif font-bold text-gray-800 dark:text-[#EAEAEA] mb-2">A galeria está vazia</h3>
+              <p className="text-gray-500 dark:text-[#A0A0A0]">Estamos a preparar novas fotos para si. Por favor, volte mais tarde.</p>
+            </motion.div>
+          )}
+        </div>
       </div>
       <ImagePreview 
         isOpen={isPreviewOpen} 
