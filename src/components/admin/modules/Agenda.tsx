@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, ChevronLeft, ChevronRight, Plus, Search, Filter, CheckCircle2, AlertCircle, FileText, Eye, Sparkles, Scissors } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '@/lib/supabase';
+import { api } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 import { format, startOfWeek, addDays, startOfDay, addHours, isSameDay } from 'date-fns';
 import { pt } from 'date-fns/locale';
@@ -46,18 +47,6 @@ export const Agenda: React.FC = () => {
 
   useEffect(() => {
     fetchAppointments();
-
-    // Set up realtime sub
-    const sub = supabase
-      .channel('agenda-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, () => {
-        fetchAppointments();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(sub);
-    };
   }, [currentDate]);
 
   const fetchAppointments = async () => {
@@ -66,34 +55,13 @@ export const Agenda: React.FC = () => {
       const from = format(days[0], 'yyyy-MM-dd');
       const to = format(days[6], 'yyyy-MM-dd');
       
-      const [
-        { data: appts, error: apptError },
-        { data: svcs, error: svcsError },
-        { data: clis, error: clisError }
-      ] = await Promise.all([
-        supabase
-          .from('appointments')
-          .select('id, appointment_date, appointment_time, status, total_price, customer_name, customer_phone, service_type, clients(name, phone), services(name_pt, name_en)')
-          .gte('appointment_date', from)
-          .lte('appointment_date', to),
-        supabase.from('services').select('*'),
-        supabase.from('clients').select('*')
+      const [appts, svcs, clis] = await Promise.all([
+        api.get(`/bookings?from=${from}&to=${to}`),
+        api.get('/services'),
+        api.get('/clients')
       ]);
       
-      if (apptError) throw apptError;
-      if (svcsError) throw svcsError;
-      if (clisError) throw clisError;
-
-      // Map Supabase data to local interface safely
-      const mappedAppts = (appts || []).map((a: any) => ({
-        ...a,
-        customer_name: a.clients?.name || a.customer_name || 'Cliente Estúdio',
-        customer_phone: a.clients?.phone || a.customer_phone || 'N/A',
-        appointment_time: a.appointment_time || '09:00',
-        appointment_date: a.appointment_date // Keep as is (yyyy-MM-dd)
-      }));
-      
-      setAppointments(mappedAppts);
+      setAppointments(appts || []);
       setServices(svcs || []);
       setClients(clis || []);
     } catch (error: any) {
@@ -107,38 +75,8 @@ export const Agenda: React.FC = () => {
   const handleCreateBooking = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // 1. Collision Detection (Logic Stabilization)
-      const { data: existing, error: checkError } = await supabase
-        .from('appointments')
-        .select('id')
-        .eq('appointment_date', newBooking.appointment_date)
-        .eq('appointment_time', newBooking.appointment_time)
-        .neq('status', 'cancelada')
-        .maybeSingle();
-
-      if (checkError) throw checkError;
-      if (existing) {
-        toast.error('Este horário já está ocupado. Escolha outro momento.');
-        return;
-      }
-
-      // 2. Data Preparation
-      const bookingData = {
-        customer_id: newBooking.customer_id || null,
-        service_id: newBooking.service_id || null,
-        appointment_date: newBooking.appointment_date,
-        appointment_time: newBooking.appointment_time,
-        status: 'pendente',
-        total_price: newBooking.total_price
-      };
-
-      const { error } = await supabase
-        .from('appointments')
-        .insert([bookingData]);
-
-      if (error) throw error;
-
-      toast.success('Marcação profissional criada');
+      await api.post('/bookings', newBooking);
+      toast.success('Marcação criada com sucesso');
       setIsBookingModalOpen(false);
       fetchAppointments();
       setNewBooking({
@@ -149,20 +87,13 @@ export const Agenda: React.FC = () => {
         total_price: 0
       });
     } catch (error: any) {
-      console.error('Booking Error:', error);
-      toast.error('Ocorreu um erro ao processar a marcação');
+      toast.error('Erro ao criar marcação');
     }
   };
 
   const handleStatusUpdate = async (id: string, newStatus: string) => {
     try {
-      const { error } = await supabase
-        .from('appointments')
-        .update({ status: newStatus })
-        .eq('id', id);
-
-      if (error) throw error;
-
+      await api.patch(`/bookings/${id}`, { status: newStatus });
       toast.success(`Marcação ${newStatus} com sucesso`);
       fetchAppointments();
     } catch (error: any) {

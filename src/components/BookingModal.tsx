@@ -7,6 +7,7 @@ import CustomDatePicker from './common/CustomDatePicker';
 import CustomTimePicker from './common/CustomTimePicker';
 import CustomSelect from './common/CustomSelect';
 import { supabase } from '../lib/supabase';
+import { api } from '../lib/api';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -19,8 +20,6 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, ini
   const [dbServices, setDbServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [validationError, setValidationError] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -33,18 +32,13 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, ini
 
   useEffect(() => {
     if (isOpen) {
-      setValidationError(null);
-      setSubmitted(false);
       fetchServices();
     }
   }, [isOpen]);
 
   const fetchServices = async () => {
     try {
-      const { data, error } = await supabase
-        .from('services')
-        .select('*');
-        
+      const { data, error } = await supabase.from('services').select('*').order('name_pt');
       if (error) throw error;
       setDbServices(data || []);
     } catch (err: any) {
@@ -55,8 +49,6 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, ini
   };
 
   useEffect(() => {
-    if (!isOpen) return;
-
     if (initialService && dbServices.length > 0) {
       // 1. Try to find by UUID
       const serviceById = dbServices.find(s => s.id === initialService);
@@ -66,87 +58,55 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, ini
         // 2. Fallback to name matching
         setFormData(prev => ({ ...prev, service: initialService }));
       }
-    } else if (!initialService) {
-      // 3. Reset if no initial service (e.g. opened from header)
-      setFormData(prev => ({ ...prev, service: '' }));
     }
   }, [initialService, isOpen, dbServices, language]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (validationError) setValidationError(null);
   };
 
   const handleDateChange = (date: string) => {
     setFormData(prev => ({ ...prev, date }));
-    if (validationError) setValidationError(null);
-  };
-
-  const handleTimeChange = (time: string) => {
-    setFormData(prev => ({ ...prev, time }));
-    if (validationError) setValidationError(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    // 1. Prevent HTML default form submission (reload)
-    if (e) e.preventDefault();
-    setSubmitted(true);
-
-    // 2. Validation Check
-    const requiredFields = ['name', 'phone', 'service', 'date', 'time'] as const;
-    const isMissingFields = requiredFields.some(field => !formData[field]);
-
-    if (isMissingFields) {
-      setValidationError(t('booking.errorRequired') || 'Por favor, preencha todos os campos obrigatórios.');
-      return;
-    }
-    
-    // 3. Prevent duplicate submissons
-    if (submitting) return;
+    e.preventDefault();
     setSubmitting(true);
-    setValidationError(null);
 
     try {
-        // 4. Resolve Service ID (matching selection with backend services)
+        // 1. Resolve Service ID (matching by name since CustomSelect returns string)
         const selectedService = dbServices.find(s => 
             (language === 'pt' ? s.name_pt : s.name_en) === formData.service
         );
 
-        // Fallback to initial service ID if name matching fails (e.g. for packages)
+        if (!selectedService && !initialService) {
+            throw new Error('Serviço não reconhecido');
+        }
+
         const serviceId = selectedService?.id || initialService;
 
-        if (!serviceId) {
-            throw new Error('Serviço não selecionado');
-        }
-
-        // 5. Get/Verify client data directly from Supabase
-        let { data: client, error: clientError } = await supabase
-          .from('clients')
-          .select('id')
-          .eq('phone', formData.phone)
-          .maybeSingle();
-
-        if (clientError) throw clientError;
-
-        if (!client) {
-          // Create new client if doesn't exist
-          const { data: newClient, error: insertError } = await supabase
+        // 2. Get or create client
+        const { data: clientData } = await supabase
             .from('clients')
-            .insert({
-              name: formData.name,
-              phone: formData.phone,
-              email: formData.email || null
-            })
             .select('id')
-            .single();
+            .eq('phone', formData.phone)
+            .maybeSingle();
+        
+        let customerId = clientData?.id;
 
-          if (insertError) throw insertError;
-          client = newClient;
+        if (!customerId) {
+            const { data: newClient, error: createError } = await supabase
+                .from('clients')
+                .insert([{ name: formData.name, phone: formData.phone, email: formData.email }])
+                .select()
+                .single();
+            if (createError) throw createError;
+            customerId = newClient.id;
         }
 
-        // 6. Submit the booking request
+        // 3. Submit appointment
         const appointmentData = {
-            customer_id: client?.id,
+            customer_id: customerId,
             service_id: serviceId,
             appointment_date: formData.date,
             appointment_time: formData.time,
@@ -154,51 +114,22 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, ini
             notes: formData.notes
         };
 
-        console.log('📤 Enviando pedido de agendamento:', appointmentData);
-        const { error: bookingError } = await supabase
-          .from('appointments')
-          .insert(appointmentData);
+        await api.post('/bookings', appointmentData);
 
-        if (bookingError) throw bookingError;
-
-        // 7. Success handling
         toast.success(t('booking.success'));
-        console.log('✅ Agendamento realizado com sucesso!');
-        
-        // Reset form data BEFORE closing to avoid stale data on next open
-        setFormData({ name: '', phone: '', email: '', service: '', date: '', time: '', notes: '' });
-        setSubmitted(false);
-        setValidationError(null);
-        
-        // Only close the modal on success
         onClose();
+        setFormData({ name: '', phone: '', email: '', service: '', date: '', time: '', notes: '' });
     } catch (err: any) {
-        console.error('❌ Erro na submissão:', err.message);
-        toast.error(t('booking.error') || 'Erro ao realizar marcação. Por favor, tente novamente.');
+        console.error('Booking error:', err.message);
+        toast.error(t('booking.error') || 'Erro ao realizar marcação');
     } finally {
         setSubmitting(false);
     }
   };
 
-  // Hardcoded beauty packages for consistent dropdown selection
-  const hardcodedPackages = language === 'pt' 
-    ? ['Essencial', 'Beleza Completa', 'Beleza Premium']
-    : ['Essential', 'Complete Beauty', 'Premium Beauty'];
+  const services = t('booking.services') || [];
 
-  // Combine DB services with static packages
-  const allServiceOptions = [
-    ...hardcodedPackages,
-    ...dbServices.map(s => language === 'pt' ? s.name_pt : s.name_en)
-  ];
-
-  const getInputClass = (value: string, isError: boolean = false) => {
-    const baseClass = "w-full pl-11 pr-4 py-3.5 rounded-xl border focus:outline-none focus:ring-2 font-sans transition-all duration-300 placeholder:text-gray-400";
-    const statusClass = submitted && !value
-      ? "border-red-400 dark:border-red-500/50 bg-red-50/10 focus:ring-red-400/20 focus:border-red-400"
-      : "border-pink-100 dark:border-[#2E2E2E] focus:ring-pink-400/20 focus:border-pink-400 bg-pink-50/30 dark:bg-[#121212] dark:text-[#EAEAEA]";
-    
-    return `${baseClass} ${statusClass}`;
-  };
+  const inputClass = "w-full pl-11 pr-4 py-3.5 rounded-xl border border-pink-100 dark:border-[#2E2E2E] focus:outline-none focus:ring-2 focus:ring-pink-400/20 focus:border-pink-400 bg-pink-50/30 dark:bg-[#121212] dark:text-[#EAEAEA] font-sans transition-all duration-300 placeholder:text-gray-400";
 
   return (
     <AnimatePresence>
@@ -252,7 +183,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, ini
                       type="text" id="name" name="name"
                       value={formData.name} onChange={handleChange}
                       placeholder={t('booking.namePlaceholder')}
-                      className={getInputClass(formData.name)}
+                      required className={inputClass}
                     />
                   </motion.div>
                   <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="relative group">
@@ -262,7 +193,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, ini
                       type="tel" id="phone" name="phone"
                       value={formData.phone} onChange={handleChange}
                       placeholder={t('booking.phonePlaceholder')}
-                      className={getInputClass(formData.phone)}
+                      required className={inputClass}
                     />
                   </motion.div>
                 </div>
@@ -274,45 +205,36 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, ini
                     type="email" id="email" name="email"
                     value={formData.email} onChange={handleChange}
                     placeholder={t('booking.emailPlaceholder')}
-                    className={getInputClass(formData.email || 'skip')} // Email is optional
+                    required className={inputClass}
                   />
                 </motion.div>
 
                 <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="relative group">
                   <label htmlFor="modal-service" className="block text-sm font-medium text-gray-700 dark:text-[#A0A0A0] mb-2 ml-1">{t('booking.service')}</label>
-                  <div className={`rounded-2xl transition-all duration-300 ${submitted && !formData.service ? 'ring-2 ring-red-400/20' : ''}`}>
-                    <CustomSelect
-                      value={formData.service}
-                      onChange={(val) => setFormData({ ...formData, service: val })}
-                      options={allServiceOptions}
-                      placeholder={loading ? 'Carregando...' : t('booking.selectService')}
-                      error={submitted && !formData.service}
-                    />
-                  </div>
+                  <CustomSelect
+                    value={formData.service}
+                    onChange={(val) => setFormData({ ...formData, service: val })}
+                    options={dbServices.map(s => language === 'pt' ? s.name_pt : s.name_en)}
+                    placeholder={loading ? 'Carregando...' : t('booking.selectService')}
+                  />
                 </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="relative group">
                     <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-[#A0A0A0] mb-2 ml-1">{t('booking.date')}</label>
-                    <div className={`rounded-2xl transition-all duration-300 ${submitted && !formData.date ? 'ring-2 ring-red-400/20' : ''}`}>
-                      <CustomDatePicker 
-                        value={formData.date} 
-                        onChange={handleDateChange} 
-                        label={t('booking.selectDate')}
-                        error={submitted && !formData.date}
-                      />
-                    </div>
+                    <CustomDatePicker 
+                      value={formData.date} 
+                      onChange={handleDateChange} 
+                      label={t('booking.selectDate')}
+                    />
                   </motion.div>
                   <motion.div variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0 } }} className="relative group">
                     <label htmlFor="time" className="block text-sm font-medium text-gray-700 dark:text-[#A0A0A0] mb-2 ml-1">{t('booking.time')}</label>
-                    <div className={`rounded-2xl transition-all duration-300 ${submitted && !formData.time ? 'ring-2 ring-red-400/20' : ''}`}>
-                      <CustomTimePicker
-                        value={formData.time}
-                        onChange={handleTimeChange}
-                        label={t('booking.selectTime')}
-                        error={submitted && !formData.time}
-                      />
-                    </div>
+                    <CustomTimePicker
+                      value={formData.time}
+                      onChange={(val) => setFormData({ ...formData, time: val })}
+                      label={t('booking.selectTime')}
+                    />
                   </motion.div>
                 </div>
 
@@ -323,38 +245,21 @@ export const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, ini
                     id="notes" name="notes"
                     value={formData.notes} onChange={handleChange}
                     placeholder={t('booking.notesPlaceholder')}
-                    rows={3} className={getInputClass('skip') + ' resize-none'} // Notes is optional
+                    rows={3} className={inputClass + ' resize-none'}
                   />
                 </motion.div>
 
-                <div className="pt-4">
-                  <AnimatePresence>
-                    {validationError && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="mb-4 p-4 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-100 dark:border-red-500/20 flex items-center gap-3 text-red-600 dark:text-red-400 text-sm font-medium"
-                      >
-                        <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                        {validationError}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  <motion.button
-                    variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1 } }}
-                    whileHover={{ scale: 1.02, boxShadow: '0 15px 30px -10px rgba(244, 63, 94, 0.4)' }}
-                    whileTap={{ scale: 0.98 }}
-                    type="button"
-                    onClick={handleSubmit}
-                    disabled={submitting}
-                    className={`w-full bg-gradient-to-r from-pink-500 to-rose-600 text-white py-4.5 rounded-2xl font-bold tracking-[0.11em] text-sm shadow-xl shadow-pink-100 dark:shadow-none transition-all duration-300 flex items-center justify-center gap-3 group ${submitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-                  >
-                    <Send size={18} className={submitting ? 'animate-pulse' : 'group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform'} />
-                    {submitting ? 'A processar...' : t('booking.confirm')}
-                  </motion.button>
-                </div>
+                <motion.button
+                  variants={{ hidden: { opacity: 0, scale: 0.95 }, visible: { opacity: 1, scale: 1 } }}
+                  whileHover={{ scale: 1.02, boxShadow: '0 15px 30px -10px rgba(244, 63, 94, 0.4)' }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={submitting}
+                  className={`w-full bg-gradient-to-r from-pink-500 to-rose-600 text-white py-4.5 rounded-2xl font-bold tracking-[0.11em] text-sm shadow-xl shadow-pink-100 dark:shadow-none transition-all duration-300 mt-4 flex items-center justify-center gap-3 group ${submitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                >
+                  <Send size={18} className={submitting ? 'animate-pulse' : 'group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform'} />
+                  {submitting ? 'A processar...' : t('booking.confirm')}
+                </motion.button>
               </motion.form>
             </div>
           </motion.div>

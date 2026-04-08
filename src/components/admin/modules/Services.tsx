@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Search, Scissors, Clock, Edit2, Trash2, Tag, Eye } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { Plus, Search, Scissors, Clock, Edit2, Trash2, Tag } from 'lucide-react';
+import { api } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 import { Modal } from '../Modal';
 
@@ -25,12 +25,7 @@ export const Services: React.FC = () => {
   const fetchServices = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('services')
-        .select('*')
-        .order('name_pt');
-
-      if (error) throw error;
+      const data = await api.get('/services');
       setServices(data || []);
     } catch (error: any) {
       console.error('Services Load Error:', error);
@@ -63,46 +58,20 @@ export const Services: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const [saving, setSaving] = useState(false);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name_pt.trim() || formData.price <= 0) {
-      toast.error('Preencha o nome e um preço válido');
-      return;
-    }
-
     try {
-      setSaving(true);
       if (editingService) {
-        const { error } = await supabase
-          .from('services')
-          .update({
-            ...formData,
-            name_pt: formData.name_pt.trim()
-          })
-          .eq('id', editingService.id);
-          
-        if (error) throw error;
+        await api.put(`/services/${editingService.id}`, formData);
         toast.success('Serviço atualizado com sucesso!');
       } else {
-        const { error } = await supabase
-          .from('services')
-          .insert([{
-            ...formData,
-            name_pt: formData.name_pt.trim()
-          }]);
-          
-        if (error) throw error;
+        await api.post('/services', formData);
         toast.success('Serviço adicionado com sucesso!');
       }
       setIsModalOpen(false);
       fetchServices();
     } catch (error: any) {
-      console.error('Submit Service Error:', error);
       toast.error('Erro ao salvar serviço. Verifique os dados.');
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -110,22 +79,13 @@ export const Services: React.FC = () => {
     if (!window.confirm('Tem a certeza que deseja eliminar este serviço?')) return;
     
     try {
-      const { error } = await supabase
-        .from('services')
-        .delete()
-        .eq('id', id);
-        
-      if (error) throw error;
+      await api.delete(`/services/${id}`);
       toast.success('Serviço eliminado com sucesso');
       fetchServices();
     } catch (error: any) {
       console.error('Delete Service Error:', error);
       toast.error(`Erro ao eliminar serviço: ${error.message}`);
     }
-  };
-
-  const handlePreview = (id: string) => {
-    window.open(`/services?preview=${id}`, '_blank');
   };
 
   const filteredServices = services.filter(s => 
@@ -189,13 +149,6 @@ export const Services: React.FC = () => {
                             <Tag size={20} />
                         </div>
                         <div className="flex gap-1 bg-white/50 dark:bg-white/5 backdrop-blur-md p-1.5 rounded-xl border border-white/50 dark:border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); handlePreview(service.id); }}
-                                className="p-2 hover:bg-white dark:hover:bg-white/10 rounded-lg text-gray-400 hover:text-pink-500 transition-all"
-                                title="Visualizar no site"
-                            >
-                                <Eye size={14} />
-                            </button>
                             <button 
                                 onClick={(e) => { e.stopPropagation(); handleOpenModal(service); }}
                                 className="p-2 hover:bg-white dark:hover:bg-white/10 rounded-lg text-gray-400 hover:text-pink-500 transition-all"
@@ -277,12 +230,8 @@ export const Services: React.FC = () => {
 
 
 
-            <button 
-              type="submit" 
-              disabled={saving}
-              className={`w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black transition-all mt-4 ${saving ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[1.02]'}`}
-            >
-              {saving ? 'A Processar...' : (editingService ? 'Guardar Alterações' : 'Adicionar Serviço ao Catálogo')}
+            <button type="submit" className="w-full py-5 bg-gray-900 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl hover:bg-black hover:scale-[1.02] transition-all mt-4">
+                {editingService ? 'Guardar Alterações' : 'Adicionar Serviço ao Catálogo'}
             </button>
         </form>
       </Modal>

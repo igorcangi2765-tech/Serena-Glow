@@ -40,16 +40,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLog
   const isDark = theme === 'dark';
 
   const menuItems = [
-    { id: 'dashboard', icon: <LayoutDashboard size={20} />, label: t('admin.dashboard') },
-    { id: 'agenda', icon: <Calendar size={20} />, label: t('admin.agenda') },
-    { id: 'sales', icon: <ShoppingBag size={20} />, label: t('admin.sales') },
-    { id: 'billing', icon: <FileText size={20} />, label: t('admin.billing') },
-    { id: 'clients', icon: <Users size={20} />, label: t('admin.clientsModule') },
-    { id: 'services', icon: <Scissors size={20} />, label: t('admin.servicesTab') },
-    { id: 'marketing', icon: <Megaphone size={20} />, label: t('admin.marketing') },
-    { id: 'gallery', icon: <ImageIcon size={20} />, label: t('nav.gallery') },
+    { id: 'dashboard', icon: <LayoutDashboard size={20} />, label: 'Painel Geral' },
+    { id: 'agenda', icon: <Calendar size={20} />, label: 'Agenda' },
+    { id: 'sales', icon: <ShoppingBag size={20} />, label: 'Vendas' },
+    { id: 'billing', icon: <FileText size={20} />, label: 'Recibos' },
+    { id: 'clients', icon: <Users size={20} />, label: 'Clientes' },
+    { id: 'services', icon: <Scissors size={20} />, label: 'Serviços' },
+    { id: 'marketing', icon: <Megaphone size={20} />, label: 'Marketing' },
+    { id: 'gallery', icon: <ImageIcon size={20} />, label: 'Galeria' },
     { id: 'inbox', icon: <Inbox size={20} />, label: t('admin.inbox') },
-    { id: 'settings', icon: <SettingsIcon size={20} />, label: t('admin.general') },
+    { id: 'settings', icon: <SettingsIcon size={20} />, label: 'Configurações' },
   ];
 
   return (
@@ -84,14 +84,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLog
           </button>
         )}
 
-        <div className={`flex items-center gap-4 mb-2 p-4 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/10 dark:to-rose-900/10 rounded-[1.5rem] border border-pink-100/30 dark:border-pink-500/10 shadow-sm group ${isCollapsed ? 'justify-center p-2' : ''}`}>
-          <div className="w-full flex items-center justify-center cursor-pointer group-hover:scale-105 transition-transform shrink-0">
-            <img 
-              src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
-              alt="Logo" 
-              className="h-20 md:h-24 w-auto object-contain"
-              referrerPolicy="no-referrer"
-            />
+        <div className={`flex items-center gap-4 mb-8 p-4 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/10 dark:to-rose-900/10 rounded-[1.5rem] border border-pink-100/30 dark:border-pink-500/10 shadow-sm group ${isCollapsed ? 'justify-center p-2' : ''}`}>
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-500 flex items-center justify-center text-white shadow-lg shadow-pink-200/50 dark:shadow-pink-900/20 group-hover:rotate-6 transition-transform shrink-0">
+            <User size={24} />
           </div>
           {!isCollapsed && (
             <div className="overflow-hidden flex flex-col justify-center">

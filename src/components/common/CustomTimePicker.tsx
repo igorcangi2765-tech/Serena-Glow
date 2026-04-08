@@ -7,10 +7,9 @@ interface CustomTimePickerProps {
   value: string;
   onChange: (time: string) => void;
   label?: string;
-  error?: boolean;
 }
 
-const CustomTimePicker: React.FC<CustomTimePickerProps> = ({ value, onChange, label, error }) => {
+const CustomTimePicker: React.FC<CustomTimePickerProps> = ({ value, onChange, label }) => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,8 +44,7 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({ value, onChange, la
         <div className="relative group">
           <Clock className="absolute left-4 top-[14px] text-pink-400 pointer-events-none group-focus-within:text-pink-500 transition-colors" size={18} />
           <div className={`
-            w-full h-[46px] pl-12 pr-4 flex items-center bg-white dark:bg-white/5 border rounded-2xl text-gray-700 dark:text-white group-hover:border-pink-200 dark:group-hover:border-pink-500/30 transition-all duration-300
-            ${error ? 'border-red-400 dark:border-red-500/50 bg-red-50/10' : 'border-gray-100 dark:border-white/10'}
+            w-full h-[46px] pl-12 pr-4 flex items-center bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl text-gray-700 dark:text-white group-hover:border-pink-200 dark:group-hover:border-pink-500/30 transition-all duration-300
             ${isOpen ? 'border-pink-400 dark:border-pink-500 shadow-lg shadow-pink-500/5 ring-2 ring-pink-500/10' : ''}
           `}>
             {value || label || '--:--'}
@@ -76,7 +74,7 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({ value, onChange, la
                   `}
                 >
                   {time}
-                  {value === time && <Check size={16} strokeWidth={3} className="text-white" />}
+                  {value === time && <Check size={14} />}
                 </div>
               ))}
             </div>

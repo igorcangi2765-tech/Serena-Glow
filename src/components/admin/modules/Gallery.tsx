@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Image as ImageIcon, Trash2, Maximize2 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { supabase } from '@/lib/supabase';
+import { api } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 import { Modal } from '../Modal';
 
@@ -10,7 +10,6 @@ export const Gallery: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const [isNewImageOpen, setIsNewImageOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [newImage, setNewImage] = useState({
     image_url: '',
     category: 'Geral',
@@ -24,37 +23,12 @@ export const Gallery: React.FC = () => {
   const fetchImages = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('gallery')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      
-      if (!data || data.length === 0) {
-        // Fallback to local API for professional default images
-        const response = await fetch('/api/gallery');
-        if (response.ok) {
-          const localData = await response.json();
-          setImages(localData || []);
-          return;
-        }
-      }
-      
+      const data = await api.get('/gallery');
       setImages(data || []);
     } catch (error: any) {
       console.error('Gallery load error:', error);
-      // Final fallback to local API if DB fails completely
-      try {
-        const response = await fetch('/api/gallery');
-        if (response.ok) {
-          const localData = await response.json();
-          setImages(localData || []);
-        }
-      } catch (e) {
-         if (!error.message?.includes('401')) {
-           toast.error('Erro ao carregar galeria');
-         }
+      if (!error.message?.includes('401')) {
+        toast.error('Erro ao carregar galeria');
       }
     } finally {
       setLoading(false);
@@ -64,12 +38,7 @@ export const Gallery: React.FC = () => {
   const handleAddImage = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { error } = await supabase
-        .from('gallery')
-        .insert([newImage]);
-        
-      if (error) throw error;
-
+      await api.post('/gallery', newImage);
       toast.success('Imagem adicionada com sucesso!');
       setIsNewImageOpen(false);
       setNewImage({ image_url: '', category: 'Geral', client_name: '' });
@@ -82,13 +51,7 @@ export const Gallery: React.FC = () => {
   const handleDeleteImage = async (id: string) => {
     if (!window.confirm('Tem a certeza que deseja eliminar esta imagem?')) return;
     try {
-      const { error } = await supabase
-        .from('gallery')
-        .delete()
-        .eq('id', id);
-        
-      if (error) throw error;
-
+      await api.delete(`/gallery/${id}`);
       toast.success('Imagem eliminada');
       fetchImages();
     } catch (error) {
@@ -136,15 +99,10 @@ export const Gallery: React.FC = () => {
                 >
                     <img src={img.image_url} alt="Gallery" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 z-10 backdrop-blur-sm">
-                        <button 
-                          onClick={() => setSelectedImage(img.image_url)}
-                          className="p-4 bg-white/10 hover:bg-white/20 rounded-2xl text-white transition-all cursor-pointer"
-                        >
-                          <Maximize2 size={20} />
-                        </button>
+                        <button className="p-4 bg-white/10 hover:bg-white/20 rounded-2xl text-white transition-all"><Maximize2 size={20} /></button>
                         <button 
                           onClick={() => handleDeleteImage(img.id)}
-                          className="p-4 bg-rose-500/80 hover:bg-rose-600 rounded-2xl text-white transition-all cursor-pointer"
+                          className="p-4 bg-rose-500/80 hover:bg-rose-600 rounded-2xl text-white transition-all"
                         >
                           <Trash2 size={20} />
                         </button>
@@ -199,21 +157,6 @@ export const Gallery: React.FC = () => {
             Guardar na Galeria
           </button>
         </form>
-      </Modal>
-
-      {/* Preview Modal */}
-      <Modal isOpen={!!selectedImage} onClose={() => setSelectedImage(null)} title="Visualização">
-        <div className="rounded-3xl overflow-hidden shadow-2xl">
-            <img src={selectedImage || ''} alt="Preview" className="w-full h-auto max-h-[70vh] object-contain bg-black/5" />
-        </div>
-        <div className="mt-8">
-            <button 
-                onClick={() => setSelectedImage(null)}
-                className="w-full py-4 bg-gray-900 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-xl hover:bg-black transition-all"
-            >
-                Fechar
-            </button>
-        </div>
       </Modal>
     </div>
   );

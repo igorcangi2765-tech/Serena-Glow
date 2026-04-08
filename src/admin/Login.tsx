@@ -92,34 +92,19 @@ export const AdminLogin: React.FC = () => {
 
       <GlassContainer isDark={isDark}>
         {/* Logo Section */}
+        {/* Logo Section */}
         <motion.div 
-          whileHover={{ scale: 1.05, rotate: -2 }}
-          className="mx-auto mb-10 flex items-center justify-center cursor-pointer drop-shadow-2xl"
+          whileHover={{ scale: 1.05, rotate: -3 }}
+          className="w-32 h-32 mx-auto mb-8 flex items-center justify-center cursor-pointer"
         >
           <img 
             src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
-            alt="Serena Glow Beauty Studio" 
-            className="h-44 md:h-52 w-auto object-contain"
+            alt="Serena Glow" 
+            className="w-full h-full object-contain drop-shadow-2xl"
             referrerPolicy="no-referrer"
           />
         </motion.div>
-        
         <div className="text-center mb-14">
-          <motion.h1 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className={`text-4xl font-serif font-black tracking-tighter mb-3 uppercase ${isDark ? 'text-white' : 'text-[#1E1E1E]'}`}
-          >
-            Serena <span className="text-[#E91E63] relative">Glow
-              <motion.span 
-                initial={{ width: 0 }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 1, delay: 0.5 }}
-                className="absolute left-0 -bottom-1 h-1 bg-[#E91E63]/20 rounded-full"
-              />
-            </span>
-          </motion.h1>
           <p className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.5em] opacity-60">
             Intelligent Management Suite
           </p>

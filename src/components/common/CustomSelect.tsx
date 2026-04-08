@@ -9,10 +9,9 @@ interface CustomSelectProps {
   options: string[];
   placeholder?: string;
   icon?: React.ReactNode;
-  error?: boolean;
 }
 
-const CustomSelect: React.FC<CustomSelectProps> = ({ value, onChange, options, placeholder, icon, error }) => {
+const CustomSelect: React.FC<CustomSelectProps> = ({ value, onChange, options, placeholder, icon }) => {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,8 +44,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({ value, onChange, options, p
             </div>
           )}
           <div className={`
-            w-full h-[46px] ${icon ? 'pl-12' : 'pl-4'} pr-10 flex items-center bg-white dark:bg-white/5 border rounded-2xl text-gray-700 dark:text-white group-hover:border-pink-200 dark:group-hover:border-pink-500/30 transition-all duration-300
-            ${error ? 'border-red-400 dark:border-red-500/50 bg-red-50/10' : 'border-gray-100 dark:border-white/10'}
+            w-full h-[46px] ${icon ? 'pl-12' : 'pl-4'} pr-10 flex items-center bg-white dark:bg-white/5 border border-gray-100 dark:border-white/10 rounded-2xl text-gray-700 dark:text-white group-hover:border-pink-200 dark:group-hover:border-pink-500/30 transition-all duration-300
             ${isOpen ? 'border-pink-400 dark:border-pink-500 shadow-lg shadow-pink-500/5 ring-2 ring-pink-500/10' : ''}
           `}>
             {value || placeholder || '--'}

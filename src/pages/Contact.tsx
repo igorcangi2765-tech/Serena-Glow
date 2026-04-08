@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useLanguage } from '../LanguageContext';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { api } from '../lib/api';
 
 export const Contact: React.FC = () => {
   const { t } = useLanguage();
@@ -16,12 +16,7 @@ export const Contact: React.FC = () => {
 
   const fetchSettings = async () => {
     try {
-      const { data, error } = await supabase
-        .from('settings')
-        .select('*')
-        .single();
-        
-      if (error) throw error;
+      const data = await api.get('/settings');
       setSettings(data);
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -37,11 +32,7 @@ export const Contact: React.FC = () => {
     setIsSubmitting(true);
     
     try {
-      const { error } = await supabase
-        .from('inbox')
-        .insert(formData);
-        
-      if (error) throw error;
+      await api.post('/inbox', formData);
       toast.success(t('contact.success'));
       setFormData({ name: '', phone: '', email: '', message: '' });
     } catch (error: any) {

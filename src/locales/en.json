@@ -409,8 +409,7 @@
       "Makeup",
       "Eyebrows"
     ],
-    "success": "Your booking request has been sent successfully! Please wait for our confirmation.",
-    "errorRequired": "Please fill in all required fields."
+    "success": "Your booking request has been sent successfully! Please wait for our confirmation."
   },
   "admin": {
     "loginTitle": "Admin Access",

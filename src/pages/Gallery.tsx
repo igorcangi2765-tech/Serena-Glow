@@ -4,7 +4,8 @@ import { useTheme } from '../ThemeContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Maximize2 } from 'lucide-react';
 import { ImagePreview } from '../components/common/ImagePreview';
-import { GalleryImage } from '../types';
+import { SafeImage } from '../components/common/SafeImage';
+import { api } from '../lib/api';
 
 export const Gallery: React.FC = () => {
   const { t } = useLanguage();
@@ -13,7 +14,7 @@ export const Gallery: React.FC = () => {
   const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [images, setImages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,10 +23,11 @@ export const Gallery: React.FC = () => {
 
   const fetchImages = async () => {
     try {
-      const response = await fetch('/api/gallery');
-      if (!response.ok) throw new Error('API request failed');
-      const data = await response.json();
-      setImages(data || []);
+      const data = await api.get('/gallery');
+      setImages(data.map((img: any) => ({
+        url: img.image_url,
+        category: img.category || 'All'
+      })) || []);
     } catch (error) {
       console.error('Error loading gallery:', error);
     } finally {
@@ -38,11 +40,11 @@ export const Gallery: React.FC = () => {
     setIsPreviewOpen(true);
   };
 
-  const categories = Array.isArray(t('galleryPage.categories')) ? t('galleryPage.categories') as string[] : [];
+  const categories = Array.isArray(t('galleryPage.categories')) ? t('galleryPage.categories') : [];
 
   const filteredImages = activeCategoryIndex === 0
     ? images
-    : images.filter((img) => img.category === categories[activeCategoryIndex]);
+    : images.filter((img: any) => img.category === categories[activeCategoryIndex]);
 
   return (
     <div className="pt-24 w-full bg-white dark:bg-[#121212] min-h-screen">
@@ -58,9 +60,9 @@ export const Gallery: React.FC = () => {
  
           {/* Filters */}
           <div className="flex flex-wrap justify-center gap-4">
-            {categories.map((cat, idx) => (
+            {categories.map((cat: string, idx: number) => (
               <motion.button
-                key={`${cat}-${idx}`}
+                key={idx}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveCategoryIndex(idx)}
@@ -81,24 +83,22 @@ export const Gallery: React.FC = () => {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0"
         >
           <AnimatePresence mode="popLayout">
-            {filteredImages.map((img, idx) => (
+            {filteredImages.map((img: any, idx: number) => (
               <motion.div
-                key={img.id || img.image_url}
+                key={img.url}
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 whileHover={{ y: -5 }}
-                transition={{ duration: 0.4, delay: (idx % 12) * 0.05 }}
+                transition={{ duration: 0.4, delay: idx % 12 * 0.05 }}
                 onClick={() => openPreview(idx)}
                 className="relative aspect-square overflow-hidden group shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border border-pink-50 dark:border-pink-900/10"
               >
-                <img
-                  src={img.image_url}
-                  alt={img.title || t('gallery.title')}
+                <SafeImage
+                  src={img.url}
+                  alt={t('gallery.title')}
                   className="w-full h-full object-cover transition-transform duration-700"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
                 />
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
                   <motion.div 
@@ -120,7 +120,7 @@ export const Gallery: React.FC = () => {
       <ImagePreview 
         isOpen={isPreviewOpen} 
         onClose={() => setIsPreviewOpen(false)} 
-        images={filteredImages.map((img) => img.image_url)} 
+        images={filteredImages.map((img: any) => img.url)} 
         initialIndex={selectedImageIndex}
       />
     </div>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FileText, Download, Eye, Plus, Send, RefreshCcw, TrendingUp, Calendar, CreditCard, Receipt, FileSignature, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '@/lib/supabase';
+import { api } from '@/lib/api';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toast } from 'react-hot-toast';
@@ -41,44 +42,12 @@ export const Billing: React.FC = () => {
   const fetchDocuments = async () => {
     try {
       setLoading(true);
-      const { data: docs, error: docsError } = await supabase
-        .from('documents')
-        .select(`
-          *,
-          sales (
-            id,
-            total,
-            payment_method,
-            customer_id,
-            clients (
-              name,
-              phone,
-              email
-            ),
-            sale_items (
-              service_id,
-              unit_price,
-              quantity
-            )
-          )
-        `)
-        .order('created_at', { ascending: false });
-
-      if (docsError) throw docsError;
-
-      // Calculate monthly revenue from sales
-      const { data: monthlySales, error: salesError } = await supabase
-        .from('sales')
-        .select('total')
-        .gte('created_at', new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString());
-
-      if (salesError) throw salesError;
-
-      const totalMonthly = (monthlySales || []).reduce((acc, s) => acc + (Number(s.total) || 0), 0);
+      const docs = await api.get('/billing/documents');
+      const statsData = await api.get('/dashboard/stats'); // Reuse stats for summary
 
       setDocuments(docs || []);
       setStats({
-        totalMonthly,
+        totalMonthly: statsData.revenue,
         docCount: docs?.length || 0,
         pendingDebt: 12500, // Still placeholder
         growth: 15.4

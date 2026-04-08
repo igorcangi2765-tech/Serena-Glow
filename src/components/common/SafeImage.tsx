@@ -54,7 +54,7 @@ export const SafeImage: React.FC<SafeImageProps> = ({
   };
 
   return (
-    <div className={`relative overflow-hidden ${containerClassName}`}>
+    <div className={`relative overflow-hidden w-full h-full flex ${containerClassName}`}>
       {/* Loading Skeleton */}
       <AnimatePresence>
         {!isLoaded && !hasError && (

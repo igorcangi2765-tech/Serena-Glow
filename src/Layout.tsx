@@ -7,15 +7,14 @@ import { BookingModal } from './components/BookingModal';
 import { PolicyModal } from './components/common/PolicyModal';
 import { SafeImage } from './components/common/SafeImage';
 import { motion, AnimatePresence } from 'motion/react';
-import { supabase } from './lib/supabase';
-import { useBooking } from './BookingContext';
+import { api } from './lib/api';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
-  const { isBookingModalOpen, closeBookingModal, selectedService, openBookingModal } = useBooking();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
   const [policyType, setPolicyType] = useState<'privacy' | 'terms'>('privacy');
   const [settings, setSettings] = useState<any>(null);
@@ -27,12 +26,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   const fetchSettings = async () => {
     try {
-      const { data, error } = await supabase
-        .from('settings')
-        .select('*')
-        .single();
-        
-      if (error) throw error;
+      const data = await api.get('/settings');
       setSettings(data);
     } catch (error) {
       console.error('Error fetching settings:', error);
@@ -47,24 +41,18 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Handle scroll to top on actual page navigation (pathname change)
   useEffect(() => {
     setIsMobileMenuOpen(false);
     window.scrollTo(0, 0);
-  }, [location.pathname]);
-
-  // Handle booking query parameters (deep linking) without scrolling
-  useEffect(() => {
+    
+    // Check for booking query parameter
     const params = new URLSearchParams(location.search);
     if (params.get('booking') === 'true') {
-      const serviceParam = params.get('service');
-      openBookingModal(serviceParam || undefined);
-      
-      // Clear the params to avoid re-opening on manual refresh or back button
-      const newPath = location.pathname;
-      window.history.replaceState({}, '', newPath);
+      setIsBookingModalOpen(true);
+      // Optional: clear the param to avoid re-opening on manual refresh
+      window.history.replaceState({}, '', location.pathname);
     }
-  }, [location.search, openBookingModal, location.pathname]);
+  }, [location.pathname, location.search]);
 
   const navLinks = [
     { name: t('nav.home'), path: '/' },
@@ -86,19 +74,19 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             ? isDark
               ? 'bg-[#1E1E1E]/95 backdrop-blur-sm shadow-sm py-4'
               : 'bg-white/95 backdrop-blur-sm shadow-sm py-4'
-            : 'bg-transparent py-4'
+            : 'bg-transparent py-6'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group">
-                <img 
-                  src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
-                  alt="Serena Glow" 
-                  className="h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105"
-                  referrerPolicy="no-referrer"
-                />
+              <img 
+                src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
+                alt="Serena Glow" 
+                className="h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105 drop-shadow-md"
+                referrerPolicy="no-referrer"
+              />
             </Link>
 
             <div className="hidden md:flex items-center space-x-8">
@@ -163,7 +151,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
               <motion.button
                 whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(244, 63, 94, 0.4)" }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => openBookingModal()}
+                onClick={() => setIsBookingModalOpen(true)}
                 className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 shadow-md transition font-medium tracking-wide text-sm"
               >
                 {t('nav.bookNow')}
@@ -239,7 +227,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <button
               onClick={() => {
                 setIsMobileMenuOpen(false);
-                openBookingModal();
+                setIsBookingModalOpen(true);
               }}
               className="rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 shadow-md hover:shadow-lg transition font-medium tracking-wide text-sm text-center"
             >
@@ -263,7 +251,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <img 
                   src="https://files.zyphtech.com/wp-content/uploads/2026/04/Serena-Glow-Logo-1-1-scaled.png" 
                   alt="Serena Glow" 
-                  className="h-24 md:h-32 w-auto object-contain transition-transform hover:scale-105"
+                  className="h-24 md:h-32 w-auto object-contain transition-transform hover:scale-105 drop-shadow-lg"
                   referrerPolicy="no-referrer"
                 />
               </Link>
@@ -308,7 +296,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <div className="flex flex-col items-start text-left min-w-[200px]">
                 <h4 className="font-serif text-lg mb-6 text-pink-200">{t('footer.services')}</h4>
               <ul className="space-y-4 font-sans">
-                {t('footer.serviceLinks').map((service: string, idx: number) => {
+                {(Array.isArray(t('footer.serviceLinks')) ? t('footer.serviceLinks') : []).map((service: string, idx: number) => {
                   let cat = 'All';
                   const s = service.toLowerCase();
                   if (s.includes('facia')) cat = 'Facial';
@@ -383,8 +371,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
       {/* Booking Modal */}
       <BookingModal 
         isOpen={isBookingModalOpen} 
-        onClose={closeBookingModal} 
-        initialService={selectedService}
+        onClose={() => setIsBookingModalOpen(false)} 
       />
 
       {/* Policy Modal */}
