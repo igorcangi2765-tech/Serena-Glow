@@ -1,0 +1,124 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "bookNow": "Book Now",
+    "admin": "Admin"
+  },
+  "common": {
+    "beforeAfter": "Before / After",
+    "back": "Back",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "error": "Error processing. Try again"
+  },
+  "admin": {
+    "login": {
+      "title": "SERENA GLOW",
+      "subtitle": "Salon Management System",
+      "section": "Dashboard Access",
+      "aux": "Enter your credentials",
+      "email": {
+        "label": "Email",
+        "placeholder": "Access email"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Password"
+      },
+      "button": "Enter",
+      "error": "Incorrect credentials"
+    },
+    "sidebar": {
+      "brand": "Serena Glow",
+      "tagline": "Salon Management",
+      "dashboard": "Overview",
+      "agenda": "Calendar",
+      "sales": "Sales",
+      "reports": "Reports",
+      "clients": "Clients",
+      "services": "Services",
+      "marketing": "Marketing",
+      "gallery": "Gallery",
+      "settings": "Settings",
+      "logout": "Logout",
+      "team": "Team"
+    },
+    "ui": {
+      "buttons": {
+        "view_agenda": "View calendar",
+        "create_booking": "Create booking",
+        "save_changes": "Save changes",
+        "add_client": "Add client",
+        "edit": "Edit",
+        "remove": "Remove",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "add_service": "Add service",
+        "add_campaign": "New campaign",
+        "finish_sale": "Finish sale",
+        "upload_photo": "Upload photo"
+      },
+      "feedback": {
+        "saved": "Saved successfully",
+        "updated": "Changes updated",
+        "removed": "Removed successfully",
+        "error": "Error processing. Try again"
+      },
+      "empty": {
+        "bookings": "No bookings. Create a new one to start.",
+        "clients": "No registered clients.",
+        "team": "No registered professionals.",
+        "services": "No services available.",
+        "activity": "No activity recorded today.",
+        "campaigns": "No active campaigns.",
+        "photos": "No photos in gallery."
+      },
+      "confirm": {
+        "delete_title": "Are you sure you want to remove?",
+        "delete_desc": "This action cannot be undone"
+      },
+      "search": {
+        "placeholder": "Search...",
+        "filter": "Filter by"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "confirmed": "Confirmed",
+        "cancelled": "Cancelled",
+        "completed": "Completed"
+      }
+    },
+    "dashboard": {
+      "title": "Overview",
+      "subtitle": "Salon operations",
+      "summary_title": "Summary of recent activity",
+      "indicators": {
+        "next_appt": "Next appointment soon",
+        "agenda_full": "Calendar almost full",
+        "no_pending": "No pending items"
+      },
+      "activity": {
+        "new_booking": "New booking created",
+        "service_updated": "Service updated",
+        "client_added": "Client added"
+      }
+    },
+    "settings": {
+      "team": {
+        "professionals": "Professionals",
+        "access_type": {
+          "label": "Access level",
+          "admin": "Administrator",
+          "staff": "Staff",
+          "desc": "Defines the professional's access level in the system."
+        }
+      }
+    }
+  }
+}

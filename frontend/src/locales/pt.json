@@ -1,0 +1,124 @@
+{
+  "nav": {
+    "home": "Início",
+    "about": "Sobre",
+    "services": "Serviços",
+    "gallery": "Galeria",
+    "contact": "Contacto",
+    "bookNow": "Marcar Agora",
+    "admin": "Admin"
+  },
+  "common": {
+    "beforeAfter": "Antes / Depois",
+    "back": "Voltar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "loading": "A carregar...",
+    "error": "Erro ao processar. Tenta novamente"
+  },
+  "admin": {
+    "login": {
+      "title": "SERENA GLOW",
+      "subtitle": "Sistema de gestão de salão",
+      "section": "Aceder ao painel",
+      "aux": "Introduz os teus dados",
+      "email": {
+        "label": "Email",
+        "placeholder": "Email de acesso"
+      },
+      "password": {
+        "label": "Palavra-passe",
+        "placeholder": "Palavra-passe"
+      },
+      "button": "Entrar",
+      "error": "Email ou palavra-passe incorrectos"
+    },
+    "sidebar": {
+      "brand": "Serena Glow",
+      "tagline": "Gestão do salão",
+      "dashboard": "Painel Geral",
+      "agenda": "Agenda",
+      "sales": "Vendas",
+      "reports": "Relatórios",
+      "clients": "Clientes",
+      "services": "Serviços",
+      "marketing": "Marketing",
+      "gallery": "Galeria",
+      "settings": "Configurações",
+      "logout": "Terminar sessão",
+      "team": "Equipa"
+    },
+    "ui": {
+      "buttons": {
+        "view_agenda": "Ver agenda",
+        "create_booking": "Criar marcação",
+        "save_changes": "Guardar alterações",
+        "add_client": "Adicionar cliente",
+        "edit": "Editar",
+        "remove": "Remover",
+        "cancel": "Cancelar",
+        "confirm": "Confirmar",
+        "add_service": "Adicionar serviço",
+        "add_campaign": "Nova campanha",
+        "finish_sale": "Finalizar venda",
+        "upload_photo": "Carregar fotografia"
+      },
+      "feedback": {
+        "saved": "Guardado com sucesso",
+        "updated": "Alterações actualizadas",
+        "removed": "Removido com sucesso",
+        "error": "Erro ao processar. Tenta novamente"
+      },
+      "empty": {
+        "bookings": "Sem marcações. Cria uma nova para começar.",
+        "clients": "Nenhum cliente registado.",
+        "team": "Nenhuma profissional registada.",
+        "services": "Nenhum serviço disponível.",
+        "activity": "Sem actividade registada hoje.",
+        "campaigns": "Nenhuma campanha activa.",
+        "photos": "Nenhuma fotografia na galeria."
+      },
+      "confirm": {
+        "delete_title": "Tens a certeza que queres remover?",
+        "delete_desc": "Esta acção não pode ser desfeita"
+      },
+      "search": {
+        "placeholder": "Pesquisar...",
+        "filter": "Filtrar por"
+      },
+      "status": {
+        "active": "Activo",
+        "inactive": "Inactivo",
+        "confirmed": "Confirmado",
+        "cancelled": "Cancelado",
+        "completed": "Concluído"
+      }
+    },
+    "dashboard": {
+      "title": "Painel Geral",
+      "subtitle": "Visão geral do funcionamento do salão",
+      "summary_title": "Resumo da actividade recente",
+      "indicators": {
+        "next_appt": "Próximo atendimento em breve",
+        "agenda_full": "Agenda quase completa",
+        "no_pending": "Sem pendentes no momento"
+      },
+      "activity": {
+        "new_booking": "Nova marcação criada",
+        "service_updated": "Serviço actualizado",
+        "client_added": "Cliente adicionado"
+      }
+    },
+    "settings": {
+      "team": {
+        "professionals": "Profissionais",
+        "access_type": {
+          "label": "Tipo de acesso",
+          "admin": "Administrador",
+          "staff": "Funcionária",
+          "desc": "Define o nível de acesso da profissional no sistema."
+        }
+      }
+    }
+  }
+}

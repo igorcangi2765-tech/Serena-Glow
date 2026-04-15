@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("staff") // "admin" or "staff"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Client {
+  id                 String        @id @default(uuid())
+  name               String
+  phone              String        @unique
+  email              String?
+  total_spent        Float         @default(0)
+  total_appointments Int           @default(0)
+  last_visit         DateTime?
+  appointments       Appointment[]
+  sales              Sale[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+model Service {
+  id           String        @id @default(uuid())
+  name_pt      String
+  name_en      String
+  description  String?
+  price        Float
+  duration     Int?          @default(60) // in minutes
+  category     String?       @default("Geral")
+  appointments Appointment[]
+  saleItems    SaleItem[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Appointment {
+  id               String   @id @default(uuid())
+  appointment_date DateTime
+  status           String   @default("scheduled") // "scheduled", "completed", "cancelled"
+  customer_id      String
+  service_id       String
+  client           Client   @relation(fields: [customer_id], references: [id])
+  service          Service  @relation(fields: [service_id], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Sale {
+  id          String     @id @default(uuid())
+  total       Float
+  payment_method String  @default("cash")
+  customer_id String?
+  client      Client?    @relation(fields: [customer_id], references: [id])
+  items       SaleItem[]
+  createdAt   DateTime   @default(now())
+}
+
+model SaleItem {
+  id         String  @id @default(uuid())
+  sale_id    String
+  service_id String
+  quantity   Int
+  unit_price Float
+  sale       Sale    @relation(fields: [sale_id], references: [id])
+  service    Service @relation(fields: [service_id], references: [id])
+}
