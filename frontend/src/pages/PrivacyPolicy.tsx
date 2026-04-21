@@ -5,6 +5,16 @@ import { Shield, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export const PrivacyPolicy = () => {
   const { t } = useLanguage();
+  const sections = Array.isArray(t('privacyPolicy.sections')) ? t('privacyPolicy.sections') : [
+    {
+      title: 'Privacidade',
+      content: 'A Serena Glow protege os dados partilhados durante contactos, marcacoes e atendimento.'
+    },
+    {
+      title: 'Utilizacao de dados',
+      content: 'As informacoes sao usadas apenas para gerir servicos, comunicacoes e reservas.'
+    }
+  ];
 
   return (
     <div className="pt-32 pb-20 bg-neutral-50 dark:bg-[#121212] min-h-screen">
@@ -22,7 +32,7 @@ export const PrivacyPolicy = () => {
         </div>
 
         <div className="bg-white dark:bg-[#1E1E1E] rounded-3xl p-8 md:p-12 shadow-sm border border-pink-100/50 dark:border-[#2E2E2E] space-y-12">
-          {t('privacyPolicy.sections').map((section: any, index: number) => (
+          {sections.map((section: any, index: number) => (
             <div key={index} className="space-y-4">
               <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-[#EAEAEA]">
                 {section.title}

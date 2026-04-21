@@ -1,20 +1,23 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import prisma from '../config/db.js';
+import { db, uid } from '../config/db.js';
+
+const publicUser = (user) => ({
+  id: user.id,
+  name: user.name,
+  email: user.email,
+  role: user.role
+});
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-      return res.status(401).json({ error: 'Credenciais inválidas' });
-    }
+    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(String(email || '').trim().toLowerCase());
+    if (!user) return res.status(401).json({ error: 'Credenciais invalidas' });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Credenciais inválidas' });
-    }
+    const isMatch = await bcrypt.compare(password || '', user.password);
+    if (!isMatch) return res.status(401).json({ error: 'Credenciais invalidas' });
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
@@ -22,15 +25,7 @@ export const login = async (req, res) => {
       { expiresIn: '24h' }
     );
 
-    res.json({
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
-    });
+    res.json({ token, user: publicUser(user) });
   } catch (error) {
     res.status(500).json({ error: 'Erro no servidor', detail: error.message });
   }
@@ -40,23 +35,24 @@ export const register = async (req, res) => {
   const { name, email, password, role } = req.body;
 
   try {
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ error: 'Usuário já existe' });
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Nome, email e palavra-passe sao obrigatorios.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        role: role || 'staff'
-      }
-    });
+    const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+    if (existingUser) return res.status(400).json({ error: 'Utilizador ja existe' });
 
-    res.status(201).json({ message: 'Usuário criado com sucesso', userId: user.id });
+    const id = uid();
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const timestamp = new Date().toISOString();
+
+    db.prepare(`
+      INSERT INTO users (id, email, password, name, role, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `).run(id, email, hashedPassword, name, role || 'staff', timestamp, timestamp);
+
+    res.status(201).json({ message: 'Utilizador criado com sucesso', userId: id });
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao criar usuário', detail: error.message });
+    res.status(500).json({ error: 'Erro ao criar utilizador', detail: error.message });
   }
 };

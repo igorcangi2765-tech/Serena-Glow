@@ -1,64 +1,81 @@
-import prisma from '../config/db.js';
+import { db, uid } from '../config/db.js';
 
 export const createSale = async (req, res) => {
-  const { total, payment_method, customer_id, items } = req.body;
+  const salePayload = req.body.sale || req.body;
+  const items = req.body.items || [];
+
   try {
-    const result = await prisma.$transaction(async (tx) => {
-      // 1. Create Sale
-      const sale = await tx.sale.create({
-        data: {
-          total,
-          payment_method,
-          customer_id
-        }
-      });
+    if (!items.length) return res.status(400).json({ error: 'Adicione pelo menos um servico.' });
 
-      // 2. Create Sale Items
-      const saleItems = items.map(item => ({
-        sale_id: sale.id,
-        service_id: item.service_id,
-        quantity: item.quantity,
-        unit_price: item.unit_price
-      }));
+    const id = uid();
+    const timestamp = new Date().toISOString();
 
-      await tx.saleItem.createMany({
-        data: saleItems
-      });
+    db.exec('BEGIN');
+    db.prepare(`
+      INSERT INTO sales (id, total, payment_method, status, type, discount_amount, discount_type, customer_id, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      id,
+      Number(salePayload.total || 0),
+      salePayload.payment_method || 'Dinheiro',
+      salePayload.status || 'completed',
+      salePayload.type || 'pos',
+      Number(salePayload.discount_amount || 0),
+      salePayload.discount_type || null,
+      salePayload.customer_id || null,
+      timestamp
+    );
 
-      // 3. Update Client Stats if applicable
-      if (customer_id) {
-        await tx.client.update({
-          where: { id: customer_id },
-          data: {
-            total_spent: { increment: total },
-            total_appointments: { increment: 1 },
-            last_visit: new Date()
-          }
-        });
-      }
+    const insertItem = db.prepare(`
+      INSERT INTO sale_items (id, sale_id, service_id, quantity, unit_price)
+      VALUES (?, ?, ?, ?, ?)
+    `);
 
-      return sale;
+    items.forEach((item) => {
+      insertItem.run(uid(), id, item.service_id || item.id, Number(item.quantity || 1), Number(item.unit_price || item.price || 0));
     });
 
-    res.status(201).json(result);
+    if (salePayload.customer_id) {
+      db.prepare(`
+        UPDATE clients
+        SET total_spent = total_spent + ?, last_visit = ?, updated_at = ?
+        WHERE id = ?
+      `).run(Number(salePayload.total || 0), timestamp, timestamp, salePayload.customer_id);
+    }
+
+    db.exec('COMMIT');
+    res.status(201).json(db.prepare('SELECT * FROM sales WHERE id = ?').get(id));
   } catch (error) {
+    db.exec('ROLLBACK');
     res.status(500).json({ error: 'Erro ao processar venda', detail: error.message });
   }
 };
 
 export const getSalesReport = async (req, res) => {
   try {
-    const sales = await prisma.sale.findMany({
-      include: {
-        client: true,
-        items: {
-          include: { service: true }
-        }
-      },
-      orderBy: { createdAt: 'desc' }
-    });
-    res.json(sales);
+    const sales = db.prepare(`
+      SELECT s.*, c.name AS client_name, c.phone AS client_phone
+      FROM sales s
+      LEFT JOIN clients c ON c.id = s.customer_id
+      ORDER BY s.created_at DESC
+    `).all();
+
+    const itemsStmt = db.prepare(`
+      SELECT si.*, sv.name_pt, sv.name_en
+      FROM sale_items si
+      JOIN services sv ON sv.id = si.service_id
+      WHERE si.sale_id = ?
+    `);
+
+    res.json(sales.map((sale) => ({
+      ...sale,
+      client: sale.customer_id ? { id: sale.customer_id, name: sale.client_name, phone: sale.client_phone } : null,
+      items: itemsStmt.all(sale.id).map((item) => ({
+        ...item,
+        service: { id: item.service_id, name_pt: item.name_pt, name_en: item.name_en }
+      }))
+    })));
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao buscar relatório', detail: error.message });
+    res.status(500).json({ error: 'Erro ao buscar relatorio', detail: error.message });
   }
 };

@@ -24,7 +24,7 @@ import { useTheme } from '@/ThemeContext';
 import { motion, AnimatePresence } from 'motion/react';
 
 export const Settings: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
     const { theme, toggleTheme } = useTheme();
   const [activeSegment, setActiveSegment] = useState<'profile' | 'team' | 'system'>('profile');
   const [loading, setLoading] = useState(false);

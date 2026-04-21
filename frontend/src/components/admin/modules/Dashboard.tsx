@@ -30,6 +30,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ setActiveTab }) => {
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [revenueData, setRevenueData] = useState<any[]>([]);
   const [serviceData, setServiceData] = useState<any[]>([]);
+  const [chartTab, setChartTab] = useState<'general' | 'services'>('general');
   const [topService, setTopService] = useState({ name: 'Carregando...', growth: 0 });
   const [summary, setSummary] = useState({
     todayAppts: 0,
@@ -393,7 +394,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ setActiveTab }) => {
 
         <div className="bg-gradient-to-br from-gray-900 to-black p-8 rounded-[2.5rem] shadow-2xl text-white relative overflow-hidden group border border-white/5">
           <div className="mb-8">
-            <h4 className="text-lg font-serif font-black text-gray-900 dark:text-white mb-1 uppercase italic tracking-tighter">
+            <h4 className="text-lg font-serif font-black text-white mb-1 uppercase italic tracking-tighter">
               {t('admin.dashboard.summary.title')}
             </h4>
             <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">

@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -22,6 +22,9 @@ model Client {
   name               String
   phone              String        @unique
   email              String?
+  notes              String?
+  allergies          String?
+  is_vip             Boolean       @default(false)
   total_spent        Float         @default(0)
   total_appointments Int           @default(0)
   last_visit         DateTime?
@@ -39,6 +42,7 @@ model Service {
   price        Float
   duration     Int?          @default(60) // in minutes
   category     String?       @default("Geral")
+  is_active    Boolean       @default(true)
   appointments Appointment[]
   saleItems    SaleItem[]
   createdAt    DateTime      @default(now())
@@ -48,7 +52,10 @@ model Service {
 model Appointment {
   id               String   @id @default(uuid())
   appointment_date DateTime
+  appointment_time String
   status           String   @default("scheduled") // "scheduled", "completed", "cancelled"
+  notes            String?
+  total_price      Float    @default(0)
   customer_id      String
   service_id       String
   client           Client   @relation(fields: [customer_id], references: [id])
@@ -61,6 +68,10 @@ model Sale {
   id          String     @id @default(uuid())
   total       Float
   payment_method String  @default("cash")
+  status      String     @default("completed")
+  type        String     @default("pos")
+  discount_amount Float  @default(0)
+  discount_type String?
   customer_id String?
   client      Client?    @relation(fields: [customer_id], references: [id])
   items       SaleItem[]
@@ -75,4 +86,24 @@ model SaleItem {
   unit_price Float
   sale       Sale    @relation(fields: [sale_id], references: [id])
   service    Service @relation(fields: [service_id], references: [id])
+}
+
+model GalleryImage {
+  id          String   @id @default(uuid())
+  image_url   String
+  title       String?
+  category    String   @default("Geral")
+  client_name String?
+  createdAt   DateTime @default(now())
+}
+
+model SalonSetting {
+  id        String   @id @default("main")
+  name      String   @default("Serena Glow | Beauty Salon")
+  phone     String   @default("+258 84 000 0000")
+  email     String   @default("contacto@serenaglow.co.mz")
+  address   String   @default("Lichinga, Niassa, Mocambique")
+  hours     String   @default("Segunda a Sabado: 08h00 - 18h00")
+  instagram String?
+  updatedAt DateTime @updatedAt
 }

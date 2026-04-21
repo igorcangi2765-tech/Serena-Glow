@@ -70,7 +70,6 @@ export const Services: React.FC = () => {
         await api.post('/services', formData);
         toast.success(t('admin.ui.feedback.saved'));
       }
-      setIsOpen(false); // assuming it might be setIsOpen or setIsModalOpen
       setIsModalOpen(false);
       fetchServices();
     } catch (error: any) {

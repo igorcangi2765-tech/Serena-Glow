@@ -5,6 +5,16 @@ import { FileText, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export const TermsOfService = () => {
   const { t } = useLanguage();
+  const sections = Array.isArray(t('termsOfService.sections')) ? t('termsOfService.sections') : [
+    {
+      title: 'Termos de servico',
+      content: 'Ao marcar um servico, a cliente concorda com as condicoes de atendimento da Serena Glow.'
+    },
+    {
+      title: 'Marcacoes',
+      content: 'As marcacoes podem depender de disponibilidade da equipa e confirmacao previa.'
+    }
+  ];
 
   return (
     <div className="pt-32 pb-20 bg-neutral-50 dark:bg-[#121212] min-h-screen">
@@ -22,7 +32,7 @@ export const TermsOfService = () => {
         </div>
 
         <div className="bg-white dark:bg-[#1E1E1E] rounded-3xl p-8 md:p-12 shadow-sm border border-pink-100/50 dark:border-[#2E2E2E] space-y-12">
-          {t('termsOfService.sections').map((section: any, index: number) => (
+          {sections.map((section: any, index: number) => (
             <div key={index} className="space-y-4">
               <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-[#EAEAEA]">
                 {section.title}

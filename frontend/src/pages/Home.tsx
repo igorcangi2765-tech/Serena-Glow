@@ -21,23 +21,34 @@ export const Home: React.FC = () => {
     setIsPreviewOpen(true);
   };
 
+  const safeText = (key: string, fallback: string) => {
+    const value = t(key);
+    return typeof value === 'string' && value !== key ? value : fallback;
+  };
+
+  const safeArray = <T,>(key: string, fallback: T[]) => {
+    const value = t(key);
+    return Array.isArray(value) ? value : fallback;
+  };
+
   const stats = [
-    { icon: <HeartHandshake className="w-6 h-6" />, value: "20+", label: t('stats.clients') },
-    { icon: <CheckCircle2 className="w-6 h-6" />, value: "15+", label: t('stats.treatments') },
-    { icon: <Award className="w-6 h-6" />, value: "3+", label: t('stats.specialists') },
-    { icon: <Star className="w-6 h-6" />, value: "4.9", label: t('stats.rating') },
+    { icon: <HeartHandshake className="w-6 h-6" />, value: "20+", label: safeText('stats.clients', 'Clientes satisfeitas') },
+    { icon: <CheckCircle2 className="w-6 h-6" />, value: "15+", label: safeText('stats.treatments', 'Tratamentos') },
+    { icon: <Award className="w-6 h-6" />, value: "3+", label: safeText('stats.specialists', 'Especialistas') },
+    { icon: <Star className="w-6 h-6" />, value: "4.9", label: safeText('stats.rating', 'Avaliacao') },
   ];
 
   const services = [
-    { title: t('services.facial.title'), desc: t('services.facial.desc'), icon: <Smile className="w-5 h-5 text-pink-500" />, category: 'Facial' },
-    { title: t('services.treatment.title'), desc: t('services.treatment.desc'), icon: <Flower2 className="w-5 h-5 text-pink-500" />, category: 'Facial' },
-    { title: t('services.manicure.title'), desc: t('services.manicure.desc'), icon: <Hand className="w-5 h-5 text-pink-500" />, category: 'Nails' },
-    { title: t('services.pedicure.title'), desc: t('services.pedicure.desc'), icon: <Footprints className="w-5 h-5 text-pink-500" />, category: 'Nails' },
-    { title: t('services.makeup.title'), desc: t('services.makeup.desc'), icon: <Palette className="w-5 h-5 text-pink-500" />, category: 'Makeup' },
-    { title: t('services.eyebrows.title'), desc: t('services.eyebrows.desc'), icon: <Eye className="w-5 h-5 text-pink-500" />, category: 'Eyebrows' },
+    { title: safeText('services.hair.title', 'Cabelo'), desc: safeText('services.hair.desc', 'Tranças, aplicação de perucas, lavagem, hidratação e tratamento.'), icon: <Brush className="w-5 h-5 text-pink-500" />, category: 'Hair' },
+    { title: safeText('services.nails.title', 'Unhas'), desc: safeText('services.nails.desc', 'Manicure, pedicure, unhas em gel e decoração.'), icon: <Hand className="w-5 h-5 text-pink-500" />, category: 'Nails' },
+    { title: safeText('services.face.title', 'Rosto'), desc: safeText('services.face.desc', 'Limpeza facial e maquilhagem para o dia-a-dia ou eventos.'), icon: <Eye className="w-5 h-5 text-pink-500" />, category: 'Face' },
+    { title: safeText('services.relaxation.title', 'Relaxamento'), desc: safeText('services.relaxation.desc', 'Massagens simples para aliviar o stress.'), icon: <Coffee className="w-5 h-5 text-pink-500" />, category: 'Relaxation' },
   ];
 
-  const team = t('team.members');
+  const team = safeArray('team.members', [
+    { name: 'Serena Glow', role: 'Beauty Specialist', desc: 'Atendimento dedicado e cuidadoso.', img: '/images/team_serena.png' },
+    { name: 'Equipe Serena', role: 'Estetica e beleza', desc: 'Profissionais preparadas para cuidar de si.', img: '/images/gallery_ai_interior.png' }
+  ]);
 
   const gallery = [
     "/images/gallery_ai_interior.png",
@@ -48,14 +59,26 @@ export const Home: React.FC = () => {
     "/images/gallery_ai_pedicure.png",
   ];
 
-  const testimonials = t('testimonials.list').map((testimonial: any) => ({
+  const testimonials = safeArray('testimonials.list', [
+    { name: 'Cliente Serena', text: 'Atendimento acolhedor e resultado muito bonito.', img: '/images/gallery_ai_facial.png' },
+    { name: 'Maria', text: 'Gostei muito do cuidado e da calma durante o servico.', img: '/images/gallery_ai_nails.png' },
+    { name: 'Ana', text: 'Ambiente limpo, profissional e elegante.', img: '/images/gallery_ai_makeup.png' }
+  ]).map((testimonial: any) => ({
     ...testimonial,
     rating: 5
   }));
 
-  const packages = t('pricing.packages');
+  const packages = safeArray('pricing.packages', [
+    { name: 'Glow Essencial', price: '1.500 MZN', features: ['Consulta inicial', 'Cuidado personalizado', 'Finalizacao delicada'] },
+    { name: 'Beauty Day', price: '3.500 MZN', features: ['Manicure', 'Pedicure', 'Design suave'], popular: true },
+    { name: 'Serena Premium', price: '5.000 MZN', features: ['Facial completo', 'Maquilhagem leve', 'Acompanhamento especial'] }
+  ]);
 
-  const faqs = t('faq.list');
+  const faqs = safeArray('faq.list', [
+    { q: 'Como posso marcar?', a: 'Use o botao de marcacao ou contacte a equipa Serena Glow.' },
+    { q: 'Posso escolher o servico no dia?', a: 'Sim, a equipa pode ajudar a escolher o melhor cuidado.' },
+    { q: 'Onde fica o salao?', a: 'A Serena Glow atende em Lichinga, Niassa.' }
+  ]);
 
   return (
     <div className="w-full">
@@ -279,9 +302,9 @@ export const Home: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { title: t('services.facial.title'), desc: t('services.facial.desc'), img: "/images/gallery_skin_1.png" },
-              { title: t('services.manicure.title'), desc: t('services.manicure.desc'), img: "/images/gallery_nails_1.png" },
-              { title: t('services.pedicure.title'), desc: t('services.pedicure.desc'), img: "/images/pedicure.png" },
+              { title: t('services.hair.title'), desc: t('services.hair.desc'), img: "/images/gallery_skin_1.png" },
+              { title: t('services.nails.title'), desc: t('services.nails.desc'), img: "/images/gallery_nails_1.png" },
+              { title: t('services.face.title'), desc: t('services.face.desc'), img: "/images/pedicure.png" },
             ].map((item: any, idx: number) => (
               <div key={idx} className="bg-white dark:bg-[#121212] rounded-2xl shadow-md hover:shadow-xl transition duration-300 overflow-hidden border border-pink-50 dark:border-[#2E2E2E]">
                 <div className="relative h-64">
