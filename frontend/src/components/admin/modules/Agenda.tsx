@@ -1,6 +1,6 @@
 import { useLanguage } from '@/LanguageContext';
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, ChevronLeft, ChevronRight, Plus, Search, Filter, CheckCircle2, AlertCircle, FileText, Eye, Sparkles, Scissors } from 'lucide-react';
+import { Calendar, Clock, ChevronLeft, ChevronRight, Plus, Search, Filter, CheckCircle2, AlertCircle, FileText, Eye, Sparkles, Scissors, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '@/lib/supabase';
 import { api } from '@/lib/api';
@@ -373,11 +373,24 @@ export const Agenda: React.FC = () => {
                exit={{ opacity: 0, scale: 0.9 }}
                className="bg-white dark:bg-[#1E1E1E] w-full max-w-4xl h-[90vh] rounded-[3rem] overflow-hidden flex flex-col shadow-2xl border border-white/10"
              >
-                <div className="p-8 border-b border-gray-100 dark:border-white/5 flex justify-between items-center">
-                    <h2 className="text-2xl font-serif font-black text-gray-800 dark:text-white uppercase tracking-tighter italic">Pré-visualização de Documento</h2>
-                    <button onClick={() => setIsPreviewOpen(false)} className="p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-all">
-                        <Plus size={24} className="rotate-45" />
-                    </button>
+                <div className="p-8 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <h2 className="text-2xl font-serif font-black text-gray-800 dark:text-white uppercase tracking-tighter italic">Pré-visualização de Documento</h2>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Use o link abaixo para abrir o documento em nova aba.</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <a
+                        href={previewUrl}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="inline-flex items-center gap-2 px-4 py-3 bg-pink-500 text-white rounded-2xl font-semibold uppercase tracking-[0.12em] text-xs shadow-lg hover:bg-pink-600 transition-all"
+                      >
+                        Abrir em nova aba <ArrowUpRight size={16} />
+                      </a>
+                      <button onClick={() => setIsPreviewOpen(false)} className="p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-full transition-all">
+                          <Plus size={24} className="rotate-45" />
+                      </button>
+                    </div>
                 </div>
                 <iframe src={previewUrl} className="flex-grow w-full border-none" />
                 <div className="p-8 bg-gray-50 dark:bg-white/5 border-t border-gray-100 dark:border-white/5 text-center">
